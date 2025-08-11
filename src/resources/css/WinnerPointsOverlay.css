@@ -1,0 +1,36 @@
+.winner-overlay {
+    position: absolute;
+    top: -120px;
+    left: 50%;
+    transform: translateX(-50%) scale(1);
+    background: rgba(30, 20, 60, 0.95);
+    border-radius: 18px;
+    padding: 18px 28px;
+    color: #fff;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.5s, transform 0.5s;
+    z-index: 10;
+  }
+  .winner-overlay.show {
+    opacity: 1;
+    pointer-events: auto;
+    transform: translateX(-50%) scale(1.05);
+  }
+  .bonus-row {
+    color: #ffe600;
+    font-weight: bold;
+    font-size: 1.2em;
+    margin-bottom: 10px;
+    text-align: center;
+  }
+  .points-row {
+    display: flex;
+    justify-content: space-between;
+    font-size: 1.1em;
+    margin: 4px 0;
+  }
+  .points {
+    color: #00ffd1;
+    font-weight: bold;
+  }
