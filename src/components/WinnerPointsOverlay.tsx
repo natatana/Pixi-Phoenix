@@ -107,7 +107,7 @@ export function WinnerPointsOverlay({
                     style={{
                         fontSize,
                         fill: 0xffffff,
-                        fontWeight: "600",
+                        fontWeight: "500",
                         fontFamily: ["Gilroy", 'serif'],
                     }}
                 />
@@ -119,7 +119,8 @@ export function WinnerPointsOverlay({
                     style={{
                         fontSize: fontSize + 5,
                         fill: 0x00ffd1,
-                        fontWeight: "800",
+                        fontFamily: ["Gilroy", 'serif'],
+                        fontWeight: "bold",
                     }}
                 />
             </pixiContainer>
@@ -152,7 +153,7 @@ export function WinnerPointsOverlay({
                     style={{
                         fontSize,
                         fill: 0xffffff,
-                        fontWeight: "600",
+                        fontWeight: "500",
                         fontFamily: ["Gilroy", 'serif'],
                     }}
                 />
@@ -164,7 +165,8 @@ export function WinnerPointsOverlay({
                     style={{
                         fontSize: fontSize + 5,
                         fill: 0x00ffd1,
-                        fontWeight: "800",
+                        fontFamily: ["Gilroy", 'serif'],
+                        fontWeight: "bold",
                     }}
                 />
             </pixiContainer>

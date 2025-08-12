@@ -60,7 +60,7 @@ function App() {
   const REF_WIDTH = 1920;
   const scale = windowSize.width / REF_WIDTH;
 
-  const playerBarWidth = 314;
+  const playerBarWidth = 300;
   const playerSpacing = (REF_WIDTH - playerBarWidth * playerCount) / (playerCount + 1);
   const playerHeight = windowSize.height * 0.4;
 
@@ -181,7 +181,7 @@ function App() {
     function animate(now: number) {
       const elapsed = (now - start) / 1000;
       setPlayerFloatOffsets(
-        Array.from({ length: playerCount }, (_, i) => Math.sin(elapsed * 2 + i) * 20)
+        Array.from({ length: playerCount }, (_, i) => Math.sin(elapsed * 2 + i) * 10)
       );
       floatAnimRef.current = requestAnimationFrame(animate);
     }
@@ -231,7 +231,7 @@ function App() {
               x={scale * (playerSpacing * (index + 1) + playerBarWidth * index + playerBarWidth / 2)}
               y={playerHeight + playerFloatOffsets[index]}
               scale={scale}
-              isOnline
+              isOnline={speakingPlayers === null || speakingPlayers === index}
               isSpeaking={speakingPlayers === index}
               isWinner={winnerPlayer === index}
               isLooser={loserPlayer === index}

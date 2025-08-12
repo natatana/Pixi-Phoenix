@@ -55,7 +55,7 @@ export function Player({
   const [yOffset, setYOffset] = useState(0); // Negative moves up, positive moves down
 
   // Jet trail alpha for smooth fade-in
-  const winnerTarget = -100 * scale;
+  const winnerTarget = -20 * scale;
   let jetTrailAlpha = 0;
   if (isWinner) {
     // The closer yOffset is to winnerTarget, the closer alpha is to 1
@@ -65,7 +65,7 @@ export function Player({
 
   // Animation tick
   useTick((options) => {
-    const riseMagnitude = 80 * scale; // pixels
+    const riseMagnitude = 20 * scale; // pixels
     const target = isWinner ? -riseMagnitude : isLooser ? riseMagnitude : 0;
 
     setYOffset((prev) => {
@@ -147,15 +147,21 @@ export function Player({
         scale={scale}
       />
       {/* Static highlight effect */}
-      {isOnline && (
+      {isOnline ?
         <pixiSprite
           texture={avatarHighlightTexture}
           anchor={{ x: 0.5, y: 0.5 }}
           x={0}
           y={floatY}
           scale={scale}
+        /> : <pixiSprite
+          texture={defaultAvatarTexture}
+          anchor={{ x: 0.5, y: 0.5 }}
+          x={0}
+          y={floatY}
+          scale={scale}
         />
-      )}
+      }
       {isWinner && (
         <WinnerPointsOverlay
           songTitle={songTitle}
@@ -172,7 +178,7 @@ export function Player({
           texture={jetTrailTexture}
           anchor={{ x: 0.5, y: 0.5 }}
           x={0}
-          y={290 * scale}
+          y={260 * scale}
           scale={scale}
           alpha={jetTrailAlpha}
         />
@@ -182,7 +188,7 @@ export function Player({
         texture={baseTexture}
         anchor={{ x: 0.5, y: 0.5 }}
         x={0}
-        y={170 * scale}
+        y={150 * scale}
         scale={scale}
       />
       {/* Player base highlight */}
@@ -191,7 +197,7 @@ export function Player({
           texture={baseHighlightTextureToUse}
           anchor={{ x: 0.5, y: 0.5 }}
           x={0}
-          y={170 * scale}
+          y={150 * scale}
           scale={scale}
         />
       )}
@@ -200,10 +206,12 @@ export function Player({
         text={playerName}
         anchor={{ x: 0.5, y: 0.5 }}
         x={-54 * scale}
-        y={170 * scale}
+        y={150 * scale}
         style={{
           fontSize: 24 * scale,
           fill: 0xffffff,
+          fontFamily: ["Gilroy", 'serif'],
+          fontWeight: "bold",
         }}
       />
       {/* Player score text */}
@@ -211,10 +219,12 @@ export function Player({
         text={playerScore}
         anchor={{ x: 0.5, y: 0.5 }}
         x={84 * scale}
-        y={170 * scale}
+        y={150 * scale}
         style={{
           fontSize: 24 * scale,
           fill: playerScoreColor,
+          fontFamily: ["Gilroy", 'serif'],
+          fontWeight: "bold",
         }}
       />
       {/* Spreading highlight animations */}
