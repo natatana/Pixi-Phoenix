@@ -16,56 +16,22 @@ export function SoundBar({ x, y, scale, speakerIndex = null, winnerIndex = null,
   const [soundBarTexture, setSoundBarTexture] = useState(Texture.EMPTY);
   const [barHeights, setBarHeights] = useState<number[]>([]);
   const [progress, setProgress] = useState(0); // Smooth progress from 0 to 20
-  const MIN_BAR_HEIGHT = 10;
+  const MIN_BAR_HEIGHT = 30;
   const MAX_BAR_HEIGHT = 74;
-  const timeRef = useRef(0);
-  const slowTimeRef = useRef(0);
-  const SINE_SPEED = 0.04; // base speed factor
-  const SLOW_SPEED = 0.012; // slow modulation speed
-  const AMP_VARIATION = 0.18; // amplitude modulation intensity (0..1)
-  const PHASE_JITTER = 0.18; // max per-bar phase jitter in radians (slightly reduced for coherence)
-  const SLOW_PHASE_STEP = 0.0; // make global amplitude modulation in-phase across bars
-  const phaseJitterRef = useRef<number[]>([]);
+  // Get 0, 0.5, or 1 randomly
+  function randomZeroHalfOne() {
+    const choices = [0, 0.5, 1];
+    return choices[Math.floor(Math.random() * choices.length)];
+  }
 
-  // Multi-wave config to create several peaks across bars
-  // Sum of sinusoids with different spatial wavelengths and time speeds
-  const WAVES = [
-    { amp: 0.55, spatialStep: 0.55, timeSpeed: 1.0 }, // primary traveling wave
-    { amp: 0.30, spatialStep: 1.10, timeSpeed: 1.6 }, // shorter wavelength accent
-    { amp: 0.20, spatialStep: 0.28, timeSpeed: 0.6 }, // long wavelength sway
-  ] as const;
+  const randomHeight = () => MIN_BAR_HEIGHT + randomZeroHalfOne() * (MAX_BAR_HEIGHT - MIN_BAR_HEIGHT);
+  const barTargetsRef = useRef<number[]>([]);
 
-  // Smooth noise parameters
-  const noiseTimeRef = useRef(0);
-  const NOISE_BASE_SPEED = 0.02;
-  const NOISE_AMP = 0.10; // fraction of main amplitude (slightly reduced)
-  const noiseSpeed1Ref = useRef<number[]>([]);
-  const noiseSpeed2Ref = useRef<number[]>([]);
-  const noisePhase1Ref = useRef<number[]>([]);
-  const noisePhase2Ref = useRef<number[]>([]);
-
-  // Calculate initial bar heights and stable per-bar jitters
+  // Calculate bar heights once when component mounts
   useEffect(() => {
-    const base = (MIN_BAR_HEIGHT + MAX_BAR_HEIGHT) / 2;
-    const amp = (MAX_BAR_HEIGHT - MIN_BAR_HEIGHT) / 2;
-    const heights: number[] = Array.from({ length: 20 }, (_, i) => {
-      // sum of spatial waves at t=0
-      let s = 0;
-      for (const w of WAVES) {
-        s += w.amp * Math.sin(i * w.spatialStep);
-      }
-      return base + amp * s;
-    });
+    const heights: number[] = Array.from({ length: 20 }, () => randomHeight());
     setBarHeights(heights);
-
-    // Stable per-bar phase jitter
-    phaseJitterRef.current = Array.from({ length: 20 }, () => (Math.random() * 2 - 1) * PHASE_JITTER);
-
-    // Initialize smooth noise params per bar
-    noiseSpeed1Ref.current = Array.from({ length: 20 }, () => NOISE_BASE_SPEED * (0.75 + Math.random() * 0.75));
-    noiseSpeed2Ref.current = Array.from({ length: 20 }, () => NOISE_BASE_SPEED * (1.2 + Math.random() * 1.2));
-    noisePhase1Ref.current = Array.from({ length: 20 }, () => Math.random() * Math.PI * 2);
-    noisePhase2Ref.current = Array.from({ length: 20 }, () => Math.random() * Math.PI * 2);
+    barTargetsRef.current = Array.from({ length: 20 }, () => randomHeight());
   }, []);
 
   // Update progress smoothly every 50ms for smooth animation
@@ -89,7 +55,7 @@ export function SoundBar({ x, y, scale, speakerIndex = null, winnerIndex = null,
     return () => clearInterval(interval);
   }, [speakerIndex, winnerIndex, loserIndex]);
 
-  // Per-frame multi-wave sound-graph style animation for bar heights
+  // Per-frame grow/shrink animation for bar heights
   useTick((options) => {
     // Pause animation if selection is active
     if (
@@ -100,36 +66,23 @@ export function SoundBar({ x, y, scale, speakerIndex = null, winnerIndex = null,
       return;
     }
 
-    timeRef.current += SINE_SPEED * options.deltaTime;
-    slowTimeRef.current += SLOW_SPEED * options.deltaTime;
-    noiseTimeRef.current += options.deltaTime;
-
-    const base = (MIN_BAR_HEIGHT + MAX_BAR_HEIGHT) / 2;
-    const amp = (MAX_BAR_HEIGHT - MIN_BAR_HEIGHT) / 2;
-
-    setBarHeights(() => {
-      const count = 20;
-      const next: number[] = new Array(count);
-      for (let i = 0; i < count; i++) {
-        // Global slow amplitude modulation around 1.0 (in-phase across bars)
-        const ampScale = 1 - AMP_VARIATION * 0.5 + (AMP_VARIATION * 0.5) * (1 + Math.sin(slowTimeRef.current + i * SLOW_PHASE_STEP));
-
-        // Sum of waves to create several peaks across the bar indices
-        let s = 0;
-        for (const w of WAVES) {
-          const phase = timeRef.current * w.timeSpeed + i * w.spatialStep + (phaseJitterRef.current[i] || 0);
-          s += w.amp * Math.sin(phase);
+    const easing = 0.16; // higher = snappier
+    setBarHeights((prev) => {
+      if (prev.length === 0) return prev;
+      const next: number[] = new Array(prev.length);
+      for (let i = 0; i < prev.length; i++) {
+        let target = barTargetsRef.current[i];
+        if (typeof target !== "number") target = randomHeight();
+        const current = prev[i];
+        const step = (target - current) * easing * options.deltaTime;
+        let updated = current + step;
+        // Clamp and retarget when close
+        if (Math.abs(target - updated) < 1) {
+          barTargetsRef.current[i] = randomHeight();
         }
-
-        // Smooth per-bar noise: sum of two sines with different speeds/phases
-        const n1 = Math.sin((noisePhase1Ref.current[i] || 0) + noiseTimeRef.current * (noiseSpeed1Ref.current[i] || NOISE_BASE_SPEED));
-        const n2 = Math.sin((noisePhase2Ref.current[i] || 0) + noiseTimeRef.current * (noiseSpeed2Ref.current[i] || NOISE_BASE_SPEED * 1.6));
-        const noise = NOISE_AMP * amp * (0.6 * n1 + 0.4 * n2);
-
-        let h = base + (amp * ampScale) * s + noise;
-        if (h < MIN_BAR_HEIGHT) h = MIN_BAR_HEIGHT;
-        if (h > MAX_BAR_HEIGHT) h = MAX_BAR_HEIGHT;
-        next[i] = h;
+        if (updated < MIN_BAR_HEIGHT) updated = MIN_BAR_HEIGHT;
+        if (updated > MAX_BAR_HEIGHT) updated = MAX_BAR_HEIGHT;
+        next[i] = updated;
       }
       return next;
     });
@@ -163,9 +116,9 @@ export function SoundBar({ x, y, scale, speakerIndex = null, winnerIndex = null,
 
           // Draw multiple timeline bars with smooth progress
           for (let i = 0; i < 20; i++) {
-            const barWidth = 10 * scale;
-            const barSpacing = 20 * scale;
-            const startX = -187 * scale + (i * barSpacing);
+            const barWidth = 16 * scale;
+            const barSpacing = 24 * scale;
+            const startX = -240 * scale + (i * barSpacing);
             const barHeight = (barHeights[i] || MIN_BAR_HEIGHT) * scale;
             const startY = -60 * scale - barHeight / 2;
 
