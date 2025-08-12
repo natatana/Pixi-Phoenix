@@ -103,7 +103,8 @@ function App() {
     };
 
     const speakerIndex = Math.floor(Math.random() * 4);
-    const winnerIndex = Math.floor(Math.random() * 4);
+    // const winnerIndex = Math.floor(Math.random() * 4);
+    const winnerIndex = speakerIndex;
     let looserIndex = Math.floor(Math.random() * 4);
     while (looserIndex === winnerIndex) {
       looserIndex = Math.floor(Math.random() * 4);
