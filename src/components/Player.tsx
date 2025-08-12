@@ -44,6 +44,7 @@ export function Player({
   const [baseHighlightTexture, setBaseHighlightTexture] = useState(Texture.EMPTY);
   const [incorrectAvatarTexture, setIncorrectAvatarTexture] = useState(Texture.EMPTY);
   const [incorrectBaseHighlightTexture, setIncorrectBaseHighlightTexture] = useState(Texture.EMPTY);
+  const [loading, setLoading] = useState(true);
 
   const [showCurrentHighlight, setShowCurrentHighlight] = useState(false);
 
@@ -62,52 +63,41 @@ export function Player({
     jetTrailAlpha = progress;
   }
 
-  // Buzz highlight animation states
-
   // Animation tick
   useTick((options) => {
-    // Keep a subtle idle animation value updated (if needed later)
-    // setFloatOffset(
-    //   (prev) => (prev + floatSpeed * options.deltaTime) % (Math.PI * 2)
-    // );
-
-    // Winner/Looser vertical animation
     const riseMagnitude = 80 * scale; // pixels
     const target = isWinner ? -riseMagnitude : isLooser ? riseMagnitude : 0;
 
     setYOffset((prev) => {
-      const ease = 1 - Math.pow(0.001, options.deltaTime / 200); // 0.001 = how fast to approach, 10 = time constant
+      const ease = 1 - Math.pow(0.001, options.deltaTime / 200);
       return prev + (target - prev) * ease;
     });
-    // Floating animation for speaking
     if (isSpeaking) {
       setFloatOffset((prev) => (prev + floatSpeed * options.deltaTime) % (Math.PI * 2));
     }
   });
 
-  // Preload the textures
+  // Use globally preloaded textures
   useEffect(() => {
-    Assets.load([
-      avatar + '.png',
-      "/player_base.png",
-      avatar + "_highlight.png",
-      avatar + "_jet2_trail.png",
-      "/player_base_highlight.png",
-      avatar + "_buzz_hightlight.png",
-      "/incorrect_highlight.png",
-      "/incorrect_buzz_ighlight.png",
-      "/default_avatar_highlight.png"
-    ]).then((result) => {
-      setDefaultAvatarTexture(result["/default_avatar_highlight.png"]);
-      setAvatarTexture(result[avatar + '.png']);
-      setBaseTexture(result["/player_base.png"]);
-      setHighlightTexture(result[avatar + "_highlight.png"]);
-      setJetTrailTexture(result[avatar + "_jet2_trail.png"]);
-      setBaseHighlightTexture(result[avatar + "_buzz_hightlight.png"]);
-      setIncorrectAvatarTexture(result["/incorrect_highlight.png"]);
-      setIncorrectBaseHighlightTexture(result["/incorrect_buzz_ighlight.png"]);
-    });
-  }, []);
+    const loadedDefault = Assets.get("/default_avatar_highlight.png") as Texture;
+    const loadedAvatar = Assets.get(avatar + ".png") as Texture;
+    const loadedBase = Assets.get("/player_base.png") as Texture;
+    const loadedHighlight = Assets.get(avatar + "_highlight.png") as Texture;
+    const loadedJet = Assets.get(avatar + "_jet2_trail.png") as Texture;
+    const loadedBaseHL = Assets.get(avatar + "_buzz_hightlight.png") as Texture;
+    const loadedIncorrectAvatar = Assets.get("/incorrect_highlight.png") as Texture;
+    const loadedIncorrectBaseHL = Assets.get("/incorrect_buzz_ighlight.png") as Texture;
+
+    setDefaultAvatarTexture(loadedDefault ?? Texture.EMPTY);
+    setAvatarTexture(loadedAvatar ?? Texture.EMPTY);
+    setBaseTexture(loadedBase ?? Texture.EMPTY);
+    setHighlightTexture(loadedHighlight ?? Texture.EMPTY);
+    setJetTrailTexture(loadedJet ?? Texture.EMPTY);
+    setBaseHighlightTexture(loadedBaseHL ?? Texture.EMPTY);
+    setIncorrectAvatarTexture(loadedIncorrectAvatar ?? Texture.EMPTY);
+    setIncorrectBaseHighlightTexture(loadedIncorrectBaseHL ?? Texture.EMPTY);
+    setLoading(false);
+  }, [avatar]);
 
   useEffect(() => {
     const randomDelay = 3000 + Math.random() * 2000;
@@ -135,9 +125,11 @@ export function Player({
     playerScoreColor = 0xff1e34; // Looser color
   }
 
-  // Handle click on player header (reserved for future interactions)
-
   const floatY = isSpeaking ? Math.sin(floatOffset) * floatAmplitude : 0;
+
+  if (loading) {
+    return null;
+  }
 
   return (
     <pixiContainer
@@ -180,7 +172,7 @@ export function Player({
           texture={jetTrailTexture}
           anchor={{ x: 0.5, y: 0.5 }}
           x={0}
-          y={320 * scale}
+          y={290 * scale}
           scale={scale}
           alpha={jetTrailAlpha}
         />

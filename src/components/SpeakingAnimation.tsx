@@ -37,16 +37,11 @@ export function SpeakingAnimation({
   const [isEnded, setIsEnded] = useState(false);
   const [stopTimerId, setStopTimerId] = useState<number | null>(null);
 
-  // Preload texture
+  // Use preloaded highlight texture
   useEffect(() => {
-    let isMounted = true;
-    Assets.load(avatar + "_highlight.png").then((result) => {
-      if (isMounted) setHighlightTexture(result);
-    });
-    return () => {
-      isMounted = false;
-    };
-  }, []);
+    const tex = (Assets.get(avatar + "_highlight.png") as Texture) ?? Texture.EMPTY;
+    setHighlightTexture(tex);
+  }, [avatar]);
 
   // Reset when toggling active state and optionally auto stop
   useEffect(() => {

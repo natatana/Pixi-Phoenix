@@ -1,12 +1,12 @@
 import { useState, useEffect } from "react";
 import { Application, extend } from "@pixi/react";
 import { Container, Graphics, Sprite, Assets, Texture, Text } from "pixi.js";
-import useSound from "use-sound";
 import { Player } from "./components/Player";
 import { SoundBar } from "./components/SoundBar";
 import { RoundText } from "./components/RoundText";
 import "./resources/css/App.css";
 import React from "react";
+import { preloadAllSounds, Sound } from "./sound/SoundManager";
 
 extend({
   Container,
@@ -20,9 +20,8 @@ function BackgroundSprite() {
 
   useEffect(() => {
     if (texture === Texture.EMPTY) {
-      Assets.load("/stadium.jpg").then((result) => {
-        setTexture(result);
-      });
+      const tex = (Assets.get("/stadium.jpg") as Texture) ?? Texture.EMPTY;
+      setTexture(tex);
     }
   }, [texture]);
 
@@ -42,16 +41,9 @@ const playerNames = ["Andrew", "Mary", "Jessica", "Devin"];
 
 function App() {
   const playerCount = 4;
-  const [playCrowdCheering] = useSound('/sounds/MatchmakingMusic.mp3', {
-    loop: true,
-    volume: 0.6,
-    html5: true,
-  });
-  const [playWinCheer] = useSound('/sounds/CheeringWinTie2.wav', {
-    volume: 1.0,
-    html5: true,
-  });
   const [musicStarted, setMusicStarted] = useState(false);
+  const [assetsReady, setAssetsReady] = useState(false);
+  const [soundsReady, setSoundsReady] = useState(false);
   const [playerFloatOffsets, setPlayerFloatOffsets] = useState(Array(playerCount).fill(0));
   const floatAnimRef = React.useRef<number | null>(null);
 
@@ -72,63 +64,105 @@ function App() {
   const playerSpacing = (REF_WIDTH - playerBarWidth * playerCount) / (playerCount + 1);
   const playerHeight = windowSize.height * 0.4;
 
-  // Handle window resize and game state transitions
+  // Preload all textures
   useEffect(() => {
+    const commonAssets = [
+      "/stadium.jpg",
+      "/player_base.png",
+      "/player_base_highlight.png",
+      "/default_avatar_highlight.png",
+      "/incorrect_highlight.png",
+      "/incorrect_buzz_ighlight.png",
+      "/sound_bar.png",
+    ];
+    const perPlayerAssets: string[] = [];
+    for (let i = 1; i <= playerCount; i++) {
+      perPlayerAssets.push(
+        `/avatar_${i}.png`,
+        `/avatar_${i}_highlight.png`,
+        `/avatar_${i}_jet2_trail.png`,
+        `/avatar_${i}_buzz_hightlight.png`,
+        `/avatar_${i}_sound_bar.png`,
+      );
+    }
+
+    Assets.load([...commonAssets, ...perPlayerAssets]).then(() => setAssetsReady(true));
+  }, []);
+
+  // Preload all sounds
+  useEffect(() => {
+    preloadAllSounds().then(() => setSoundsReady(true)).catch(() => setSoundsReady(true));
+  }, []);
+
+  // Simulated flow (runs only after both assets and sounds are ready)
+  useEffect(() => {
+    if (!assetsReady || !soundsReady) return;
+
     const handleResize = () => {
-      setWindowSize({
-        width: window.innerWidth,
-        height: window.innerHeight,
-      });
+      setWindowSize({ width: window.innerWidth, height: window.innerHeight });
     };
 
     const speakerIndex = Math.floor(Math.random() * 4);
     const winnerIndex = Math.floor(Math.random() * 4);
-    // const winnerIndex = 2
     let looserIndex = Math.floor(Math.random() * 4);
-    // Ensure looserIndex is not the same as winnerIndex
     while (looserIndex === winnerIndex) {
       looserIndex = Math.floor(Math.random() * 4);
     }
-    setTimeout(() => {
-      setSpeakingPlayers(speakerIndex);
-    }, 5000);
 
-    setTimeout(() => {
+    const t0 = setTimeout(() => {
+      Sound.playOpponentFound();
+      Sound.stopMatchmaking();
+    }, 3000);
+    const t1 = setTimeout(() => {
+      setSpeakingPlayers(speakerIndex);
+      Sound.stopMatchmaking();
+    }, 5000);
+    const t2 = setTimeout(() => {
       setWinnerPlayer(winnerIndex);
       setSpeakingPlayers(null);
+      Sound.stopMatchmaking();
+      Sound.playRoundResultsBgm();
+      Sound.playWinCheer();
     }, 10000);
-
-    setTimeout(() => {
+    const t3 = setTimeout(() => {
       setLoserPlayer(looserIndex);
     }, 15000);
+    const t4 = setTimeout(() => {
+      Sound.stopRoundResultsBgm();
+      Sound.playCountdown();
+      Sound.playVsCountdown();
+    }, 17000);
 
     window.addEventListener("resize", handleResize);
-    return () => window.removeEventListener("resize", handleResize);
-  }, []);
+    return () => {
+      clearTimeout(t0);
+      clearTimeout(t1);
+      clearTimeout(t2);
+      clearTimeout(t3);
+      clearTimeout(t4);
+      window.removeEventListener("resize", handleResize);
+    };
+  }, [assetsReady, soundsReady]);
 
-  // Start background music on first user interaction (required by autoplay policies)
+  // Start matchmaking music after all ready (autoplay policies still apply)
   useEffect(() => {
-    if (musicStarted) return;
-    setTimeout(() => {
+    if (musicStarted || !assetsReady || !soundsReady) return;
+    const id = setTimeout(() => {
       setMusicStarted(true);
-      playCrowdCheering();
-    }, 500);
-  }, [musicStarted, playCrowdCheering]);
+      try { Sound.playMatchmaking(); } catch { }
+    }, 300);
+    return () => clearTimeout(id);
+  }, [musicStarted, assetsReady, soundsReady]);
 
-  // Play win cheer when a winner is set
+  // Stop matchmaking when gameplay begins
   useEffect(() => {
-    if (winnerPlayer !== null) {
-      try {
-        playWinCheer();
-      } catch (e) {
-        // Ignore autoplay errors; will succeed once user interacts
-      }
+    if (speakingPlayers !== null) {
+      Sound.stopMatchmaking();
     }
-  }, [winnerPlayer, playWinCheer]);
+  }, [speakingPlayers]);
 
   // Floating animation effect
   useEffect(() => {
-    // Stop floating if music hasn't started, a speaker is selected, or winner/loser is determined
     if (
       !musicStarted ||
       speakingPlayers !== null ||
@@ -145,7 +179,6 @@ function App() {
     let start = performance.now();
     function animate(now: number) {
       const elapsed = (now - start) / 1000;
-      // Sine wave for smooth floating
       setPlayerFloatOffsets(
         Array.from({ length: playerCount }, (_, i) => Math.sin(elapsed * 2 + i) * 20)
       );
@@ -160,9 +193,33 @@ function App() {
     };
   }, [musicStarted, speakingPlayers, winnerPlayer, loserPlayer, playerCount]);
 
+  const onWebRemoteConnected = () => {
+    try { Sound.playSuccessWebRemote(); } catch { }
+  };
+  void onWebRemoteConnected;
+
+  if (!assetsReady || !soundsReady) {
+    return (
+      <div style={{
+        position: "fixed",
+        inset: 0,
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        background: "#0b0b18",
+        color: "#ecdeff",
+        fontFamily: "sans-serif",
+        fontSize: 20,
+        letterSpacing: 1,
+      }}>
+        Loading assets & sounds...
+      </div>
+    );
+  }
+
   return (
     <div style={{ position: "relative", width: "100vw", height: "100vh" }}>
-      <Application width={windowSize.width} height={windowSize.height}>
+      <Application width={windowSize.width} height={windowSize.height} autoDensity={true} resolution={window.devicePixelRatio || 1}>
         <pixiContainer>
           <BackgroundSprite />
           {Array.from({ length: playerCount }).map((_, index) => (

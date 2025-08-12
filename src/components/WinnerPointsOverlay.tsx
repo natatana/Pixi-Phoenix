@@ -1,5 +1,6 @@
 // WinnerPointsOverlay.tsx
 import { useEffect, useState } from "react";
+import { Sound } from "../sound/SoundManager";
 
 interface WinnerPointsOverlayProps {
     songTitle: string;
@@ -30,8 +31,9 @@ export function WinnerPointsOverlay({
     const [singerAlpha, setSingerAlpha] = useState(0);
 
     // Animate alpha with ease-out
-    function animateAlpha(setter: (a: number) => void, duration: number) {
+    function animateAlpha(setter: (a: number) => void, duration: number, onStart?: () => void) {
         let start: number | null = null;
+        if (onStart) onStart();
         function step(ts: number) {
             if (start === null) start = ts;
             const elapsed = ts - start;
@@ -46,9 +48,12 @@ export function WinnerPointsOverlay({
         if (visible) {
             setSongAlpha(0);
             setSingerAlpha(0);
-            // Animate song row after 100ms, singer row after 500ms
-            const t1 = setTimeout(() => animateAlpha(setSongAlpha, 1000), 500);
-            const t2 = setTimeout(() => animateAlpha(setSingerAlpha, 1000), 1000);
+            // Results just became visible: play correct SFX once
+            try { Sound.playRoundResultsCorrect(); } catch { }
+            // Animate song row after 500ms with shine
+            const t1 = setTimeout(() => animateAlpha(setSongAlpha, 1000, () => { try { Sound.playShine(); } catch { } }), 500);
+            // Animate singer row after 1000ms with shine
+            const t2 = setTimeout(() => animateAlpha(setSingerAlpha, 1000, () => { try { Sound.playShine(); } catch { } }), 1000);
             return () => {
                 clearTimeout(t1);
                 clearTimeout(t2);
@@ -62,13 +67,10 @@ export function WinnerPointsOverlay({
     if (!visible) return null;
     // Layout constants
     const width = 320 * scale;
-    // const height = 140 * scale; // slightly increased for more space
     const padding = 16 * scale;
     const rowHeight = 48 * scale; // increased height for each row
     const rowGap = 16 * scale;    // gap between rows
     const fontSize = 22 * scale;
-    // const bonusFontSize = 20 * scale;
-    // const bonusIcon = "⚡";
 
     return (
         <pixiContainer
@@ -126,7 +128,6 @@ export function WinnerPointsOverlay({
             <pixiContainer
                 alpha={singerAlpha}
                 interactive={false}
-
             >
                 <pixiGraphics
                     draw={g => {

@@ -18,7 +18,7 @@ export function SoundBar({ x, y, scale, speakerIndex = null, winnerIndex = null,
 
   // Calculate bar heights once when component mounts
   useEffect(() => {
-    const heights = [];
+    const heights = [] as number[];
     for (let i = 0; i < 20; i++) {
       heights.push(25 + Math.random() * 49);
     }
@@ -46,15 +46,14 @@ export function SoundBar({ x, y, scale, speakerIndex = null, winnerIndex = null,
     return () => clearInterval(interval);
   }, [speakerIndex, winnerIndex, loserIndex]);
 
-  // Preload the sound bar texture
+  // Select the sound bar texture from preloaded assets
   useEffect(() => {
     let texturePath = "/sound_bar.png";
     if (speakerIndex !== null && speakerIndex !== undefined) {
       texturePath = `/avatar_${speakerIndex + 1}_sound_bar.png`;
     }
-    Assets.load(texturePath).then((result) => {
-      setSoundBarTexture(result);
-    });
+    const tex = (Assets.get(texturePath) as Texture) ?? Texture.EMPTY;
+    setSoundBarTexture(tex);
   }, [speakerIndex]);
 
   return (
