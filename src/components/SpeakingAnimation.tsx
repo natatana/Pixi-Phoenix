@@ -39,7 +39,7 @@ export function SpeakingAnimation({
 
   // Use preloaded highlight texture
   useEffect(() => {
-    const tex = (Assets.get(avatar + "_highlight.png") as Texture) ?? Texture.EMPTY;
+    const tex = (Assets.get("/images" + avatar + "_highlight.png") as Texture) ?? Texture.EMPTY;
     setHighlightTexture(tex);
   }, [avatar]);
 

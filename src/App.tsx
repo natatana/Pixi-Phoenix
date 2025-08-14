@@ -44,7 +44,6 @@ function App() {
       "/images/splash.jpg",
       "/images/stadium.jpg",
       "/images/player_base.png",
-      "/images/player_base_highlight.png",
       "/images/default_avatar_highlight.png",
       "/images/incorrect_highlight.png",
       "/images/incorrect_buzz_ighlight.png",
