@@ -1,6 +1,6 @@
 // WinnerPointsOverlay.tsx
 import { useEffect, useState } from "react";
-import { Sound } from "../sound/SoundManager";
+import { Sound } from "../utils/SoundManager";
 
 interface WinnerPointsOverlayProps {
     songTitle: string;

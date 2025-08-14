@@ -46,7 +46,7 @@ export function Player({
   const [incorrectBaseHighlightTexture, setIncorrectBaseHighlightTexture] = useState(Texture.EMPTY);
   const [loading, setLoading] = useState(true);
 
-  const [showCurrentHighlight, setShowCurrentHighlight] = useState(false);
+  // const [showCurrentHighlight, setShowCurrentHighlight] = useState(false);
 
   // Animation state
   const [floatOffset, setFloatOffset] = useState(Math.random() * Math.PI * 2);
@@ -55,7 +55,7 @@ export function Player({
   const [yOffset, setYOffset] = useState(0); // Negative moves up, positive moves down
 
   // Jet trail alpha for smooth fade-in
-  const winnerTarget = -20 * scale;
+  const winnerTarget = -40 * scale;
   let jetTrailAlpha = 0;
   if (isWinner) {
     // The closer yOffset is to winnerTarget, the closer alpha is to 1
@@ -65,7 +65,7 @@ export function Player({
 
   // Animation tick
   useTick((options) => {
-    const riseMagnitude = 20 * scale; // pixels
+    const riseMagnitude = 40 * scale; // pixels
     const target = isWinner ? -riseMagnitude : isLooser ? riseMagnitude : 0;
 
     setYOffset((prev) => {
@@ -79,14 +79,14 @@ export function Player({
 
   // Use globally preloaded textures
   useEffect(() => {
-    const loadedDefault = Assets.get("/default_avatar_highlight.png") as Texture;
-    const loadedAvatar = Assets.get(avatar + ".png") as Texture;
-    const loadedBase = Assets.get("/player_base.png") as Texture;
-    const loadedHighlight = Assets.get(avatar + "_highlight.png") as Texture;
-    const loadedJet = Assets.get(avatar + "_jet2_trail.png") as Texture;
-    const loadedBaseHL = Assets.get(avatar + "_buzz_hightlight.png") as Texture;
-    const loadedIncorrectAvatar = Assets.get("/incorrect_highlight.png") as Texture;
-    const loadedIncorrectBaseHL = Assets.get("/incorrect_buzz_ighlight.png") as Texture;
+    const loadedDefault = Assets.get("/images/default_avatar_highlight.png") as Texture;
+    const loadedAvatar = Assets.get("/images" + avatar + ".png") as Texture;
+    const loadedBase = Assets.get("/images/player_base.png") as Texture;
+    const loadedHighlight = Assets.get("/images" + avatar + "_highlight.png") as Texture;
+    const loadedJet = Assets.get("/images" + avatar + "_jet2_trail.png") as Texture;
+    const loadedBaseHL = Assets.get("/images" + avatar + "_buzz_hightlight.png") as Texture;
+    const loadedIncorrectAvatar = Assets.get("/images/incorrect_highlight.png") as Texture;
+    const loadedIncorrectBaseHL = Assets.get("/images/incorrect_buzz_ighlight.png") as Texture;
 
     setDefaultAvatarTexture(loadedDefault ?? Texture.EMPTY);
     setAvatarTexture(loadedAvatar ?? Texture.EMPTY);
@@ -99,18 +99,20 @@ export function Player({
     setLoading(false);
   }, [avatar]);
 
-  useEffect(() => {
-    const randomDelay = 3000 + Math.random() * 2000;
-    const timer = setTimeout(() => setShowCurrentHighlight(true), randomDelay);
-    return () => clearTimeout(timer);
-  }, []);
+  // useEffect(() => {
+  //   const randomDelay = 3000 + Math.random() * 2000;
+  //   const timer = setTimeout(() => {
+  //     isOnline = true;
+  //   }, randomDelay);
+  //   return () => clearTimeout(timer);
+  // }, []);
 
   // Select highlight textures based on isLooser and showCurrentHighlight
-  const avatarHighlightTexture = showCurrentHighlight
+  const avatarHighlightTexture = isOnline
     ? (isLooser ? incorrectAvatarTexture : highlightTexture)
     : defaultAvatarTexture;
 
-  const baseHighlightTextureToUse = showCurrentHighlight
+  const baseHighlightTextureToUse = isOnline
     ? (isLooser ? incorrectBaseHighlightTexture : baseHighlightTexture)
     : null;
 
