@@ -33,16 +33,16 @@ export function GameScene(props: GameSceneProps) {
     const [musicStarted, setMusicStarted] = useState(false);
     const [soundsReady, setSoundsReady] = useState(false);
     const [playerFloatOffsets, setPlayerFloatOffsets] = useState(Array(playerCount).fill(0));
+    const [gameOver, setGameOver] = useState(false);
     const floatAnimRef = React.useRef<number | null>(null);
-
 
     const [onlinePlayers, setOnlinePlayers] = useState<number[]>([]);
     const [speakingPlayers, setSpeakingPlayers] = useState<number | null>(null);
     const [winnerPlayer, setWinnerPlayer] = useState<number | null>(null);
     const [loserPlayer, setLoserPlayer] = useState<number | null>(null);
 
-    const playerBarWidth = 300;
-    const playerSpacing = (REF_WIDTH - playerBarWidth * playerCount) / (playerCount + 1);
+    const playerBarWidth = 314;
+    const playerSpacing = 80;
     const playerHeight = windowSize.height * 0.4;
 
     // Preload all sounds
@@ -97,6 +97,9 @@ export function GameScene(props: GameSceneProps) {
             Sound.playCountdown();
             Sound.playVsCountdown();
         }, 17000);
+        const t5 = setTimeout(() => {
+            setGameOver(true);
+        }, 20000);
 
         return () => {
             clearTimeout(t0);
@@ -104,7 +107,7 @@ export function GameScene(props: GameSceneProps) {
             clearTimeout(t2);
             clearTimeout(t3);
             clearTimeout(t4);
-
+            clearTimeout(t5);
         };
     }, [soundsReady]);
 
@@ -190,7 +193,7 @@ export function GameScene(props: GameSceneProps) {
                         key={index}
                         playerName={playerNames[index]}
                         avatar={`/avatar_${index + 1}`}
-                        x={scale * (playerSpacing * (index + 1) + playerBarWidth * index + playerBarWidth / 2)}
+                        x={scale * (120 + playerSpacing * (index + 1) + playerBarWidth * index + playerBarWidth / 2)}
                         y={playerHeight + playerFloatOffsets[index]}
                         scale={scale}
                         isOnline={speakingPlayers === index || winnerPlayer === index || loserPlayer === index || onlinePlayers.includes(index)}
@@ -203,8 +206,17 @@ export function GameScene(props: GameSceneProps) {
                         points={winnerPlayer === index ? { song: 10, singer: 10 } : { song: 0, singer: 0 }}
                     />
                 ))}
-                <SoundBar x={windowSize.width / 2} y={windowSize.height} scale={scale} speakerIndex={speakingPlayers} winnerIndex={winnerPlayer} loserIndex={loserPlayer} />
-                <RoundText x={20 * scale} y={20 * scale} scale={scale} roundNumber={1} totalRounds={5} />
+                {!gameOver && (
+                    <SoundBar
+                        x={windowSize.width / 2}
+                        y={windowSize.height}
+                        scale={scale}
+                        speakerIndex={speakingPlayers}
+                        winnerIndex={winnerPlayer}
+                        loserIndex={loserPlayer}
+                    />
+                )}
+                <RoundText x={20 * scale} y={20 * scale} scale={scale} roundNumber={1} totalRounds={5} gameOver={gameOver} />
             </pixiContainer>
         </Application>
     );

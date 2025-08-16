@@ -6,6 +6,7 @@ interface RoundTextProps {
   scale: number;
   roundNumber: number;
   totalRounds: number;
+  gameOver: boolean
 }
 
 export function RoundText({
@@ -14,9 +15,11 @@ export function RoundText({
   scale,
   roundNumber,
   totalRounds,
+  gameOver
 }: RoundTextProps) {
   const containerRef = useRef(null);
 
+  const text = gameOver ? "Final Results" : "Today's Top Hits";
   return (
     <pixiContainer ref={containerRef} x={x} y={y}>
       {/* Background */}
@@ -24,14 +27,14 @@ export function RoundText({
         draw={(g) => {
           g.clear();
           g.beginFill(0x000000, 0.75);
-          g.drawRoundedRect(-10 * scale, -10 * scale, 300 * scale, 50 * scale, 50 * scale);
+          g.drawRoundedRect(-10 * scale, -10 * scale, gameOver ? 170 : 300 * scale, 50 * scale, 50 * scale);
           g.endFill();
         }}
       />
 
       {/* Today's Top Hits text */}
       <pixiText
-        text="Today's Top Hits"
+        text={text}
         anchor={{ x: 0, y: 0.5 }}
         x={10 * scale}
         y={15 * scale}
@@ -43,7 +46,7 @@ export function RoundText({
       />
 
       {/* Round text */}
-      <pixiText
+      {!gameOver && (<pixiText
         text={`Round ${roundNumber}/${totalRounds}`}
         anchor={{ x: 0, y: 0.5 }}
         x={180 * scale}
@@ -54,7 +57,7 @@ export function RoundText({
           fill: 0xDEDAF7,
           fontWeight: "bold",
         }}
-      />
+      />)}
     </pixiContainer>
   );
 }
