@@ -3,14 +3,10 @@ import "./resources/css/App.css";
 import { SplashScreen } from "./scenes/SplashScreen";
 import { SelectModeScreen } from "./scenes/SelectModeScreen";
 import { GameScene } from "./scenes/GameScene";
-import { PLAYER_COUNT, REF_WIDTH } from "./utils/config";
+import { PLAYER_COUNT, REF_WIDTH, SCENES } from "./utils/config";
 import { Assets } from "pixi.js";
 
-const SCENES = {
-  SPLASH: "splash",
-  SELECT_MODE: "select_mode",
-  GAME: "game",
-} as const;
+
 type SceneType = typeof SCENES[keyof typeof SCENES];
 
 function App() {
@@ -42,6 +38,7 @@ function App() {
   useEffect(() => {
     const commonAssets = [
       "/images/splash.jpg",
+      "/images/selectmode.jpg",
       "/images/stadium.jpg",
       "/images/player_base.png",
       "/images/default_avatar_highlight.png",
@@ -49,6 +46,15 @@ function App() {
       "/images/incorrect_buzz_ighlight.png",
       "/images/sound_bar.png",
     ];
+
+    const selectModeAssets = [
+      "/images/selectmode/emailus.png",
+      "/images/selectmode/single.png",
+      "/images/selectmode/single_highlight.png",
+      "/images/selectmode/multi.png",
+      "/images/selectmode/multi_highlight.png"
+    ];
+
     const perPlayerAssets: string[] = [];
     for (let i = 1; i <= PLAYER_COUNT; i++) {
       perPlayerAssets.push(
@@ -60,7 +66,7 @@ function App() {
       );
     }
 
-    Assets.load([...commonAssets, ...perPlayerAssets]).then(() => setAssetsReady(true));
+    Assets.load([...commonAssets, ...selectModeAssets, ...perPlayerAssets]).then(() => setAssetsReady(true));
   }, []);
 
   if (!assetsReady) {
@@ -88,7 +94,7 @@ function App() {
         <SplashScreen windowSize={windowSize} onContinue={() => setScene(SCENES.SELECT_MODE)} />
       )}
       {scene === SCENES.SELECT_MODE && (
-        <SelectModeScreen onSelectMode={() => setScene(SCENES.GAME)} />
+        <SelectModeScreen windowSize={windowSize} scale={scale} onSelectMode={() => setScene(SCENES.GAME)} />
       )}
       {scene === SCENES.GAME && (
         <GameScene
