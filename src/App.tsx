@@ -70,7 +70,8 @@ function App() {
       "/images/result/gold_medal.png",
       "/images/result/silver_medal.png",
       "/images/result/bronze_medal.png",
-      "/images/result/winner_crown.png"
+      "/images/result/winner_crown.png",
+      "/images/result/confetti.png",
     ]
     Assets.load([...commonAssets, ...selectModeAssets, ...perPlayerAssets, ...resultAssets]).then(() => setAssetsReady(true));
   }, []);

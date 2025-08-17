@@ -1,4 +1,4 @@
-import { Assets, Texture } from "pixi.js";
+import { Assets, Texture, Ticker } from "pixi.js";
 import { useEffect, useRef, useState } from "react";
 import { useTick } from "@pixi/react";
 import { SpeakingAnimation } from "./SpeakingAnimation";
@@ -52,8 +52,24 @@ export function Player({
   const [goldTexture, setGoldTexture] = useState(Texture.EMPTY);
   const [silverTexture, setSilverTexture] = useState(Texture.EMPTY);
   const [bronzeTexture, setBronzeTexture] = useState(Texture.EMPTY);
+  const [confettiTexture, setConfettiTexture] = useState(Texture.EMPTY);
   const [loading, setLoading] = useState(true);
 
+  type ConfettiParticle = {
+    x: number;
+    y: number;
+    vx: number;
+    vy: number;
+    alpha: number;
+    life: number;
+  };
+  const CONFETTI_PARTICLE_COUNT = 20;
+  const CONFETTI_EXPLOSION_RADIUS = 300 * scale;
+  const CONFETTI_EXPLOSION_DURATION = 1.5; // seconds
+
+  const [confettiParticles, setConfettiParticles] = useState<ConfettiParticle[]>([]);
+  const [showConfetti, setShowConfetti] = useState(false);
+  const [, setConfettiTimer] = useState(0);
   // const [showCurrentHighlight, setShowCurrentHighlight] = useState(false);
 
   // Animation state
@@ -99,6 +115,7 @@ export function Player({
     const loadedGold = Assets.get("/images/result/gold_medal.png") as Texture;
     const loadedSilver = Assets.get("/images/result/silver_medal.png") as Texture;
     const loadedBronze = Assets.get("/images/result/bronze_medal.png") as Texture;
+    const loadedConfetti = Assets.get("/images/result/confetti.png") as Texture;
 
     setDefaultAvatarTexture(loadedDefault ?? Texture.EMPTY);
     setAvatarTexture(loadedAvatar ?? Texture.EMPTY);
@@ -112,16 +129,69 @@ export function Player({
     setGoldTexture(loadedGold ?? Texture.EMPTY);
     setSilverTexture(loadedSilver ?? Texture.EMPTY);
     setBronzeTexture(loadedBronze ?? Texture.EMPTY);
+    setConfettiTexture(loadedConfetti ?? Texture.EMPTY);
     setLoading(false);
   }, [avatar]);
 
-  // useEffect(() => {
-  //   const randomDelay = 3000 + Math.random() * 2000;
-  //   const timer = setTimeout(() => {
-  //     isOnline = true;
-  //   }, randomDelay);
-  //   return () => clearTimeout(timer);
-  // }, []);
+  // Show confetti 1s after becoming first
+  useEffect(() => {
+    let timeout: ReturnType<typeof setTimeout> | null = null;
+    if (rank === 0) {
+      setShowConfetti(false);
+      setConfettiParticles([]);
+      setConfettiTimer(0);
+      timeout = setTimeout(() => {
+        const particles: ConfettiParticle[] = [];
+        for (let i = 0; i < CONFETTI_PARTICLE_COUNT; i++) {
+          const angle = (2 * Math.PI * i) / CONFETTI_PARTICLE_COUNT + Math.random() * 0.2;
+          const speed = CONFETTI_EXPLOSION_RADIUS * (0.7 + Math.random() * 0.6);
+          particles.push({
+            x: 0,
+            y: 100 * scale,
+            vx: Math.cos(angle) * speed,
+            vy: Math.sin(angle) * speed,
+            alpha: 1,
+            life: 0,
+          });
+        }
+        setConfettiParticles(particles);
+        setShowConfetti(true);
+        setConfettiTimer(0);
+      }, 1000);
+    } else {
+      setShowConfetti(false);
+      setConfettiParticles([]);
+      setConfettiTimer(0);
+    }
+    return () => {
+      if (timeout) clearTimeout(timeout);
+    };
+  }, [rank, scale]);
+
+  useTick((delta: Ticker) => {
+    if (showConfetti) {
+      setConfettiTimer((prev) => {
+        const next = prev + delta.deltaTime / 60;
+        setConfettiParticles((prevParticles) =>
+          prevParticles.map((p) => {
+            const t = Math.min(1, next / CONFETTI_EXPLOSION_DURATION);
+            return {
+              ...p,
+              x: p.vx * t,
+              y: 100 * scale + p.vy * t,
+              alpha: 1 - t,
+              life: t,
+            };
+          })
+        );
+        if (next >= CONFETTI_EXPLOSION_DURATION) {
+          setShowConfetti(false);
+          setConfettiParticles([]);
+        }
+        return next;
+      });
+    }
+  });
 
   // Select highlight textures based on isLooser and showCurrentHighlight
   const avatarHighlightTexture = isOnline
@@ -168,7 +238,7 @@ export function Player({
           texture={winnerTexture}
           anchor={{ x: 1, y: 1 }}
           x={62 * scale}
-          y={-50 * scale} // Adjust as needed
+          y={-50 * scale}
           scale={scale}
         />
       )}
@@ -223,7 +293,7 @@ export function Player({
           texture={medalTexture}
           anchor={{ x: 0.5, y: 0.5 }}
           x={0}
-          y={280 * scale} // Adjust Y as needed to position above avatar
+          y={280 * scale}
           scale={scale}
         />
       )}
@@ -271,6 +341,19 @@ export function Player({
           fontWeight: "bold",
         }}
       />
+
+      {/* Confetti effect for first place */}
+      {showConfetti && confettiParticles.map((p, i) => (
+        <pixiSprite
+          key={i}
+          texture={confettiTexture}
+          anchor={{ x: 0.5, y: 0.5 }}
+          x={p.x}
+          y={p.y}
+          scale={0.5 * scale}
+          alpha={p.alpha}
+        />
+      ))}
       {/* Spreading highlight animations */}
       <SpeakingAnimation isActive={isSpeaking} scale={scale} avatar={avatar} />
     </pixiContainer>
