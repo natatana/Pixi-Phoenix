@@ -162,6 +162,16 @@ export function Player({
       x={x}
       y={y + yOffset}
     >
+      {/* Winner crown for first place */}
+      {rank === 0 && (
+        <pixiSprite
+          texture={winnerTexture}
+          anchor={{ x: 1, y: 1 }}
+          x={62 * scale}
+          y={-50 * scale} // Adjust as needed
+          scale={scale}
+        />
+      )}
       {/* Avatar (top layer) */}
       <pixiSprite
         texture={avatarTexture}
