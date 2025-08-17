@@ -66,7 +66,13 @@ function App() {
       );
     }
 
-    Assets.load([...commonAssets, ...selectModeAssets, ...perPlayerAssets]).then(() => setAssetsReady(true));
+    const resultAssets = [
+      "/images/result/gold_medal.png",
+      "/images/result/silver_medal.png",
+      "/images/result/bronze_medal.png",
+      "/images/result/winner_crown.png"
+    ]
+    Assets.load([...commonAssets, ...selectModeAssets, ...perPlayerAssets, ...resultAssets]).then(() => setAssetsReady(true));
   }, []);
 
   if (!assetsReady) {

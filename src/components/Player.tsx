@@ -18,6 +18,8 @@ interface PlayerProps {
   singer?: string;
   bonus?: number;
   points?: { song: number; singer: number };
+  score?: number;
+  rank?: number;
 }
 
 export function Player({
@@ -34,6 +36,8 @@ export function Player({
   singer = "",
   bonus = 0,
   points = { song: 0, singer: 0 },
+  score = 0,
+  rank = -1,
 }: PlayerProps) {
   const containerRef = useRef<any>(null);
   const [defaultAvatarTexture, setDefaultAvatarTexture] = useState(Texture.EMPTY);
@@ -44,6 +48,10 @@ export function Player({
   const [baseHighlightTexture, setBaseHighlightTexture] = useState(Texture.EMPTY);
   const [incorrectAvatarTexture, setIncorrectAvatarTexture] = useState(Texture.EMPTY);
   const [incorrectBaseHighlightTexture, setIncorrectBaseHighlightTexture] = useState(Texture.EMPTY);
+  const [winnerTexture, setWinnerTexture] = useState(Texture.EMPTY);
+  const [goldTexture, setGoldTexture] = useState(Texture.EMPTY);
+  const [silverTexture, setSilverTexture] = useState(Texture.EMPTY);
+  const [bronzeTexture, setBronzeTexture] = useState(Texture.EMPTY);
   const [loading, setLoading] = useState(true);
 
   // const [showCurrentHighlight, setShowCurrentHighlight] = useState(false);
@@ -87,6 +95,10 @@ export function Player({
     const loadedBaseHL = Assets.get("/images" + avatar + "_buzz_hightlight.png") as Texture;
     const loadedIncorrectAvatar = Assets.get("/images/incorrect_highlight.png") as Texture;
     const loadedIncorrectBaseHL = Assets.get("/images/incorrect_buzz_ighlight.png") as Texture;
+    const loadedWinner = Assets.get("/images/result/winner_crown.png") as Texture;
+    const loadedGold = Assets.get("/images/result/gold_medal.png") as Texture;
+    const loadedSilver = Assets.get("/images/result/silver_medal.png") as Texture;
+    const loadedBronze = Assets.get("/images/result/bronze_medal.png") as Texture;
 
     setDefaultAvatarTexture(loadedDefault ?? Texture.EMPTY);
     setAvatarTexture(loadedAvatar ?? Texture.EMPTY);
@@ -96,6 +108,10 @@ export function Player({
     setBaseHighlightTexture(loadedBaseHL ?? Texture.EMPTY);
     setIncorrectAvatarTexture(loadedIncorrectAvatar ?? Texture.EMPTY);
     setIncorrectBaseHighlightTexture(loadedIncorrectBaseHL ?? Texture.EMPTY);
+    setWinnerTexture(loadedWinner ?? Texture.EMPTY);
+    setGoldTexture(loadedGold ?? Texture.EMPTY);
+    setSilverTexture(loadedSilver ?? Texture.EMPTY);
+    setBronzeTexture(loadedBronze ?? Texture.EMPTY);
     setLoading(false);
   }, [avatar]);
 
@@ -116,14 +132,20 @@ export function Player({
     ? (isLooser ? incorrectBaseHighlightTexture : baseHighlightTexture)
     : null;
 
+  const getMedalTexture = () => {
+    if (rank === 0) return goldTexture;
+    if (rank === 1) return silverTexture;
+    if (rank === 2) return bronzeTexture;
+    return null;
+  };
+  const medalTexture = getMedalTexture();
+
   // Calculate player score based on winner/looser status
-  let playerScore = 0;
+  let playerScore = score;
   let playerScoreColor = 0xffffff; // default white
-  if (isWinner) {
-    playerScore = 20;
+  if (isWinner || score >= 0) {
     playerScoreColor = 0x00ffd1; // Winner color
-  } else if (isLooser) {
-    playerScore = -10;
+  } else if (isLooser || score < 0) {
     playerScoreColor = 0xff1e34; // Looser color
   }
 
@@ -183,6 +205,16 @@ export function Player({
           y={260 * scale}
           scale={scale}
           alpha={jetTrailAlpha}
+        />
+      )}
+      {/* Medal for ranking */}
+      {medalTexture && (
+        <pixiSprite
+          texture={medalTexture}
+          anchor={{ x: 0.5, y: 0.5 }}
+          x={0}
+          y={280 * scale} // Adjust Y as needed to position above avatar
+          scale={scale}
         />
       )}
       {/* Player base (bottom layer) */}

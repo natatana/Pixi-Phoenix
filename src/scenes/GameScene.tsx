@@ -5,7 +5,6 @@ import { SoundBar } from "../components/SoundBar";
 import { RoundText } from "../components/RoundText";
 import { Container, Graphics, Sprite, Text } from "pixi.js";
 import { preloadAllSounds, Sound } from "../utils/SoundManager";
-import { REF_WIDTH } from "../utils/config";
 import { BackgroundSprite } from "../components/BackgroundSprite";
 
 extend({
@@ -40,6 +39,8 @@ export function GameScene(props: GameSceneProps) {
     const [speakingPlayers, setSpeakingPlayers] = useState<number | null>(null);
     const [winnerPlayer, setWinnerPlayer] = useState<number | null>(null);
     const [loserPlayer, setLoserPlayer] = useState<number | null>(null);
+    const [playerRankings, setPlayerRankings] = useState<number[]>([]);
+    const [playerPoints, setPlayerPoints] = useState<number[]>([]);
 
     const playerBarWidth = 314;
     const playerSpacing = 80;
@@ -99,6 +100,27 @@ export function GameScene(props: GameSceneProps) {
         }, 17000);
         const t5 = setTimeout(() => {
             setGameOver(true);
+            setWinnerPlayer(null);
+            setLoserPlayer(null);
+
+            // Assign random points (multiples of 10 for simplicity)
+            // There might be minus
+            const points = Array.from({ length: playerCount }, () => Math.floor(Math.random() * 24) * 10 - 30); // -30, -20, ..., 190, 200
+            setPlayerPoints(points);
+
+            // Determine rankings based on points (0 = 1st, 1 = 2nd, etc.)
+            // Higher points = better rank (1st)
+            const sortedIndices = points
+                .map((pt, idx) => ({ pt, idx }))
+                .sort((a, b) => b.pt - a.pt)
+                .map(obj => obj.idx);
+
+            // rankings[i] = rank of player i (0 = 1st, 1 = 2nd, etc.)
+            const rankings = Array(playerCount);
+            sortedIndices.forEach((playerIdx, rank) => {
+                rankings[playerIdx] = rank;
+            });
+            setPlayerRankings(rankings);
         }, 20000);
 
         return () => {
@@ -188,24 +210,33 @@ export function GameScene(props: GameSceneProps) {
         <Application width={windowSize.width} height={windowSize.height} autoDensity={true} resolution={window.devicePixelRatio || 1}>
             <pixiContainer>
                 <BackgroundSprite assetUrl="/images/stadium.jpg" />
-                {Array.from({ length: playerCount }).map((_, index) => (
-                    <Player
-                        key={index}
-                        playerName={playerNames[index]}
-                        avatar={`/avatar_${index + 1}`}
-                        x={scale * (120 + playerSpacing * (index + 1) + playerBarWidth * index + playerBarWidth / 2)}
-                        y={playerHeight + playerFloatOffsets[index]}
-                        scale={scale}
-                        isOnline={speakingPlayers === index || winnerPlayer === index || loserPlayer === index || onlinePlayers.includes(index)}
-                        isSpeaking={speakingPlayers === index}
-                        isWinner={winnerPlayer === index}
-                        isLooser={loserPlayer === index}
-                        songTitle={winnerPlayer === index ? '24K Magic' : ''}
-                        singer={winnerPlayer === index ? 'Bruno Mars' : ''}
-                        bonus={winnerPlayer === index ? 10 : 0}
-                        points={winnerPlayer === index ? { song: 10, singer: 10 } : { song: 0, singer: 0 }}
-                    />
-                ))}
+                {Array.from({ length: playerCount }).map((_, index) => {
+                    let y = playerHeight + playerFloatOffsets[index];
+                    if (gameOver && playerRankings.length === playerCount && playerPoints.length === playerCount) {
+                        const points = playerPoints[index] || 0;
+                        y = playerHeight - (Math.floor(points / 10) * 10);
+                    }
+                    return (
+                        <Player
+                            key={index}
+                            playerName={playerNames[index]}
+                            avatar={`/avatar_${index + 1}`}
+                            x={scale * (120 + playerSpacing * (index + 1) + playerBarWidth * index + playerBarWidth / 2)}
+                            y={y}
+                            scale={scale}
+                            isOnline={speakingPlayers === index || winnerPlayer === index || loserPlayer === index || onlinePlayers.includes(index)}
+                            isSpeaking={speakingPlayers === index}
+                            isWinner={winnerPlayer === index}
+                            isLooser={loserPlayer === index}
+                            songTitle={winnerPlayer === index ? '24K Magic' : ''}
+                            singer={winnerPlayer === index ? 'Bruno Mars' : ''}
+                            bonus={winnerPlayer === index ? 10 : 0}
+                            points={winnerPlayer === index ? { song: 10, singer: 10 } : { song: 0, singer: 0 }}
+                            score={playerPoints[index]}
+                            rank={playerRankings[index]}
+                        />
+                    )
+                })}
                 {!gameOver && (
                     <SoundBar
                         x={windowSize.width / 2}
