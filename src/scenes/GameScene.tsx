@@ -41,6 +41,11 @@ export function GameScene(props: GameSceneProps) {
     const [loserPlayer, setLoserPlayer] = useState<number | null>(null);
     const [playerRankings, setPlayerRankings] = useState<number[]>([]);
     const [playerPoints, setPlayerPoints] = useState<number[]>([]);
+    const [medalFadeIn, setMedalFadeIn] = useState<{ bronze: boolean; silver: boolean; gold: boolean }>({
+        bronze: false,
+        silver: false,
+        gold: false
+    });
 
     const playerBarWidth = 314;
     const playerSpacing = 80;
@@ -121,6 +126,25 @@ export function GameScene(props: GameSceneProps) {
                 rankings[playerIdx] = rank;
             });
             setPlayerRankings(rankings);
+
+            // Medal fade-in animation sequence
+            const medalT1 = setTimeout(() => {
+                setMedalFadeIn(prev => ({ ...prev, bronze: true }));
+            }, 500); // Bronze medal fades in first
+
+            const medalT2 = setTimeout(() => {
+                setMedalFadeIn(prev => ({ ...prev, silver: true }));
+            }, 1500); // Silver medal fades in second
+
+            const medalT3 = setTimeout(() => {
+                setMedalFadeIn(prev => ({ ...prev, gold: true }));
+            }, 2500); // Gold medal and crown fades in last
+
+            return () => {
+                clearTimeout(medalT1);
+                clearTimeout(medalT2);
+                clearTimeout(medalT3);
+            };
         }, 20000);
 
         return () => {
@@ -213,8 +237,8 @@ export function GameScene(props: GameSceneProps) {
                 {Array.from({ length: playerCount }).map((_, index) => {
                     let y = playerHeight + playerFloatOffsets[index];
                     if (gameOver && playerRankings.length === playerCount && playerPoints.length === playerCount) {
-                        const points = playerPoints[index] || 0;
-                        y = playerHeight - (Math.floor(points / 10) * 10);
+                        const rank = playerRankings[index];
+                        y = playerHeight + (rank - 1) * 152;
                     }
                     return (
                         <Player
@@ -234,6 +258,10 @@ export function GameScene(props: GameSceneProps) {
                             points={winnerPlayer === index ? { song: 10, singer: 10 } : { song: 0, singer: 0 }}
                             score={playerPoints[index]}
                             rank={playerRankings[index]}
+                            showBronzeMedal={gameOver && playerRankings[index] === 2 && medalFadeIn.bronze}
+                            showSilverMedal={gameOver && playerRankings[index] === 1 && medalFadeIn.silver}
+                            showGoldMedal={gameOver && playerRankings[index] === 0 && medalFadeIn.gold}
+                            showWinnerCrown={gameOver && playerRankings[index] === 0 && medalFadeIn.gold}
                         />
                     )
                 })}

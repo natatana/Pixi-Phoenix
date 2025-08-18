@@ -20,6 +20,10 @@ interface PlayerProps {
   points?: { song: number; singer: number };
   score?: number;
   rank?: number;
+  showBronzeMedal?: boolean;
+  showSilverMedal?: boolean;
+  showGoldMedal?: boolean;
+  showWinnerCrown?: boolean;
 }
 
 export function Player({
@@ -37,7 +41,10 @@ export function Player({
   bonus = 0,
   points = { song: 0, singer: 0 },
   score = 0,
-  rank = -1,
+  showBronzeMedal = false,
+  showSilverMedal = false,
+  showGoldMedal = false,
+  showWinnerCrown = false,
 }: PlayerProps) {
   const containerRef = useRef<any>(null);
   const [defaultAvatarTexture, setDefaultAvatarTexture] = useState(Texture.EMPTY);
@@ -64,8 +71,6 @@ export function Player({
     life: number;
   };
   const CONFETTI_PARTICLE_COUNT = 20;
-  const CONFETTI_EXPLOSION_RADIUS = 300 * scale;
-  const CONFETTI_EXPLOSION_DURATION = 1.5; // seconds
 
   const [confettiParticles, setConfettiParticles] = useState<ConfettiParticle[]>([]);
   const [showConfetti, setShowConfetti] = useState(false);
@@ -77,6 +82,12 @@ export function Player({
   const floatSpeed = 0.05; // Speed of the floating animation (reserved)
   const floatAmplitude = 10 * scale; // How far up and down to float (reserved)
   const [yOffset, setYOffset] = useState(0); // Negative moves up, positive moves down
+
+  // Medal fade-in animation state
+  const [bronzeMedalAlpha, setBronzeMedalAlpha] = useState(0);
+  const [silverMedalAlpha, setSilverMedalAlpha] = useState(0);
+  const [goldMedalAlpha, setGoldMedalAlpha] = useState(0);
+  const [crownAlpha, setCrownAlpha] = useState(0);
 
   // Jet trail alpha for smooth fade-in
   const winnerTarget = -40 * scale;
@@ -133,61 +144,172 @@ export function Player({
     setLoading(false);
   }, [avatar]);
 
-  // Show confetti 1s after becoming first
+  // Show infinite confetti after gold medal appears
   useEffect(() => {
-    let timeout: ReturnType<typeof setTimeout> | null = null;
-    if (rank === 0) {
-      setShowConfetti(false);
-      setConfettiParticles([]);
+    if (showGoldMedal && goldMedalAlpha >= 1) {
+      // Start confetti after gold medal is fully visible
+      const particles: ConfettiParticle[] = [];
+      for (let i = 0; i < CONFETTI_PARTICLE_COUNT; i++) {
+        // Distribute particles across a wider area and different starting heights
+        const x = (Math.random() - 0.5) * 300 * scale; // wider spread
+        // Vary starting height to avoid clustering
+        const y = -300 * scale - Math.random() * 100 * scale; // random starting height
+        // More varied velocities for natural movement
+        const vx = (Math.random() - 0.5) * 80 * scale; // more horizontal variation
+        const vy = 80 + Math.random() * 80 * scale; // varied downward speed
+        particles.push({
+          x: x,
+          y: y,
+          vx: vx,
+          vy: vy,
+          alpha: 1,
+          life: Math.random() * 2, // random initial life to stagger appearance
+        });
+      }
+      setConfettiParticles(particles);
+      setShowConfetti(true);
       setConfettiTimer(0);
-      timeout = setTimeout(() => {
-        const particles: ConfettiParticle[] = [];
-        for (let i = 0; i < CONFETTI_PARTICLE_COUNT; i++) {
-          const angle = (2 * Math.PI * i) / CONFETTI_PARTICLE_COUNT + Math.random() * 0.2;
-          const speed = CONFETTI_EXPLOSION_RADIUS * (0.7 + Math.random() * 0.6);
-          particles.push({
-            x: 0,
-            y: 100 * scale,
-            vx: Math.cos(angle) * speed,
-            vy: Math.sin(angle) * speed,
-            alpha: 1,
-            life: 0,
-          });
-        }
-        setConfettiParticles(particles);
-        setShowConfetti(true);
-        setConfettiTimer(0);
-      }, 1000);
-    } else {
+    } else if (!showGoldMedal) {
       setShowConfetti(false);
       setConfettiParticles([]);
       setConfettiTimer(0);
     }
-    return () => {
-      if (timeout) clearTimeout(timeout);
-    };
-  }, [rank, scale]);
+  }, [showGoldMedal, goldMedalAlpha, scale]);
+
+  // Smooth medal fade-in animations
+  useEffect(() => {
+    if (showBronzeMedal) {
+      const duration = 800; // 800ms fade-in duration
+      const startTime = performance.now();
+
+      const animate = (currentTime: number) => {
+        const elapsed = currentTime - startTime;
+        const progress = Math.min(1, elapsed / duration);
+        setBronzeMedalAlpha(progress);
+
+        if (progress < 1) {
+          requestAnimationFrame(animate);
+        }
+      };
+
+      requestAnimationFrame(animate);
+    } else {
+      setBronzeMedalAlpha(0);
+    }
+  }, [showBronzeMedal]);
+
+  useEffect(() => {
+    if (showSilverMedal) {
+      const duration = 800; // 800ms fade-in duration
+      const startTime = performance.now();
+
+      const animate = (currentTime: number) => {
+        const elapsed = currentTime - startTime;
+        const progress = Math.min(1, elapsed / duration);
+        setSilverMedalAlpha(progress);
+
+        if (progress < 1) {
+          requestAnimationFrame(animate);
+        }
+      };
+
+      requestAnimationFrame(animate);
+    } else {
+      setSilverMedalAlpha(0);
+    }
+  }, [showSilverMedal]);
+
+  useEffect(() => {
+    if (showGoldMedal) {
+      const duration = 800; // 800ms fade-in duration
+      const startTime = performance.now();
+
+      const animate = (currentTime: number) => {
+        const elapsed = currentTime - startTime;
+        const progress = Math.min(1, elapsed / duration);
+        setGoldMedalAlpha(progress);
+
+        if (progress < 1) {
+          requestAnimationFrame(animate);
+        }
+      };
+
+      requestAnimationFrame(animate);
+    } else {
+      setGoldMedalAlpha(0);
+    }
+  }, [showGoldMedal]);
+
+  useEffect(() => {
+    if (showWinnerCrown) {
+      const duration = 800; // 800ms fade-in duration
+      const startTime = performance.now();
+
+      const animate = (currentTime: number) => {
+        const elapsed = currentTime - startTime;
+        const progress = Math.min(1, elapsed / duration);
+        setCrownAlpha(progress);
+
+        if (progress < 1) {
+          requestAnimationFrame(animate);
+        }
+      };
+
+      requestAnimationFrame(animate);
+    } else {
+      setCrownAlpha(0);
+    }
+  }, [showWinnerCrown]);
 
   useTick((delta: Ticker) => {
     if (showConfetti) {
       setConfettiTimer((prev) => {
         const next = prev + delta.deltaTime / 60;
-        setConfettiParticles((prevParticles) =>
-          prevParticles.map((p) => {
-            const t = Math.min(1, next / CONFETTI_EXPLOSION_DURATION);
+
+        setConfettiParticles((prevParticles) => {
+          // Update existing particles with continuous downward movement
+          let updatedParticles = prevParticles.map((p) => {
+            const deltaTime = delta.deltaTime / 60; // Convert to seconds
+            const newX = p.x + p.vx * deltaTime;
+            const newY = p.y + p.vy * deltaTime;
+
             return {
               ...p,
-              x: p.vx * t,
-              y: 100 * scale + p.vy * t,
-              alpha: 1 - t,
-              life: t,
+              x: newX,
+              y: newY,
+              alpha: 1, // Keep alpha at 1 for continuous effect
+              life: p.life + deltaTime,
             };
-          })
-        );
-        if (next >= CONFETTI_EXPLOSION_DURATION) {
-          setShowConfetti(false);
-          setConfettiParticles([]);
-        }
+          });
+
+          // Remove particles that have fallen below the screen
+          updatedParticles = updatedParticles.filter(p => p.y < 500 * scale);
+
+          // Add new particles at the top to maintain infinite effect
+          if (updatedParticles.length < CONFETTI_PARTICLE_COUNT) {
+            const particlesToAdd = CONFETTI_PARTICLE_COUNT - updatedParticles.length;
+            for (let i = 0; i < particlesToAdd; i++) {
+              // Distribute particles across a wider area and different starting heights
+              const x = (Math.random() - 0.5) * 300 * scale; // wider spread
+              // Vary starting height to avoid clustering
+              const y = -150 * scale - Math.random() * 100 * scale; // random starting height
+              // More varied velocities for natural movement
+              const vx = (Math.random() - 0.5) * 80 * scale; // more horizontal variation
+              const vy = 80 + Math.random() * 80 * scale; // varied downward speed
+              updatedParticles.push({
+                x: x,
+                y: y,
+                vx: vx,
+                vy: vy,
+                alpha: 1,
+                life: 0,
+              });
+            }
+          }
+
+          return updatedParticles;
+        });
+
         return next;
       });
     }
@@ -203,12 +325,20 @@ export function Player({
     : null;
 
   const getMedalTexture = () => {
-    if (rank === 0) return goldTexture;
-    if (rank === 1) return silverTexture;
-    if (rank === 2) return bronzeTexture;
+    if (showGoldMedal) return goldTexture;
+    if (showSilverMedal) return silverTexture;
+    if (showBronzeMedal) return bronzeTexture;
     return null;
   };
   const medalTexture = getMedalTexture();
+
+  const getMedalAlpha = () => {
+    if (showGoldMedal) return goldMedalAlpha;
+    if (showSilverMedal) return silverMedalAlpha;
+    if (showBronzeMedal) return bronzeMedalAlpha;
+    return 0;
+  };
+  const medalAlpha = getMedalAlpha();
 
   // Calculate player score based on winner/looser status
   let playerScore = score;
@@ -233,13 +363,14 @@ export function Player({
       y={y + yOffset}
     >
       {/* Winner crown for first place */}
-      {rank === 0 && (
+      {showWinnerCrown && (
         <pixiSprite
           texture={winnerTexture}
           anchor={{ x: 1, y: 1 }}
           x={62 * scale}
           y={-50 * scale}
           scale={scale}
+          alpha={crownAlpha}
         />
       )}
       {/* Avatar (top layer) */}
@@ -295,6 +426,7 @@ export function Player({
           x={0}
           y={280 * scale}
           scale={scale}
+          alpha={medalAlpha}
         />
       )}
       {/* Player base (bottom layer) */}
