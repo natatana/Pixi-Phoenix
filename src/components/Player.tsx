@@ -69,8 +69,10 @@ export function Player({
     vy: number;
     alpha: number;
     life: number;
+    rotation: number;
+    rotationSpeed: number;
   };
-  const CONFETTI_PARTICLE_COUNT = 20;
+  const CONFETTI_PARTICLE_COUNT = 15;
 
   const [confettiParticles, setConfettiParticles] = useState<ConfettiParticle[]>([]);
   const [showConfetti, setShowConfetti] = useState(false);
@@ -164,6 +166,8 @@ export function Player({
           vy: vy,
           alpha: 1,
           life: Math.random() * 2, // random initial life to stagger appearance
+          rotation: Math.random() * Math.PI * 2, // random initial rotation
+          rotationSpeed: (Math.random() - 0.5) * 0.2, // random rotation speed
         });
       }
       setConfettiParticles(particles);
