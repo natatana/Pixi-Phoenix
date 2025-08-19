@@ -380,7 +380,7 @@ export function Player({
         <pixiSprite
           texture={winnerTexture}
           anchor={{ x: 1, y: 1 }}
-          x={62 * scaleX}
+          x={54 * scaleX}
           y={-50 * scale}
           scale={scale}
           alpha={crownAlpha}
