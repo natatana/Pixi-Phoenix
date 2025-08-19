@@ -13,7 +13,8 @@ interface PlayerProps {
   isLooser?: boolean;
   x: number;
   y: number;
-  scale: number;
+  scaleX: number;
+  scaleY: number;
   songTitle?: string;
   singer?: string;
   bonus?: number;
@@ -35,7 +36,8 @@ export function Player({
   isLooser = false,
   x,
   y,
-  scale,
+  scaleX,
+  scaleY,
   songTitle = "",
   singer = "",
   bonus = 0,
@@ -46,6 +48,9 @@ export function Player({
   showGoldMedal = false,
   showWinnerCrown = false,
 }: PlayerProps) {
+  // Set scale to the minimum of scaleX and scaleY
+  const scale = Math.min(scaleX, scaleY);
+
   const containerRef = useRef<any>(null);
   const [defaultAvatarTexture, setDefaultAvatarTexture] = useState(Texture.EMPTY);
   const [avatarTexture, setAvatarTexture] = useState(Texture.EMPTY);
@@ -153,11 +158,11 @@ export function Player({
       const particles: ConfettiParticle[] = [];
       for (let i = 0; i < CONFETTI_PARTICLE_COUNT; i++) {
         // Distribute particles across a wider area and different starting heights
-        const x = (Math.random() - 0.5) * 300 * scale; // wider spread
+        const x = (Math.random() - 0.5) * 300 * scaleX; // wider spread
         // Vary starting height to avoid clustering
         const y = -300 * scale - Math.random() * 100 * scale; // random starting height
         // More varied velocities for natural movement
-        const vx = (Math.random() - 0.5) * 80 * scale; // more horizontal variation
+        const vx = (Math.random() - 0.5) * 80 * scaleX; // more horizontal variation
         const vy = 80 + Math.random() * 80 * scale; // varied downward speed
         particles.push({
           x: x,
@@ -178,7 +183,7 @@ export function Player({
       setConfettiParticles([]);
       setConfettiTimer(0);
     }
-  }, [showGoldMedal, goldMedalAlpha, scale]);
+  }, [showGoldMedal, goldMedalAlpha, scaleX, scaleY]);
 
   // Smooth medal fade-in animations
   useEffect(() => {
@@ -294,12 +299,14 @@ export function Player({
             const particlesToAdd = CONFETTI_PARTICLE_COUNT - updatedParticles.length;
             for (let i = 0; i < particlesToAdd; i++) {
               // Distribute particles across a wider area and different starting heights
-              const x = (Math.random() - 0.5) * 300 * scale; // wider spread
+              const x = (Math.random() - 0.5) * 300 * scaleX; // wider spread
               // Vary starting height to avoid clustering
               const y = -150 * scale - Math.random() * 100 * scale; // random starting height
               // More varied velocities for natural movement
-              const vx = (Math.random() - 0.5) * 80 * scale; // more horizontal variation
+              const vx = (Math.random() - 0.5) * 80 * scaleX; // more horizontal variation
               const vy = 80 + Math.random() * 80 * scale; // varied downward speed
+              const rotation = Math.random() * Math.PI * 2;
+              const rotationSpeed = (Math.random() - 0.5) * 0.1;
               updatedParticles.push({
                 x: x,
                 y: y,
@@ -307,6 +314,8 @@ export function Player({
                 vy: vy,
                 alpha: 1,
                 life: 0,
+                rotation: rotation,
+                rotationSpeed: rotationSpeed,
               });
             }
           }
@@ -371,7 +380,7 @@ export function Player({
         <pixiSprite
           texture={winnerTexture}
           anchor={{ x: 1, y: 1 }}
-          x={62 * scale}
+          x={62 * scaleX}
           y={-50 * scale}
           scale={scale}
           alpha={crownAlpha}
@@ -382,7 +391,7 @@ export function Player({
         texture={avatarTexture}
         anchor={{ x: 0.5, y: 0.5 }}
         x={0}
-        y={floatY}
+        y={floatY * scale}
         scale={scale}
       />
       {/* Static highlight effect */}
@@ -391,13 +400,13 @@ export function Player({
           texture={avatarHighlightTexture}
           anchor={{ x: 0.5, y: 0.5 }}
           x={0}
-          y={floatY}
+          y={floatY * scale}
           scale={scale}
         /> : <pixiSprite
           texture={defaultAvatarTexture}
           anchor={{ x: 0.5, y: 0.5 }}
           x={0}
-          y={floatY}
+          y={floatY * scale}
           scale={scale}
         />
       }
@@ -455,10 +464,10 @@ export function Player({
       <pixiText
         text={playerName}
         anchor={{ x: 0.5, y: 0.5 }}
-        x={-54 * scale}
+        x={-54 * scaleX}
         y={150 * scale}
         style={{
-          fontSize: 24 * scale,
+          fontSize: 24 * scaleX,
           fill: 0xffffff,
           fontFamily: ["Gilroy", 'serif'],
           fontWeight: "bold",
@@ -468,10 +477,10 @@ export function Player({
       <pixiText
         text={playerScore}
         anchor={{ x: 0.5, y: 0.5 }}
-        x={84 * scale}
+        x={84 * scaleX}
         y={150 * scale}
         style={{
-          fontSize: 24 * scale,
+          fontSize: 24 * scaleX,
           fill: playerScoreColor,
           fontFamily: ["Gilroy", 'serif'],
           fontWeight: "bold",
@@ -486,7 +495,7 @@ export function Player({
           anchor={{ x: 0.5, y: 0.5 }}
           x={p.x}
           y={p.y}
-          scale={0.5 * scale}
+          scale={0.5 * scaleX}
           alpha={p.alpha}
         />
       ))}

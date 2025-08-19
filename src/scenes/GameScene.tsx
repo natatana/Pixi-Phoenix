@@ -17,15 +17,16 @@ extend({
 
 interface GameSceneProps {
     windowSize: { width: number; height: number };
-    scale: number;
+    scaleX: number;
+    scaleY: number;
 }
 
 export function GameScene(props: GameSceneProps) {
     const {
-        windowSize, scale
+        windowSize, scaleX, scaleY
     } = props;
 
-
+    const scale = Math.min(scaleX, scaleY);
     const playerNames = ["Andrew", "Mary", "Jessica", "Devin"];
     const playerCount = 4;
 
@@ -47,9 +48,10 @@ export function GameScene(props: GameSceneProps) {
         gold: false
     });
 
-    const playerBarWidth = 314;
-    const playerSpacing = 80;
+    const playerBarWidth = 324 * scale;
+    const playerSpacing = 80 * scale;
     const playerHeight = windowSize.height * 0.4;
+    const screenSpace = (windowSize.width - playerSpacing * 3 - playerBarWidth * 4) / 2
 
     // Preload all sounds
     useEffect(() => {
@@ -238,16 +240,17 @@ export function GameScene(props: GameSceneProps) {
                     let y = playerHeight + playerFloatOffsets[index];
                     if (gameOver && playerRankings.length === playerCount && playerPoints.length === playerCount) {
                         const rank = playerRankings[index];
-                        y = playerHeight + (rank - 1) * 152;
+                        y = playerHeight + (rank - 1) * 152 * scale;
                     }
                     return (
                         <Player
                             key={index}
                             playerName={playerNames[index]}
                             avatar={`/avatar_${index + 1}`}
-                            x={scale * (120 + playerSpacing * (index + 1) + playerBarWidth * index + playerBarWidth / 2)}
+                            x={screenSpace + playerSpacing * index + playerBarWidth * index + playerBarWidth / 2}
                             y={y}
-                            scale={scale}
+                            scaleX={scaleX}
+                            scaleY={scaleY}
                             isOnline={speakingPlayers === index || winnerPlayer === index || loserPlayer === index || onlinePlayers.includes(index)}
                             isSpeaking={speakingPlayers === index}
                             isWinner={winnerPlayer === index}
@@ -275,7 +278,7 @@ export function GameScene(props: GameSceneProps) {
                         loserIndex={loserPlayer}
                     />
                 )}
-                <RoundText x={20 * scale} y={20 * scale} scale={scale} roundNumber={1} totalRounds={5} gameOver={gameOver} />
+                <RoundText x={20 * scaleX} y={20 * scaleY} scale={scale} roundNumber={1} totalRounds={5} gameOver={gameOver} />
             </pixiContainer>
         </Application>
     );

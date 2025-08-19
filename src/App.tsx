@@ -3,7 +3,7 @@ import "./resources/css/App.css";
 import { SplashScreen } from "./scenes/SplashScreen";
 import { SelectModeScreen } from "./scenes/SelectModeScreen";
 import { GameScene } from "./scenes/GameScene";
-import { PLAYER_COUNT, REF_WIDTH, SCENES } from "./utils/config";
+import { PLAYER_COUNT, REF_HEIGHT, REF_WIDTH, SCENES } from "./utils/config";
 import { Assets } from "pixi.js";
 
 
@@ -16,7 +16,8 @@ function App() {
     height: window.innerHeight,
   });
 
-  const scale = windowSize.width / REF_WIDTH;
+  const scaleX = windowSize.width / REF_WIDTH;
+  const scaleY = windowSize.height / REF_HEIGHT;
 
   const [scene, setScene] = useState<SceneType>(SCENES.SPLASH);
   const [assetsReady, setAssetsReady] = useState(false);
@@ -101,12 +102,13 @@ function App() {
         <SplashScreen windowSize={windowSize} onContinue={() => setScene(SCENES.SELECT_MODE)} />
       )}
       {scene === SCENES.SELECT_MODE && (
-        <SelectModeScreen windowSize={windowSize} scale={scale} onSelectMode={() => setScene(SCENES.GAME)} />
+        <SelectModeScreen windowSize={windowSize} scaleX={scaleX} scaleY={scaleY} onSelectMode={() => setScene(SCENES.GAME)} />
       )}
       {scene === SCENES.GAME && (
         <GameScene
           windowSize={windowSize}
-          scale={scale}
+          scaleX={scaleX}
+          scaleY={scaleY}
         />
       )}
     </div>

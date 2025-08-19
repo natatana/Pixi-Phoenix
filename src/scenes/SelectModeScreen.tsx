@@ -12,11 +12,13 @@ extend({
 export function SelectModeScreen(
     {
         onSelectMode,
-        scale,
+        scaleX,
+        scaleY,
         windowSize }:
         {
             onSelectMode: (mode: string) => void;
-            scale: number;
+            scaleX: number;
+            scaleY: number;
             windowSize: { width: number; height: number }
         }
 ) {
@@ -63,9 +65,9 @@ export function SelectModeScreen(
                 <pixiSprite
                     texture={hovered === "single" ? singleHighlightTexture : singleTexture}
                     anchor={{ x: 0, y: 1 }}
-                    x={566 * scale}
-                    y={windowSize.height - 141}
-                    scale={scale}
+                    x={566 * scaleX}
+                    y={(windowSize.height + 50) * scaleY}
+                    scale={scaleX}
                     interactive={true}
                     onPointerTap={() => onSelectMode("single")}
                     onPointerOver={() => setHovered("single")}
@@ -73,9 +75,9 @@ export function SelectModeScreen(
                 <pixiSprite
                     texture={hovered === "multi" ? multiHighlightTexture : multiTexture}
                     anchor={{ x: 0, y: 1 }}
-                    x={992 * scale}
-                    y={windowSize.height - 141}
-                    scale={scale}
+                    x={992 * scaleX}
+                    y={(windowSize.height + 50) * scaleY}
+                    scale={scaleX}
                     interactive={true}
                     onPointerTap={() => onSelectMode("multi")}
                     onPointerOver={() => setHovered("multi")}
@@ -83,9 +85,9 @@ export function SelectModeScreen(
                 <pixiSprite
                     texture={emailusTexture}
                     anchor={{ x: 1, y: 1 }}
-                    x={windowSize.width - 40 * scale}
-                    y={windowSize.height - 40 * scale}
-                    scale={scale}
+                    x={windowSize.width - 40 * scaleX}
+                    y={windowSize.height - 40 * scaleY}
+                    scale={scaleX}
                 />
             </pixiContainer>
         </Application>

@@ -1,4 +1,5 @@
 export const REF_WIDTH = 1920;
+export const REF_HEIGHT = 1080;
 export const PLAYER_COUNT = 4;
 export const SCENES = {
     SPLASH: "splash",
