@@ -1,21 +1,37 @@
-import type { StorybookConfig } from '@storybook/react-vite';
+import type { StorybookConfig } from '@storybook/html-vite';
 
 const config: StorybookConfig = {
-  "stories": [
-    "../src/**/*.mdx",
-    "../src/**/*.stories.@(js|jsx|mjs|ts|tsx)"
+  stories: [
+    '../stories/**/*.stories.@(js|jsx|mjs|ts|tsx)',
+    '../stories/**/*.mdx',
   ],
-  "addons": [
-    "@chromatic-com/storybook",
-    "@storybook/addon-docs",
-    "@storybook/addon-onboarding",
-    "@storybook/addon-a11y",
-    "@storybook/addon-vitest"
+  addons: [
+    '@storybook/addon-links',
+    '@storybook/addon-essentials',
+    '@storybook/addon-docs',
+    '@storybook/addon-interactions',
   ],
-  "framework": {
-    "name": "@storybook/react-vite",
-    "options": {}
+  framework: {
+    name: '@storybook/html-vite',
+    options: {},
   },
-  staticDirs: ["../public"]
+  typescript: {
+    check: false,
+  },
+  docs: {
+    autodocs: 'tag',
+  },
+  viteFinal: async (config) => {
+    // Ensure that we can import from the projects
+    config.resolve = config.resolve || {};
+    config.resolve.alias = {
+      ...config.resolve.alias,
+      '@dungeon': '/projects/dungeon-pixi/src',
+      '@jeopardy': '/projects/jeopardy-phaser/src',
+    };
+    
+    return config;
+  },
 };
+
 export default config;

@@ -1,0 +1,158 @@
+@font-face {
+  font-family: "Magra-Regular";
+  font-style: normal;
+  font-weight: normal;
+  src: local("fonts/Magra-Regular"),
+    url("fonts/Magra-Regular.ttf") format("truetype");
+}
+#top-blur {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 20%;
+  background: linear-gradient(to bottom, rgba(0, 0, 0, 0.5), transparent),
+    url("/assets/scenes/game/blur_layer.png") top center no-repeat;
+  background-size: cover;
+  filter: blur(10px);
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  color: rgba(255, 255, 255, 0.87);
+  background-color: #000000;
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+#app {
+  width: 100%;
+  height: 100vh;
+  overflow: hidden;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+#app {
+  position: relative;
+  /* width: 100vw;
+  height: 100vh; */
+}
+
+#game-video {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  /* object-fit: cover; */
+  z-index: 0;
+}
+
+canvas {
+  position: absolute !important;
+  top: 0;
+  left: 0;
+  z-index: 1;
+  /* pointer-events: none;  */
+}
+
+.edge-blur {
+  position: absolute;
+  top: -12.5px;
+  width: calc((50 / 1920) * 100%);
+  transform: translateX(-50%);
+  height: calc(100% + 25px);
+  z-index: 9999999;
+  pointer-events: none;
+  background: linear-gradient(
+    to right,
+    transparent,
+    black 25%,
+    black 75%,
+    transparent
+  );
+  filter: blur(8px);
+}
+
+.edge-blur.right {
+  right: 0;
+  transform: translateX(50%);
+  /* left: auto; */
+  background: linear-gradient(
+    to left,
+    transparent,
+    black 25%,
+    black 75%,
+    transparent
+  );
+}
+
+.dm-video-container {
+  display: none;
+  position: absolute;
+  transform: translate(-50%, -50%);
+}
+
+.dm-video-container > video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 50%;
+  box-shadow: 0 0 0 2px #43efa2;
+  animation: pulse-shadow 2s infinite;
+  animation-play-state: paused;
+}
+
+.dm-video-container.active > video {
+  animation-play-state: running;
+}
+
+@keyframes pulse-shadow {
+  0%, 100% {
+    box-shadow: 0 0 0 2px #43efa2;
+  }
+  50% {
+    box-shadow: 0 0 5px 3px #43efa2;
+  }
+}
+
+.player-avatar-video-container {
+  display: none;
+  position: absolute;
+  transform: translate(-50%, -50%);
+}
+
+.player-avatar-video-container > video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  /* border-radius: 50%;
+  box-shadow: 0 0 0 2px #43efa2;
+  animation: pulse-shadow 2s infinite;
+  animation-play-state: paused; */
+  border: 2px solid var(--border-color-avatar, #43efa2);
+  border-radius: 5px;
+}
+
+.top-bar {
+  position: absolute;
+  top: 0px;
+  height: calc((136 / 1080) * 100%);
+  z-index: 9999999;
+  pointer-events: none;
+  /* opacity: 0.75; */
+}
+
+.top-bar.left {
+  left: calc((30 / 1920) * 100%);
+  transform: translateX(-100%);
+  opacity: .4;
+}
+
+.top-bar.right {
+  right: calc(((20 / 1920) * 100%));
+  transform: translateX(100%);
+    opacity: .4;
+}

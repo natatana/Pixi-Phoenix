@@ -1,13 +1,134 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
-    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
-    <title>Song Quiz</title>
-  </head>
-  <body>
-    <div id="root"></div>
-    <script type="module" src="/src/main.tsx"></script>
-  </body>
-</html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Multi-Game Project</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .container {
+            text-align: center;
+            background: rgba(255, 255, 255, 0.9);
+            padding: 2rem;
+            border-radius: 20px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+            max-width: 600px;
+            width: 90%;
+        }
+        
+        h1 {
+            color: #333;
+            margin-bottom: 2rem;
+            font-size: 2.5em;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        .games-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin-top: 2rem;
+        }
+        
+        .game-card {
+            background: #fff;
+            padding: 1.5rem;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            text-decoration: none;
+            color: #333;
+        }
+        
+        .game-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+        }
+        
+        .game-title {
+            font-size: 1.3em;
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+            color: #5a67d8;
+        }
+        
+        .game-description {
+            color: #666;
+            font-size: 0.9em;
+            line-height: 1.4;
+        }
+        
+        .tech-stack {
+            margin-top: 0.5rem;
+            padding: 0.3rem 0.6rem;
+            background: #f7fafc;
+            border-radius: 20px;
+            font-size: 0.8em;
+            color: #4a5568;
+        }
+        
+        .port-info {
+            margin-top: 0.5rem;
+            padding: 0.3rem 0.6rem;
+            background: #e2e8f0;
+            border-radius: 20px;
+            font-size: 0.8em;
+            color: #2d3748;
+            font-weight: bold;
+        }
+        
+        .dev-note {
+            margin-top: 2rem;
+            padding: 1rem;
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            border-radius: 10px;
+            color: #856404;
+            font-size: 0.9em;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎮 Multi-Game Project</h1>
+        <p>Choose a game to play:</p>
+        
+        <div class="games-grid">
+            <a href="http://localhost:3001" target="_blank" class="game-card">
+                <div class="game-title">🎵 Song Quiz</div>
+                <div class="game-description">Test your music knowledge with this interactive quiz game</div>
+                <div class="tech-stack">React + Pixi.js + Howler</div>
+                <div class="port-info">Port: 3001</div>
+            </a>
+            
+            <a href="http://localhost:3002" target="_blank" class="game-card">
+                <div class="game-title">🏰 Dungeon</div>
+                <div class="game-description">Explore dark dungeons in this pixel art adventure</div>
+                <div class="tech-stack">Pixi.js + GSAP</div>
+                <div class="port-info">Port: 3002</div>
+            </a>
+            
+            <a href="http://localhost:3003" target="_blank" class="game-card">
+                <div class="game-title">❓ Jeopardy</div>
+                <div class="game-description">Classic quiz show game with multiple categories</div>
+                <div class="tech-stack">Phaser.js</div>
+                <div class="port-info">Port: 3003</div>
+            </a>
+        </div>
+        
+        <div class="dev-note">
+            <strong>Development Mode:</strong> Each game runs on a separate port. Use <code>npm run dev:all</code> to start all games at once, or run individual games with <code>npm run dev:song-quiz</code>, <code>npm run dev:dungeon</code>, or <code>npm run dev:jeopardy</code>.
+        </div>
+    </div>
+</body>
+</html> 

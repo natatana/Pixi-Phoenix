@@ -1,0 +1,176 @@
+{"frames": {
+
+"knight-ss-0.png":
+{
+	"frame": {"x":1459,"y":818,"w":323,"h":485},
+	"rotated": true,
+	"trimmed": true,
+	"spriteSourceSize": {"x":58,"y":12,"w":323,"h":485},
+	"sourceSize": {"w":500,"h":500}
+},
+"knight-ss-14.png":
+{
+	"frame": {"x":1,"y":811,"w":322,"h":484},
+	"rotated": true,
+	"trimmed": true,
+	"spriteSourceSize": {"x":58,"y":12,"w":322,"h":484},
+	"sourceSize": {"w":500,"h":500}
+},
+"knight-ss-23.png":
+{
+	"frame": {"x":1,"y":488,"w":321,"h":484},
+	"rotated": true,
+	"trimmed": true,
+	"spriteSourceSize": {"x":58,"y":12,"w":321,"h":484},
+	"sourceSize": {"w":500,"h":500}
+},
+"knight-ss-27.png":
+{
+	"frame": {"x":487,"y":491,"w":321,"h":484},
+	"rotated": true,
+	"trimmed": true,
+	"spriteSourceSize": {"x":58,"y":12,"w":321,"h":484},
+	"sourceSize": {"w":500,"h":500}
+},
+"knight-ss-32.png":
+{
+	"frame": {"x":973,"y":491,"w":321,"h":484},
+	"rotated": true,
+	"trimmed": true,
+	"spriteSourceSize": {"x":58,"y":12,"w":321,"h":484},
+	"sourceSize": {"w":500,"h":500}
+},
+"knight-ss-36.png":
+{
+	"frame": {"x":1459,"y":495,"w":321,"h":484},
+	"rotated": true,
+	"trimmed": true,
+	"spriteSourceSize": {"x":58,"y":12,"w":321,"h":484},
+	"sourceSize": {"w":500,"h":500}
+},
+"knight-ss-50.png":
+{
+	"frame": {"x":1,"y":1138,"w":333,"h":485},
+	"rotated": true,
+	"trimmed": true,
+	"spriteSourceSize": {"x":49,"y":12,"w":333,"h":485},
+	"sourceSize": {"w":500,"h":500}
+},
+"knight-ss-54.png":
+{
+	"frame": {"x":488,"y":1138,"w":337,"h":485},
+	"rotated": true,
+	"trimmed": true,
+	"spriteSourceSize": {"x":43,"y":12,"w":337,"h":485},
+	"sourceSize": {"w":500,"h":500}
+},
+"knight-ss-90.png":
+{
+	"frame": {"x":1470,"y":243,"w":250,"h":488},
+	"rotated": true,
+	"trimmed": true,
+	"spriteSourceSize": {"x":93,"y":12,"w":250,"h":488},
+	"sourceSize": {"w":500,"h":500}
+},
+"knight-ss-95.png":
+{
+	"frame": {"x":491,"y":243,"w":246,"h":487},
+	"rotated": true,
+	"trimmed": true,
+	"spriteSourceSize": {"x":97,"y":13,"w":246,"h":487},
+	"sourceSize": {"w":500,"h":500}
+},
+"knight-ss-104.png":
+{
+	"frame": {"x":1,"y":1,"w":240,"h":487},
+	"rotated": true,
+	"trimmed": true,
+	"spriteSourceSize": {"x":102,"y":13,"w":240,"h":487},
+	"sourceSize": {"w":500,"h":500}
+},
+"knight-ss-108.png":
+{
+	"frame": {"x":490,"y":1,"w":240,"h":487},
+	"rotated": true,
+	"trimmed": true,
+	"spriteSourceSize": {"x":102,"y":13,"w":240,"h":487},
+	"sourceSize": {"w":500,"h":500}
+},
+"knight-ss-113.png":
+{
+	"frame": {"x":979,"y":1,"w":240,"h":487},
+	"rotated": true,
+	"trimmed": true,
+	"spriteSourceSize": {"x":102,"y":13,"w":240,"h":487},
+	"sourceSize": {"w":500,"h":500}
+},
+"knight-ss-117.png":
+{
+	"frame": {"x":1468,"y":1,"w":240,"h":487},
+	"rotated": true,
+	"trimmed": true,
+	"spriteSourceSize": {"x":102,"y":13,"w":240,"h":487},
+	"sourceSize": {"w":500,"h":500}
+},
+"knight-ss-153.png":
+{
+	"frame": {"x":1,"y":243,"w":243,"h":488},
+	"rotated": true,
+	"trimmed": true,
+	"spriteSourceSize": {"x":99,"y":12,"w":243,"h":488},
+	"sourceSize": {"w":500,"h":500}
+},
+"knight-ss-158.png":
+{
+	"frame": {"x":980,"y":243,"w":246,"h":488},
+	"rotated": true,
+	"trimmed": true,
+	"spriteSourceSize": {"x":97,"y":12,"w":246,"h":488},
+	"sourceSize": {"w":500,"h":500}
+},
+"knight-ss-185.png":
+{
+	"frame": {"x":975,"y":1138,"w":337,"h":482},
+	"rotated": true,
+	"trimmed": true,
+	"spriteSourceSize": {"x":36,"y":14,"w":337,"h":482},
+	"sourceSize": {"w":500,"h":500}
+},
+"knight-ss-198.png":
+{
+	"frame": {"x":1459,"y":1143,"w":337,"h":484},
+	"rotated": true,
+	"trimmed": true,
+	"spriteSourceSize": {"x":43,"y":12,"w":337,"h":484},
+	"sourceSize": {"w":500,"h":500}
+},
+"knight-ss-239.png":
+{
+	"frame": {"x":487,"y":814,"w":322,"h":484},
+	"rotated": true,
+	"trimmed": true,
+	"spriteSourceSize": {"x":58,"y":12,"w":322,"h":484},
+	"sourceSize": {"w":500,"h":500}
+},
+"knight-ss-243.png":
+{
+	"frame": {"x":973,"y":814,"w":322,"h":484},
+	"rotated": true,
+	"trimmed": true,
+	"spriteSourceSize": {"x":58,"y":12,"w":322,"h":484},
+	"sourceSize": {"w":500,"h":500}
+}},
+"animations": {
+	"knight-ss": ["knight-ss-0.png","knight-ss-5.png","knight-ss-9.png","knight-ss-14.png","knight-ss-18.png","knight-ss-23.png","knight-ss-27.png","knight-ss-32.png","knight-ss-36.png","knight-ss-41.png","knight-ss-45.png","knight-ss-50.png","knight-ss-54.png","knight-ss-59.png","knight-ss-63.png","knight-ss-68.png","knight-ss-72.png","knight-ss-77.png","knight-ss-81.png","knight-ss-86.png","knight-ss-90.png","knight-ss-95.png","knight-ss-99.png","knight-ss-104.png","knight-ss-108.png","knight-ss-113.png","knight-ss-117.png","knight-ss-122.png","knight-ss-126.png","knight-ss-131.png","knight-ss-135.png","knight-ss-140.png","knight-ss-144.png","knight-ss-149.png","knight-ss-153.png","knight-ss-158.png","knight-ss-162.png","knight-ss-167.png","knight-ss-171.png","knight-ss-176.png","knight-ss-180.png","knight-ss-185.png","knight-ss-189.png","knight-ss-194.png","knight-ss-198.png","knight-ss-203.png","knight-ss-207.png","knight-ss-212.png","knight-ss-216.png","knight-ss-221.png","knight-ss-225.png","knight-ss-230.png","knight-ss-234.png","knight-ss-239.png","knight-ss-243.png","knight-ss-248.png"]
+},
+"meta": {
+	"app": "https://www.codeandweb.com/texturepacker",
+	"version": "1.1",
+	"image": "knight-0.png",
+	"format": "RGBA8888",
+	"size": {"w":1959,"h":1481},
+	"scale": "1",
+	"related_multi_packs": [ "knight-1.json", "knight-2.json" ],
+	"smartupdate": "$TexturePacker:SmartUpdate:028f4e74cf9112b01d779f97f560de9c:c458d032859f77a0ddfbae7fcf79e412:6e94b0c35b1e9bac06b2a7bf7cb9bd05$"
+}
+}

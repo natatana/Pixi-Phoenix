@@ -1,0 +1,224 @@
+{"frames": {
+
+"knight-ss-0.png":
+{
+	"frame": {"x":1019,"y":1,"w":323,"h":485},
+	"rotated": true,
+	"trimmed": true,
+	"spriteSourceSize": {"x":58,"y":12,"w":323,"h":485},
+	"sourceSize": {"w":500,"h":500}
+},
+"knight-ss-9.png":
+{
+	"frame": {"x":330,"y":1460,"w":322,"h":484},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":58,"y":12,"w":322,"h":484},
+	"sourceSize": {"w":500,"h":500}
+},
+"knight-ss-18.png":
+{
+	"frame": {"x":1509,"y":326,"w":321,"h":484},
+	"rotated": true,
+	"trimmed": true,
+	"spriteSourceSize": {"x":58,"y":12,"w":321,"h":484},
+	"sourceSize": {"w":500,"h":500}
+},
+"knight-ss-27.png":
+{
+	"frame": {"x":677,"y":488,"w":321,"h":484},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":58,"y":12,"w":321,"h":484},
+	"sourceSize": {"w":500,"h":500}
+},
+"knight-ss-36.png":
+{
+	"frame": {"x":654,"y":1460,"w":321,"h":484},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":58,"y":12,"w":321,"h":484},
+	"sourceSize": {"w":500,"h":500}
+},
+"knight-ss-45.png":
+{
+	"frame": {"x":690,"y":1,"w":327,"h":484},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":56,"y":12,"w":327,"h":484},
+	"sourceSize": {"w":500,"h":500}
+},
+"knight-ss-54.png":
+{
+	"frame": {"x":351,"y":1,"w":337,"h":485},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":43,"y":12,"w":337,"h":485},
+	"sourceSize": {"w":500,"h":500}
+},
+"knight-ss-63.png":
+{
+	"frame": {"x":1,"y":1,"w":348,"h":484},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":30,"y":13,"w":348,"h":484},
+	"sourceSize": {"w":500,"h":500}
+},
+"knight-ss-72.png":
+{
+	"frame": {"x":351,"y":488,"w":324,"h":484},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":41,"y":15,"w":324,"h":484},
+	"sourceSize": {"w":500,"h":500}
+},
+"knight-ss-81.png":
+{
+	"frame": {"x":1490,"y":901,"w":288,"h":487},
+	"rotated": true,
+	"trimmed": true,
+	"spriteSourceSize": {"x":65,"y":13,"w":288,"h":487},
+	"sourceSize": {"w":500,"h":500}
+},
+"knight-ss-90.png":
+{
+	"frame": {"x":1019,"y":326,"w":250,"h":488},
+	"rotated": true,
+	"trimmed": true,
+	"spriteSourceSize": {"x":93,"y":12,"w":250,"h":488},
+	"sourceSize": {"w":500,"h":500}
+},
+"knight-ss-99.png":
+{
+	"frame": {"x":1000,"y":901,"w":241,"h":488},
+	"rotated": true,
+	"trimmed": true,
+	"spriteSourceSize": {"x":101,"y":12,"w":241,"h":488},
+	"sourceSize": {"w":500,"h":500}
+},
+"knight-ss-108.png":
+{
+	"frame": {"x":977,"y":1790,"w":240,"h":487},
+	"rotated": true,
+	"trimmed": true,
+	"spriteSourceSize": {"x":102,"y":13,"w":240,"h":487},
+	"sourceSize": {"w":500,"h":500}
+},
+"knight-ss-117.png":
+{
+	"frame": {"x":1466,"y":1726,"w":240,"h":487},
+	"rotated": true,
+	"trimmed": true,
+	"spriteSourceSize": {"x":102,"y":13,"w":240,"h":487},
+	"sourceSize": {"w":500,"h":500}
+},
+"knight-ss-153.png":
+{
+	"frame": {"x":1463,"y":1481,"w":243,"h":488},
+	"rotated": true,
+	"trimmed": true,
+	"spriteSourceSize": {"x":99,"y":12,"w":243,"h":488},
+	"sourceSize": {"w":500,"h":500}
+},
+"knight-ss-162.png":
+{
+	"frame": {"x":1486,"y":649,"w":250,"h":488},
+	"rotated": true,
+	"trimmed": true,
+	"spriteSourceSize": {"x":93,"y":12,"w":250,"h":488},
+	"sourceSize": {"w":500,"h":500}
+},
+"knight-ss-171.png":
+{
+	"frame": {"x":1476,"y":1191,"w":288,"h":487},
+	"rotated": true,
+	"trimmed": true,
+	"spriteSourceSize": {"x":65,"y":13,"w":288,"h":487},
+	"sourceSize": {"w":500,"h":500}
+},
+"knight-ss-180.png":
+{
+	"frame": {"x":340,"y":974,"w":324,"h":484},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":41,"y":15,"w":324,"h":484},
+	"sourceSize": {"w":500,"h":500}
+},
+"knight-ss-189.png":
+{
+	"frame": {"x":1,"y":487,"w":348,"h":484},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":30,"y":13,"w":348,"h":484},
+	"sourceSize": {"w":500,"h":500}
+},
+"knight-ss-198.png":
+{
+	"frame": {"x":1,"y":973,"w":337,"h":484},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":43,"y":12,"w":337,"h":484},
+	"sourceSize": {"w":500,"h":500}
+},
+"knight-ss-207.png":
+{
+	"frame": {"x":1,"y":1459,"w":327,"h":484},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":56,"y":12,"w":327,"h":484},
+	"sourceSize": {"w":500,"h":500}
+},
+"knight-ss-216.png":
+{
+	"frame": {"x":1000,"y":578,"w":321,"h":484},
+	"rotated": true,
+	"trimmed": true,
+	"spriteSourceSize": {"x":58,"y":12,"w":321,"h":484},
+	"sourceSize": {"w":500,"h":500}
+},
+"knight-ss-225.png":
+{
+	"frame": {"x":990,"y":1144,"w":321,"h":484},
+	"rotated": true,
+	"trimmed": true,
+	"spriteSourceSize": {"x":58,"y":12,"w":321,"h":484},
+	"sourceSize": {"w":500,"h":500}
+},
+"knight-ss-234.png":
+{
+	"frame": {"x":977,"y":1467,"w":321,"h":484},
+	"rotated": true,
+	"trimmed": true,
+	"spriteSourceSize": {"x":58,"y":12,"w":321,"h":484},
+	"sourceSize": {"w":500,"h":500}
+},
+"knight-ss-243.png":
+{
+	"frame": {"x":666,"y":974,"w":322,"h":484},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":58,"y":12,"w":322,"h":484},
+	"sourceSize": {"w":500,"h":500}
+},
+"knight-ss-251.png":
+{
+	"frame": {"x":1506,"y":1,"w":323,"h":485},
+	"rotated": true,
+	"trimmed": true,
+	"spriteSourceSize": {"x":58,"y":12,"w":323,"h":485},
+	"sourceSize": {"w":500,"h":500}
+}},
+"animations": {
+	"knight-ss": ["knight-ss-0.png","knight-ss-9.png","knight-ss-18.png","knight-ss-27.png","knight-ss-36.png","knight-ss-45.png","knight-ss-54.png","knight-ss-63.png","knight-ss-72.png","knight-ss-81.png","knight-ss-90.png","knight-ss-99.png","knight-ss-108.png","knight-ss-117.png","knight-ss-126.png","knight-ss-135.png","knight-ss-144.png","knight-ss-153.png","knight-ss-162.png","knight-ss-171.png","knight-ss-180.png","knight-ss-189.png","knight-ss-198.png","knight-ss-207.png","knight-ss-216.png","knight-ss-225.png","knight-ss-234.png","knight-ss-243.png","knight-ss-251.png"]
+},
+"meta": {
+	"app": "https://www.codeandweb.com/texturepacker",
+	"version": "1.1",
+	"image": "knight-0.png",
+	"format": "RGBA8888",
+	"size": {"w":1994,"h":2031},
+	"scale": "1",
+	"related_multi_packs": [ "knight-1.json" ],
+	"smartupdate": "$TexturePacker:SmartUpdate:6652bf86aff6452d5a6cd4ef219af24a:60715985e45c9e25e7df606f4dfcfd2c:f6ccf0ac8d5744cd6eedb7676f0ad7c6$"
+}
+}

@@ -1,0 +1,99 @@
+{
+  "background-video": "scenes.game.dmitri.background",
+  "enable-mic": true,
+  "audio-at-start": "scenes.game.dmitri.dialogue",
+  "title": {
+  "texts": [
+      {
+        "text": ["Welcome!", 1100, "I'm", 700, "Sir", "Bart", "Stageforth,", "your", "friendly", "Game", 250, "Master."]
+      },
+      {
+        "text": ["Who", 250, "has", 250, "come", 250, "forth",  250, "to", "answer", "Jade's", "call?", 750, "Ah...", 1000, "yes...", 1000, "I", "see", 200, "we", 200, "have", "brave", "adventurers", "indeed..."]
+      },
+      {
+        "text": ["Goku,", "a", "Saiyan,", "adorned", "with", "Saiyan", "warrior", "clothing,", "wielding", 300, "staff", 300, "that", 300, "can", "lengthen."]
+      },
+      {
+        "text": ["Prepare", "yourselves", "now", 250, "as", 250, "we", 250, "begin", 250, "our", 250, "tale!"]
+      },
+      {
+        "text": ["Seven", "years", "have", 250, "passed", 250, "since", 250, "you", 300, "last", "saw", 300, "Jade.", 1100, "Now,", "with", 150, "the", 150, "harvest", 300, "moon", 300, "rising,", 900, "you", 300, "make", 300, "your", 300, "way", 100, "to", 100, "Timberfall.", 1200, "As", 150, "sunset", "bathes", "the", 150, "town's", "wooden", "walls", "in", 150, "golden", "light,", 750, "your", 250, "path", 250, "is", 100, "blocked", "by", "a", 100, "checkpoint", "manned", "by", 100, "stern-faced", "guards.", 1100, "Your", "eyes", "dart", "to", 100, "the", 150, "posters", "plastered", "on", 100, "the", 150, "gates:", "\"Wanted:", "Jade", 300, "Dawnweaver", 800, "—", 50, "Traitor", 600, "to", 100, "the", 150, "Verdant", 700, "Crown\".", 950, "A", 100, "burly", "captain", "steps", 300, "forward,", "hand", 300, "resting", "easy", 300, "on", 100, "his", 150, "sword", 250, "hilt…", 700]
+      },
+      {
+        "text": ["\"Halt", "there,", "travelers!", 1000, "By", 100, "Queen", 600, "Melantha",  700, "Thornveil's", 700, "orders,", 750, "we", 250, "must", 250, "question", 600, "every", 600, "soul", 250, "passing", 600, "through.", 1200, "What", 300, "business", 700, "do", 100, "you", 250, "have", 300, "in", 100, "Timberfall?\""]
+      },
+      {
+        "text": ["Now,", "brave", 400, "adventurers,", 1100, "how", 300, "shall", "you", 300, "proceed?", 900, "Will", 300, "you", 250, "use", 200, "your", 250, "charm", 400, "to", 100, "sway", 250, "Captain", 300, "Dmitri", 300, "with", 300, "honeyed", 300, "words,", 600, "rely", "on", 100, "your", 300, "wit", 150, "to", 100, "slip", 250, "past", 250, "unseen", "like", 250, "shadows", 250, "in", 100, "the", 150, "night,", 1000, "or", "perhaps", "trust", "your", 300, "brawn", "to", 100, "demonstrate", "your", 300, "might?", 1200, "Which", 300, "of", 100, "your", 300, "attributes", "will", 200, "you", 200, "put", 200, "to", 100, "the", 150, "test?"]
+      }
+    ]
+  },
+  "characters": [
+    {
+      "key": "characters.dmitri.medusa-ss",
+      "name": "Hocus Pocus",
+      "role": "cursed · warrior",
+      "position": {
+        "x": 1150,
+        "y": 1000
+      },
+      "speed": 5,
+      "scale": 0.85
+    },
+    {
+      "key": "characters.dmitri.knight-ss",
+      "name": "The Knight",
+      "role": "cursed · warrior",
+      "position": {
+        "x": 1400,
+        "y": 975
+      },
+      "speed": 6,
+      "scale": 0.85,
+      "hud-offset": {
+        "x": 0,
+        "y": -30
+      }
+    },
+    {
+      "key": "characters.dmitri.king-ss",
+      "name": "Uncommon Lonnggg Long Name",
+      "role": "cursed · warrior",
+      "position": {
+        "x": 1650,
+        "y": 1000
+      },
+      "speed": 5,
+      "scale": 0.85,
+      "hud-offset": {
+        "x": 0,
+        "y": -30
+      }
+    }
+  ],
+  "zone-buttons": [
+    {
+      "key": "scenes.game.dmitri.zone-button-dmitri",
+      "blocked": false,
+      "position": {
+        "x": 300,
+        "y": 950
+      }
+    },
+    {
+      "key": "scenes.game.dmitri.zone-button-altar",
+      "blocked": true,
+      "position": {
+        "x": 400,
+        "y": 950
+      }
+    },
+    {
+      "key": "scenes.game.dmitri.zone-button-mushroom-forest",
+      "blocked": true,
+      "position": {
+        "x": 350,
+        "y": 1000
+      }
+    }
+  ]
+}

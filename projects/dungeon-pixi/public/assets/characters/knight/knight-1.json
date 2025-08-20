@@ -1,0 +1,173 @@
+{"frames": {
+
+"knight-ss-5.png":
+{
+	"frame": {"x":1,"y":818,"w":323,"h":484},
+	"rotated": true,
+	"trimmed": true,
+	"spriteSourceSize": {"x":58,"y":12,"w":323,"h":484},
+	"sourceSize": {"w":500,"h":500}
+},
+"knight-ss-41.png":
+{
+	"frame": {"x":1,"y":495,"w":321,"h":484},
+	"rotated": true,
+	"trimmed": true,
+	"spriteSourceSize": {"x":58,"y":12,"w":321,"h":484},
+	"sourceSize": {"w":500,"h":500}
+},
+"knight-ss-59.png":
+{
+	"frame": {"x":1,"y":1143,"w":346,"h":484},
+	"rotated": true,
+	"trimmed": true,
+	"spriteSourceSize": {"x":34,"y":13,"w":346,"h":484},
+	"sourceSize": {"w":500,"h":500}
+},
+"knight-ss-63.png":
+{
+	"frame": {"x":487,"y":1153,"w":348,"h":484},
+	"rotated": true,
+	"trimmed": true,
+	"spriteSourceSize": {"x":30,"y":13,"w":348,"h":484},
+	"sourceSize": {"w":500,"h":500}
+},
+"knight-ss-72.png":
+{
+	"frame": {"x":973,"y":840,"w":324,"h":484},
+	"rotated": true,
+	"trimmed": true,
+	"spriteSourceSize": {"x":41,"y":15,"w":324,"h":484},
+	"sourceSize": {"w":500,"h":500}
+},
+"knight-ss-81.png":
+{
+	"frame": {"x":1469,"y":243,"w":288,"h":487},
+	"rotated": true,
+	"trimmed": true,
+	"spriteSourceSize": {"x":65,"y":13,"w":288,"h":487},
+	"sourceSize": {"w":500,"h":500}
+},
+"knight-ss-86.png":
+{
+	"frame": {"x":491,"y":243,"w":260,"h":487},
+	"rotated": true,
+	"trimmed": true,
+	"spriteSourceSize": {"x":86,"y":13,"w":260,"h":487},
+	"sourceSize": {"w":500,"h":500}
+},
+"knight-ss-122.png":
+{
+	"frame": {"x":1,"y":1,"w":240,"h":487},
+	"rotated": true,
+	"trimmed": true,
+	"spriteSourceSize": {"x":102,"y":13,"w":240,"h":487},
+	"sourceSize": {"w":500,"h":500}
+},
+"knight-ss-126.png":
+{
+	"frame": {"x":490,"y":1,"w":240,"h":487},
+	"rotated": true,
+	"trimmed": true,
+	"spriteSourceSize": {"x":102,"y":13,"w":240,"h":487},
+	"sourceSize": {"w":500,"h":500}
+},
+"knight-ss-131.png":
+{
+	"frame": {"x":979,"y":1,"w":240,"h":487},
+	"rotated": true,
+	"trimmed": true,
+	"spriteSourceSize": {"x":102,"y":13,"w":240,"h":487},
+	"sourceSize": {"w":500,"h":500}
+},
+"knight-ss-135.png":
+{
+	"frame": {"x":1468,"y":1,"w":240,"h":487},
+	"rotated": true,
+	"trimmed": true,
+	"spriteSourceSize": {"x":102,"y":13,"w":240,"h":487},
+	"sourceSize": {"w":500,"h":500}
+},
+"knight-ss-162.png":
+{
+	"frame": {"x":1,"y":243,"w":250,"h":488},
+	"rotated": true,
+	"trimmed": true,
+	"spriteSourceSize": {"x":93,"y":12,"w":250,"h":488},
+	"sourceSize": {"w":500,"h":500}
+},
+"knight-ss-167.png":
+{
+	"frame": {"x":980,"y":243,"w":272,"h":487},
+	"rotated": true,
+	"trimmed": true,
+	"spriteSourceSize": {"x":77,"y":13,"w":272,"h":487},
+	"sourceSize": {"w":500,"h":500}
+},
+"knight-ss-180.png":
+{
+	"frame": {"x":1459,"y":856,"w":324,"h":484},
+	"rotated": true,
+	"trimmed": true,
+	"spriteSourceSize": {"x":41,"y":15,"w":324,"h":484},
+	"sourceSize": {"w":500,"h":500}
+},
+"knight-ss-189.png":
+{
+	"frame": {"x":973,"y":1166,"w":348,"h":484},
+	"rotated": true,
+	"trimmed": true,
+	"spriteSourceSize": {"x":30,"y":13,"w":348,"h":484},
+	"sourceSize": {"w":500,"h":500}
+},
+"knight-ss-194.png":
+{
+	"frame": {"x":1459,"y":1182,"w":341,"h":485},
+	"rotated": true,
+	"trimmed": true,
+	"spriteSourceSize": {"x":39,"y":12,"w":341,"h":485},
+	"sourceSize": {"w":500,"h":500}
+},
+"knight-ss-212.png":
+{
+	"frame": {"x":487,"y":505,"w":321,"h":484},
+	"rotated": true,
+	"trimmed": true,
+	"spriteSourceSize": {"x":58,"y":12,"w":321,"h":484},
+	"sourceSize": {"w":500,"h":500}
+},
+"knight-ss-216.png":
+{
+	"frame": {"x":973,"y":517,"w":321,"h":484},
+	"rotated": true,
+	"trimmed": true,
+	"spriteSourceSize": {"x":58,"y":12,"w":321,"h":484},
+	"sourceSize": {"w":500,"h":500}
+},
+"knight-ss-221.png":
+{
+	"frame": {"x":1459,"y":533,"w":321,"h":484},
+	"rotated": true,
+	"trimmed": true,
+	"spriteSourceSize": {"x":58,"y":12,"w":321,"h":484},
+	"sourceSize": {"w":500,"h":500}
+},
+"knight-ss-248.png":
+{
+	"frame": {"x":487,"y":828,"w":323,"h":484},
+	"rotated": true,
+	"trimmed": true,
+	"spriteSourceSize": {"x":58,"y":12,"w":323,"h":484},
+	"sourceSize": {"w":500,"h":500}
+}},
+"meta": {
+	"app": "https://www.codeandweb.com/texturepacker",
+	"version": "1.1",
+	"image": "knight-1.png",
+	"format": "RGBA8888",
+	"size": {"w":1957,"h":1524},
+	"scale": "1",
+	"related_multi_packs": [ "knight-0.json", "knight-2.json" ],
+	"smartupdate": "$TexturePacker:SmartUpdate:028f4e74cf9112b01d779f97f560de9c:c458d032859f77a0ddfbae7fcf79e412:6e94b0c35b1e9bac06b2a7bf7cb9bd05$"
+}
+}

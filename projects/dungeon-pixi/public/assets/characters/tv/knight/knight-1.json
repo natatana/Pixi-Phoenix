@@ -1,0 +1,37 @@
+{"frames": {
+
+"knight-ss-126.png":
+{
+	"frame": {"x":1,"y":1,"w":240,"h":487},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":102,"y":13,"w":240,"h":487},
+	"sourceSize": {"w":500,"h":500}
+},
+"knight-ss-135.png":
+{
+	"frame": {"x":1,"y":490,"w":240,"h":487},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":102,"y":13,"w":240,"h":487},
+	"sourceSize": {"w":500,"h":500}
+},
+"knight-ss-144.png":
+{
+	"frame": {"x":1,"y":979,"w":240,"h":487},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":102,"y":13,"w":240,"h":487},
+	"sourceSize": {"w":500,"h":500}
+}},
+"meta": {
+	"app": "https://www.codeandweb.com/texturepacker",
+	"version": "1.1",
+	"image": "knight-1.png",
+	"format": "RGBA8888",
+	"size": {"w":242,"h":1467},
+	"scale": "1",
+	"related_multi_packs": [ "knight-0.json" ],
+	"smartupdate": "$TexturePacker:SmartUpdate:6652bf86aff6452d5a6cd4ef219af24a:60715985e45c9e25e7df606f4dfcfd2c:f6ccf0ac8d5744cd6eedb7676f0ad7c6$"
+}
+}
