@@ -11,7 +11,7 @@
     "dev:jeopardy": "cd projects/jeopardy-phaser && npm run dev",
     "dev": "concurrently \"npm run dev:landing\" \"npm run dev:song-quiz\" \"npm run dev:dungeon\" \"npm run dev:jeopardy\"",
     "build": "cd projects/song-quiz-pixi && npm run build && cd ../dungeon-pixi && npm run build && cd ../jeopardy-phaser && npm run build && cd ../..",
-    "storybook": "storybook dev -p 6006",
+    "storybook": "concurrently \"npm run dev\" \"storybook dev -p 6006\"",
     "build-storybook": "storybook build",
     "storybook:serve": "npx serve storybook-static -p 6007"
   },
