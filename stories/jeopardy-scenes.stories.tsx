@@ -1,4 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/html';
+import React, { useRef, useEffect } from 'react';
 
 interface JeopardySceneArgs {
   width: number;
@@ -79,114 +80,118 @@ export default meta;
 type Story = StoryObj<JeopardySceneArgs>;
 
 const createJeopardyScene = (args: JeopardySceneArgs) => {
-  const container = document.createElement('div');
-  container.style.width = '100%';
-  container.style.height = '100vh';
-  container.style.display = 'flex';
-  container.style.justifyContent = 'center';
-  container.style.alignItems = 'center';
-  container.style.backgroundColor = args.backgroundColor;
+  const containerRef = useRef<HTMLDivElement>(null);
 
-  // Create game container
-  const gameContainer = document.createElement('div');
-  gameContainer.id = 'jeopardy-game-container';
-  gameContainer.style.width = `${args.width}px`;
-  gameContainer.style.height = `${args.height}px`;
-  container.appendChild(gameContainer);
+  useEffect(() => {
+    if (containerRef.current) {
+      const container = containerRef.current;
+      container.style.width = '100%';
+      container.style.height = '100vh';
+      container.style.display = 'flex';
+      container.style.justifyContent = 'center';
+      container.style.alignItems = 'center';
+      container.style.backgroundColor = args.backgroundColor;
 
-  // Mock Phaser game initialization
-  const initializeGame = async () => {
-    try {
-      // This would normally import and initialize the actual Phaser game
-      // For now, we'll create a visual representation
-      
-      const canvas = document.createElement('canvas');
-      canvas.width = args.width;
-      canvas.height = args.height;
-      canvas.style.border = '2px solid #333';
-      canvas.style.background = 'linear-gradient(45deg, #001122, #003366)';
-      
-      const ctx = canvas.getContext('2d');
-      if (ctx) {
-        // Draw scene representation
-        ctx.fillStyle = '#ffffff';
-        ctx.font = '48px Arial';
-        ctx.textAlign = 'center';
-        ctx.fillText('Jeopardy!', args.width / 2, args.height / 2 - 50);
-        
-        ctx.font = '24px Arial';
-        ctx.fillText(`Scene: ${args.scene}`, args.width / 2, args.height / 2 + 20);
-        
-        ctx.font = '16px Arial';
-        ctx.fillText('(Storybook Preview)', args.width / 2, args.height / 2 + 60);
-        
-        // Draw scene-specific elements
-        switch (args.scene) {
-          case 'main-menu':
-            ctx.fillStyle = '#ffd700';
-            ctx.fillRect(args.width / 2 - 100, args.height / 2 + 100, 200, 50);
-            ctx.fillStyle = '#000000';
-            ctx.font = '20px Arial';
-            ctx.fillText('Start Game', args.width / 2, args.height / 2 + 130);
-            break;
-            
-          case 'game-board':
-            // Draw a simple grid representing the game board
-            ctx.strokeStyle = '#ffd700';
-            ctx.lineWidth = 2;
-            for (let i = 0; i < 6; i++) {
-              for (let j = 0; j < 5; j++) {
-                const x = 100 + i * 150;
-                const y = 200 + j * 80;
-                ctx.strokeRect(x, y, 140, 70);
-              }
+      // Create game container
+      const gameContainer = document.createElement('div');
+      gameContainer.id = 'jeopardy-game-container';
+      gameContainer.style.width = `${args.width}px`;
+      gameContainer.style.height = `${args.height}px`;
+      container.appendChild(gameContainer);
+
+      // Mock Phaser game initialization
+      const initializeGame = async () => {
+        try {
+          const canvas = document.createElement('canvas');
+          canvas.width = args.width;
+          canvas.height = args.height;
+          canvas.style.border = '2px solid #333';
+          canvas.style.background = 'linear-gradient(45deg, #001122, #003366)';
+
+          const ctx = canvas.getContext('2d');
+          if (ctx) {
+            // Draw scene representation
+            ctx.fillStyle = '#ffffff';
+            ctx.font = '48px Arial';
+            ctx.textAlign = 'center';
+            ctx.fillText('Jeopardy!', args.width / 2, args.height / 2 - 50);
+
+            ctx.font = '24px Arial';
+            ctx.fillText(`Scene: ${args.scene}`, args.width / 2, args.height / 2 + 20);
+
+            ctx.font = '16px Arial';
+            ctx.fillText('(Storybook Preview)', args.width / 2, args.height / 2 + 60);
+
+            // Draw scene-specific elements
+            switch (args.scene) {
+              case 'main-menu':
+                ctx.fillStyle = '#ffd700';
+                ctx.fillRect(args.width / 2 - 100, args.height / 2 + 100, 200, 50);
+                ctx.fillStyle = '#000000';
+                ctx.font = '20px Arial';
+                ctx.fillText('Start Game', args.width / 2, args.height / 2 + 130);
+                break;
+
+              case 'game-board':
+                // Draw a simple grid representing the game board
+                ctx.strokeStyle = '#ffd700';
+                ctx.lineWidth = 2;
+                for (let i = 0; i < 6; i++) {
+                  for (let j = 0; j < 5; j++) {
+                    const x = 100 + i * 150;
+                    const y = 200 + j * 80;
+                    ctx.strokeRect(x, y, 140, 70);
+                  }
+                }
+                break;
+
+              case 'clue-card':
+                ctx.fillStyle = '#000080';
+                ctx.fillRect(args.width / 2 - 200, args.height / 2 - 100, 400, 200);
+                ctx.strokeStyle = '#ffd700';
+                ctx.lineWidth = 4;
+                ctx.strokeRect(args.width / 2 - 200, args.height / 2 - 100, 400, 200);
+                ctx.fillStyle = '#ffffff';
+                ctx.font = '18px Arial';
+                ctx.fillText('This is a clue card', args.width / 2, args.height / 2);
+                break;
+
+              default:
+                ctx.fillStyle = '#666666';
+                ctx.fillRect(args.width / 2 - 150, args.height / 2 + 100, 300, 100);
+                ctx.fillStyle = '#ffffff';
+                ctx.font = '18px Arial';
+                ctx.fillText(`${args.scene} Scene`, args.width / 2, args.height / 2 + 155);
             }
-            break;
-            
-          case 'clue-card':
-            ctx.fillStyle = '#000080';
-            ctx.fillRect(args.width / 2 - 200, args.height / 2 - 100, 400, 200);
-            ctx.strokeStyle = '#ffd700';
-            ctx.lineWidth = 4;
-            ctx.strokeRect(args.width / 2 - 200, args.height / 2 - 100, 400, 200);
-            ctx.fillStyle = '#ffffff';
-            ctx.font = '18px Arial';
-            ctx.fillText('This is a clue card', args.width / 2, args.height / 2);
-            break;
-            
-          default:
-            ctx.fillStyle = '#666666';
-            ctx.fillRect(args.width / 2 - 150, args.height / 2 + 100, 300, 100);
-            ctx.fillStyle = '#ffffff';
-            ctx.font = '18px Arial';
-            ctx.fillText(`${args.scene} Scene`, args.width / 2, args.height / 2 + 155);
-        }
-      }
-      
-      gameContainer.appendChild(canvas);
-      
-    } catch (error) {
-      console.warn('Could not initialize Phaser game:', error);
-      
-      // Fallback display
-      const fallback = document.createElement('div');
-      fallback.innerHTML = `
-        <div style="
-          color: white; 
-          text-align: center; 
-          padding: 50px;
-          font-family: Arial, sans-serif;
-        ">
-          <h2>Jeopardy Scene: ${args.scene}</h2>
-          <p>Preview mode - actual Phaser scene would load here</p>
-        </div>
-      `;
-      gameContainer.appendChild(fallback);
-    }
-  };
+          }
 
-  initializeGame();
-  return container;
+          gameContainer.appendChild(canvas);
+
+        } catch (error) {
+          console.warn('Could not initialize Phaser game:', error);
+
+          // Fallback display
+          const fallback = document.createElement('div');
+          fallback.innerHTML = `
+            <div style="
+              color: white; 
+              text-align: center; 
+              padding: 50px;
+              font-family: Arial, sans-serif;
+            ">
+              <h2>Jeopardy Scene: ${args.scene}</h2>
+              <p>Preview mode - actual Phaser scene would load here</p>
+            </div>
+          `;
+          gameContainer.appendChild(fallback);
+        }
+      };
+
+      initializeGame();
+    }
+  }, [args]);
+
+  return <div ref={containerRef}></div>;
 };
 
 /**
