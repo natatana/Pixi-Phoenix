@@ -2,7 +2,7 @@ import type { Meta, StoryObj } from '@storybook/react';
 import { SelectModeScreen } from '../scenes/SelectModeScreen';
 
 const meta: Meta<typeof SelectModeScreen> = {
-    title: 'Scenes/SelectModeScreen',
+    title: 'Games/Song Quiz/Scenes/SelectModeScreen',
     component: SelectModeScreen,
     parameters: {
         layout: 'fullscreen',

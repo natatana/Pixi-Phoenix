@@ -2,7 +2,7 @@ import type { Meta, StoryObj } from '@storybook/react';
 import { SplashScreen } from '../scenes/SplashScreen';
 
 const meta: Meta<typeof SplashScreen> = {
-    title: 'Scenes/SplashScreen',
+    title: 'Games/Song Quiz/Scenes/SplashScreen',
     component: SplashScreen,
     parameters: {
         layout: 'fullscreen',

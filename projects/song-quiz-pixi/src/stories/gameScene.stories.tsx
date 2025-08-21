@@ -2,7 +2,7 @@ import type { Meta, StoryObj } from '@storybook/react';
 import { GameScene } from '../scenes/GameScene';
 
 const meta: Meta<typeof GameScene> = {
-    title: 'Scenes/GameScene',
+    title: 'Games/Song Quiz/Scenes/GameScene',
     component: GameScene,
     argTypes: {
         windowSize: {
