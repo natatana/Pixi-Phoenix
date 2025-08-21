@@ -235,7 +235,7 @@ export function GameScene(props: GameSceneProps) {
     return (
         <Application width={windowSize.width} height={windowSize.height} autoDensity={true} resolution={window.devicePixelRatio || 1}>
             <pixiContainer>
-                <BackgroundSprite assetUrl="/images/stadium.jpg" />
+                <BackgroundSprite assetUrl="/images/stadium.jpg" width={windowSize.width} height={windowSize.height} />
                 {Array.from({ length: playerCount }).map((_, index) => {
                     let y = playerHeight + playerFloatOffsets[index];
                     if (gameOver && playerRankings.length === playerCount && playerPoints.length === playerCount) {

@@ -45,31 +45,3 @@ export const Default: Story = {
         windowSize: { width: 1920, height: 1080 },
     },
 };
-
-export const Mobile: Story = {
-    args: {
-        ...Default.args,
-        windowSize: { width: 375, height: 667 },
-    },
-};
-
-export const Tablet: Story = {
-    args: {
-        ...Default.args,
-        windowSize: { width: 768, height: 1024 },
-    },
-};
-
-export const LargeDesktop: Story = {
-    args: {
-        ...Default.args,
-        windowSize: { width: 2560, height: 1440 },
-    },
-};
-
-export const Square: Story = {
-    args: {
-        ...Default.args,
-        windowSize: { width: 800, height: 800 },
-    },
-}; 

@@ -20,7 +20,7 @@ export function SplashScreen({ onContinue, windowSize }: { onContinue: () => voi
     return (
         <Application width={windowSize.width} height={windowSize.height} autoDensity={true} resolution={window.devicePixelRatio || 1}>
             <pixiContainer>
-                <BackgroundSprite assetUrl="/images/splash.jpg" />
+                <BackgroundSprite assetUrl="/images/splash.jpg" width={windowSize.width} height={windowSize.height} />
 
             </pixiContainer>
         </Application>

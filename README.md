@@ -9,7 +9,7 @@ A collection of three independent game projects organized in a single repository
 - **Description**: Interactive music quiz game
 - **Dev URL**: `http://localhost:3001`
 - **Location**: `./projects/song-quiz-pixi/`
-- **Storybook**: Song Quiz
+- **Storybook**: Not yet implemented
 
 ### 🏰 Dungeon
 - **Technology**: Pixi.js + GSAP

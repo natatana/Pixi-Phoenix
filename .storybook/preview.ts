@@ -1,4 +1,6 @@
-import type { Preview } from '@storybook/html';
+import type { Preview } from '@storybook/react';
+import React from 'react';
+import { loadGameAssets } from '../projects/song-quiz-pixi/src/utils/AssetsLoader'
 
 const preview: Preview = {
   parameters: {
@@ -27,22 +29,27 @@ const preview: Preview = {
       ],
     },
   },
+  loaders: [
+    async () => {
+      await loadGameAssets();
+      return {};
+    },
+  ],
   decorators: [
     (Story) => {
       // Create a container div for the game canvas
-      const container = document.createElement('div');
-      container.style.width = '100%';
-      container.style.height = '100vh';
-      container.style.display = 'flex';
-      container.style.justifyContent = 'center';
-      container.style.alignItems = 'center';
-      container.style.position = 'relative';
-      
-      const storyElement = Story();
-      if (storyElement instanceof HTMLElement) {
-        container.appendChild(storyElement);
-      }
-      
+      const container = React.createElement('div', {
+        style: {
+          width: '100%',
+          height: '100vh',
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+          position: 'relative',
+        },
+        children: Story(), // Pass the story as a child
+      });
+
       return container;
     },
   ],
