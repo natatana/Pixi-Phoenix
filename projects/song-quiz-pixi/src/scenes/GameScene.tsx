@@ -6,6 +6,7 @@ import { RoundText } from "../components/RoundText";
 import { Container, Graphics, Sprite, Text } from "pixi.js";
 import { preloadAllSounds, Sound } from "../utils/SoundManager";
 import { BackgroundSprite } from "../components/BackgroundSprite";
+import { ACTION_TYPE } from "../utils/config";
 
 extend({
     Container,
@@ -13,22 +14,95 @@ extend({
     Sprite,
     Text,
 });
-
-
 interface GameSceneProps {
     windowSize: { width: number; height: number };
     scaleX: number;
     scaleY: number;
+    type: ACTION_TYPE;
 }
 
 export function GameScene(props: GameSceneProps) {
     const {
-        windowSize, scaleX, scaleY
+        windowSize, scaleX, scaleY, type
     } = props;
 
     const scale = Math.min(scaleX, scaleY);
     const playerNames = ["Andrew", "Mary", "Jessica", "Devin"];
     const playerCount = 4;
+
+
+    const simulationSteps = [
+        {
+            type: ACTION_TYPE.ONLINE,
+            action: () => {
+                Sound.playOpponentFound();
+                Sound.stopMatchmaking();
+                for (let i = 0; i < 4; i++) {
+                    const delay = Math.random() * 1500;
+                    setTimeout(() => {
+                        setOnlinePlayers(prev => {
+                            if (prev.includes(i)) return prev;
+                            return [...prev, i];
+                        });
+                    }, delay);
+                }
+            }
+        },
+        {
+            type: ACTION_TYPE.SPEAKING,
+            action: () => {
+                const speakerIndex = Math.floor(Math.random() * 4);
+                setSpeakingPlayers(speakerIndex);
+                setOnlinePlayers([]);
+                Sound.stopMatchmaking();
+            }
+        },
+        {
+            type: ACTION_TYPE.WINNER,
+            action: () => {
+                const winnerIndex = Math.floor(Math.random() * 4);
+                setWinnerPlayer(winnerIndex);
+                setSpeakingPlayers(null);
+                Sound.stopMatchmaking();
+                Sound.playRoundResultsBgm();
+                Sound.playWinCheer();
+            }
+        },
+        {
+            type: ACTION_TYPE.LOSER,
+            action: () => {
+                const looserIndex = Math.floor(Math.random() * 4);
+                setLoserPlayer(looserIndex);
+            }
+        },
+        {
+            type: ACTION_TYPE.NORMAL,
+            action: () => {
+                Sound.stopRoundResultsBgm();
+                Sound.playCountdown();
+                Sound.playVsCountdown();
+            }
+        },
+        {
+            type: ACTION_TYPE.GAMEOVER,
+            action: () => {
+                setGameOver(true);
+                setWinnerPlayer(null);
+                setLoserPlayer(null);
+                const points = Array.from({ length: 4 }, () => Math.floor(Math.random() * 24) * 10 - 30);
+                setPlayerPoints(points);
+                const sortedIndices = points.map((pt, idx) => ({ pt, idx })).sort((a, b) => b.pt - a.pt).map(obj => obj.idx);
+                const rankings = Array(4);
+                sortedIndices.forEach((playerIdx, rank) => {
+                    rankings[playerIdx] = rank;
+                });
+                setPlayerRankings(rankings);
+                setTimeout(() => setMedalFadeIn(prev => ({ ...prev, bronze: true })), 500);
+                setTimeout(() => setMedalFadeIn(prev => ({ ...prev, silver: true })), 1500);
+                setTimeout(() => setMedalFadeIn(prev => ({ ...prev, gold: true })), 2500);
+            }
+        }
+    ];
 
     const [musicStarted, setMusicStarted] = useState(false);
     const [soundsReady, setSoundsReady] = useState(false);
@@ -58,106 +132,15 @@ export function GameScene(props: GameSceneProps) {
         preloadAllSounds().then(() => setSoundsReady(true)).catch(() => setSoundsReady(true));
     }, []);
 
-    // Simulated flow (runs only after both assets and sounds are ready)
+    // Execute the current simulation step
     useEffect(() => {
-        if (!soundsReady) return;
-
-        const speakerIndex = Math.floor(Math.random() * 4);
-        // const winnerIndex = Math.floor(Math.random() * 4);
-        const winnerIndex = speakerIndex;
-        let looserIndex = Math.floor(Math.random() * 4);
-        while (looserIndex === winnerIndex) {
-            looserIndex = Math.floor(Math.random() * 4);
-        }
-
-        const t0 = setTimeout(() => {
-            Sound.playOpponentFound();
-            Sound.stopMatchmaking();
-
-            // Randomly set onlinePlayers for all players at random times before the game starts
-            for (let i = 0; i < playerCount; i++) {
-                const delay = Math.random() * 1500; // between 0.5s and 3.5s
-                setTimeout(() => {
-                    setOnlinePlayers(prev => {
-                        if (prev.includes(i)) return prev;
-                        return [...prev, i];
-                    });
-                }, delay);
+        if (soundsReady) {
+            const step = simulationSteps.find(step => step.type === type);
+            if (step && typeof step.action === "function") {
+                step.action();
             }
-        }, 5000);
-        const t1 = setTimeout(() => {
-            setSpeakingPlayers(speakerIndex);
-            setOnlinePlayers([]);
-            Sound.stopMatchmaking();
-        }, 7000);
-        const t2 = setTimeout(() => {
-            setWinnerPlayer(winnerIndex);
-            setSpeakingPlayers(null);
-            Sound.stopMatchmaking();
-            Sound.playRoundResultsBgm();
-            Sound.playWinCheer();
-        }, 10000);
-        const t3 = setTimeout(() => {
-            setLoserPlayer(looserIndex);
-        }, 15000);
-        const t4 = setTimeout(() => {
-            Sound.stopRoundResultsBgm();
-            Sound.playCountdown();
-            Sound.playVsCountdown();
-        }, 17000);
-        const t5 = setTimeout(() => {
-            setGameOver(true);
-            setWinnerPlayer(null);
-            setLoserPlayer(null);
-
-            // Assign random points (multiples of 10 for simplicity)
-            // There might be minus
-            const points = Array.from({ length: playerCount }, () => Math.floor(Math.random() * 24) * 10 - 30); // -30, -20, ..., 190, 200
-            setPlayerPoints(points);
-
-            // Determine rankings based on points (0 = 1st, 1 = 2nd, etc.)
-            // Higher points = better rank (1st)
-            const sortedIndices = points
-                .map((pt, idx) => ({ pt, idx }))
-                .sort((a, b) => b.pt - a.pt)
-                .map(obj => obj.idx);
-
-            // rankings[i] = rank of player i (0 = 1st, 1 = 2nd, etc.)
-            const rankings = Array(playerCount);
-            sortedIndices.forEach((playerIdx, rank) => {
-                rankings[playerIdx] = rank;
-            });
-            setPlayerRankings(rankings);
-
-            // Medal fade-in animation sequence
-            const medalT1 = setTimeout(() => {
-                setMedalFadeIn(prev => ({ ...prev, bronze: true }));
-            }, 500); // Bronze medal fades in first
-
-            const medalT2 = setTimeout(() => {
-                setMedalFadeIn(prev => ({ ...prev, silver: true }));
-            }, 1500); // Silver medal fades in second
-
-            const medalT3 = setTimeout(() => {
-                setMedalFadeIn(prev => ({ ...prev, gold: true }));
-            }, 2500); // Gold medal and crown fades in last
-
-            return () => {
-                clearTimeout(medalT1);
-                clearTimeout(medalT2);
-                clearTimeout(medalT3);
-            };
-        }, 20000);
-
-        return () => {
-            clearTimeout(t0);
-            clearTimeout(t1);
-            clearTimeout(t2);
-            clearTimeout(t3);
-            clearTimeout(t4);
-            clearTimeout(t5);
-        };
-    }, [soundsReady]);
+        }
+    }, [soundsReady, type]);
 
     // Start matchmaking music after all ready (autoplay policies still apply)
     useEffect(() => {

@@ -1,9 +1,9 @@
 import type { Meta, StoryObj } from '@storybook/react';
-import { GameScene } from '../scenes/GameScene';
+import GameSceneLoader from '../utils/GameSceneLoader';
 
-const meta: Meta<typeof GameScene> = {
+const meta: Meta<typeof GameSceneLoader> = {
     title: 'Games/Song Quiz/Scenes/GameScene',
-    component: GameScene,
+    component: GameSceneLoader,
     argTypes: {
         windowSize: {
             control: 'object',
@@ -23,16 +23,17 @@ const meta: Meta<typeof GameScene> = {
 export default meta;
 type Story = StoryObj<typeof meta>;
 
-export const InitialLoading: Story = {
+export const NormalStatus: Story = {
     args: {
         windowSize: { width: 1920, height: 1080 },
         scaleX: 1,
         scaleY: 1,
         soundsReady: false,
+        type: 'normal', // Added action type
     },
 };
 
-export const MatchmakingStart: Story = {
+export const OnlinePlayers: Story = {
     args: {
         windowSize: { width: 1920, height: 1080 },
         scaleX: 1,
@@ -40,17 +41,7 @@ export const MatchmakingStart: Story = {
         soundsReady: true,
         musicStarted: true,
         onlinePlayers: [],
-    },
-};
-
-export const PlayersOnline: Story = {
-    args: {
-        windowSize: { width: 1920, height: 1080 },
-        scaleX: 1,
-        scaleY: 1,
-        soundsReady: true,
-        musicStarted: true,
-        onlinePlayers: [0, 1, 2, 3],
+        type: 'online', // Added action type
     },
 };
 
@@ -63,6 +54,7 @@ export const SpeakingPlayer: Story = {
         musicStarted: true,
         onlinePlayers: [],
         speakingPlayers: 0,
+        type: 'speaking', // Added action type
     },
 };
 
@@ -76,6 +68,21 @@ export const WinnerAnnounced: Story = {
         onlinePlayers: [],
         winnerPlayer: 0,
         speakingPlayers: null,
+        type: 'winner', // Added action type
+    },
+};
+
+export const LoserAnnounced: Story = {
+    args: {
+        windowSize: { width: 1920, height: 1080 },
+        scaleX: 1,
+        scaleY: 1,
+        soundsReady: true,
+        musicStarted: true,
+        onlinePlayers: [],
+        loserPlayer: 0,
+        speakingPlayers: null,
+        type: 'loser', // Added action type
     },
 };
 
@@ -91,5 +98,6 @@ export const GameOver: Story = {
         playerRankings: [0, 1, 2, 3],
         playerPoints: [100, 80, 60, 40],
         medalFadeIn: { bronze: true, silver: true, gold: true },
+        type: 'gameover', // Added action type
     },
 };

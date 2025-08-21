@@ -6,3 +6,12 @@ export const SCENES = {
     SELECT_MODE: "select_mode",
     GAME: "game",
 } as const;
+export enum ACTION_TYPE {
+    NORMAL = "normal",
+    ONLINE = "online",
+    SPEAKING = "speaking",
+    WINNER = "winner",
+    LOSER = "loser",
+    GAMEOVER = "gameover",
+}
+

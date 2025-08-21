@@ -464,10 +464,10 @@ export function Player({
       <pixiText
         text={playerName}
         anchor={{ x: 0.5, y: 0.5 }}
-        x={-54 * scaleX}
+        x={-54 * scale}
         y={150 * scale}
         style={{
-          fontSize: 24 * scaleX,
+          fontSize: 24 * scale,
           fill: 0xffffff,
           fontFamily: ["Gilroy", 'serif'],
           fontWeight: "bold",
@@ -477,10 +477,10 @@ export function Player({
       <pixiText
         text={playerScore}
         anchor={{ x: 0.5, y: 0.5 }}
-        x={84 * scaleX}
+        x={84 * scale}
         y={150 * scale}
         style={{
-          fontSize: 24 * scaleX,
+          fontSize: 24 * scale,
           fill: playerScoreColor,
           fontFamily: ["Gilroy", 'serif'],
           fontWeight: "bold",

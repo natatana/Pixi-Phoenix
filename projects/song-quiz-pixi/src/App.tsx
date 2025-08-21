@@ -2,9 +2,9 @@ import { useState, useEffect } from "react";
 import "./resources/css/App.css";
 import { SplashScreen } from "./scenes/SplashScreen";
 import { SelectModeScreen } from "./scenes/SelectModeScreen";
-import { GameScene } from "./scenes/GameScene";
-import { REF_HEIGHT, REF_WIDTH, SCENES } from "./utils/config";
+import { ACTION_TYPE, REF_HEIGHT, REF_WIDTH, SCENES } from "./utils/config";
 import { loadGameAssets } from "./utils/AssetsLoader";
+import GameSceneLoader from "./utils/GameSceneLoader";
 
 type SceneType = typeof SCENES[keyof typeof SCENES];
 
@@ -33,10 +33,26 @@ function App() {
     }
   })
 
-
   // Preload all textures
   useEffect(() => {
     loadGameAssets().then(() => setAssetsReady(true));
+  }, []);
+
+  const [currentActionType, setCurrentActionType] = useState(ACTION_TYPE.NORMAL);
+  useEffect(() => {
+    const actionTypes = Object.values(ACTION_TYPE);
+    let index = 0;
+
+    const interval = setInterval(() => {
+      index += 1;
+      if (index < actionTypes.length) {
+        setCurrentActionType(actionTypes[index]);
+      } else {
+        clearInterval(interval); // Stop after one full cycle
+      }
+    }, 3000); // Change type every 3 seconds
+
+    return () => clearInterval(interval);
   }, []);
 
   if (!assetsReady) {
@@ -67,7 +83,8 @@ function App() {
         <SelectModeScreen windowSize={windowSize} scaleX={scaleX} scaleY={scaleY} onSelectMode={() => setScene(SCENES.GAME)} />
       )}
       {scene === SCENES.GAME && (
-        <GameScene
+        <GameSceneLoader
+          type={currentActionType}
           windowSize={windowSize}
           scaleX={scaleX}
           scaleY={scaleY}

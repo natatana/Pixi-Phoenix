@@ -64,9 +64,9 @@ export function SelectModeScreen(
                 <BackgroundSprite assetUrl="/images/selectmode.jpg" width={windowSize.width} height={windowSize.height} />
                 <pixiSprite
                     texture={hovered === "single" ? singleHighlightTexture : singleTexture}
-                    anchor={{ x: 0, y: 1 }}
+                    anchor={{ x: 0, y: 0.5 }}
                     x={566 * scaleX}
-                    y={(windowSize.height - 150) * scaleY}
+                    y={(windowSize.height * 0.7) * scaleY}
                     scale={scaleX}
                     interactive={true}
                     onPointerTap={() => onSelectMode("single")}
@@ -74,9 +74,9 @@ export function SelectModeScreen(
                 />
                 <pixiSprite
                     texture={hovered === "multi" ? multiHighlightTexture : multiTexture}
-                    anchor={{ x: 0, y: 1 }}
+                    anchor={{ x: 0, y: 0.5 }}
                     x={992 * scaleX}
-                    y={(windowSize.height - 150) * scaleY}
+                    y={(windowSize.height * 0.7) * scaleY}
                     scale={scaleX}
                     interactive={true}
                     onPointerTap={() => onSelectMode("multi")}
@@ -85,8 +85,8 @@ export function SelectModeScreen(
                 <pixiSprite
                     texture={emailusTexture}
                     anchor={{ x: 1, y: 1 }}
-                    x={(windowSize.width - 40) * scaleX}
-                    y={(windowSize.height - 40) * scaleY}
+                    x={(windowSize.width * 0.98) * scaleX}
+                    y={(windowSize.height * 0.97) * scaleY}
                     scale={scaleX}
                 />
             </pixiContainer>
