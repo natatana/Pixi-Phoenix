@@ -5,18 +5,52 @@ const meta: Meta<typeof GameSceneLoader> = {
     title: 'Games/Song Quiz/Scenes/GameScene',
     component: GameSceneLoader,
     argTypes: {
-        windowSize: {
-            control: 'object',
-            description: 'Window dimensions for the PIXI application',
+        width: {
+            control: {
+                type: 'range',
+                min: 800,
+                max: 1920,
+                step: 100,
+            },
+            description: 'Adjustable width for the PIXI application',
+        },
+        height: {
+            control: false,
+            description: 'Height locked to 9/16 of the width',
+            table: {
+                disable: true,
+            },
         },
         scaleX: {
-            control: 'number',
-            description: 'Scale factor for X axis',
+            control: false,
+            description: 'Scale factor for X axis based on width',
+            table: {
+                disable: true,
+            },
         },
         scaleY: {
-            control: 'number',
-            description: 'Scale factor for Y axis',
+            control: false,
+            description: 'Scale factor for Y axis based on height',
+            table: {
+                disable: true,
+            },
         },
+        type: {
+            control: { type: 'select' },
+            options: [
+                'normal',
+                'online',
+                'speaking',
+                'winner',
+                'loser',
+                'gameover',
+            ],
+            description: 'Which Song Quiz scene to display',
+            table: {
+                type: { summary: 'string' },
+                defaultValue: { summary: 'normal' },
+            },
+        }
     },
 };
 
@@ -25,79 +59,60 @@ type Story = StoryObj<typeof meta>;
 
 export const NormalStatus: Story = {
     args: {
-        windowSize: { width: 1920, height: 1080 },
-        scaleX: 1,
-        scaleY: 1,
-        soundsReady: false,
-        type: 'normal', // Added action type
+        width: 1280,
+        height: Math.round(1280 * 9 / 16),
+        scaleX: 1280 / 1920,
+        scaleY: Math.round(1280 * 9 / 16) / 1080,
+        type: 'normal',
     },
 };
 
 export const OnlinePlayers: Story = {
     args: {
-        windowSize: { width: 1920, height: 1080 },
-        scaleX: 1,
-        scaleY: 1,
-        soundsReady: true,
-        musicStarted: true,
-        onlinePlayers: [],
-        type: 'online', // Added action type
+        width: 1280,
+        height: Math.round(1280 * 9 / 16),
+        scaleX: 1280 / 1920,
+        scaleY: Math.round(1280 * 9 / 16) / 1080,
+        type: 'online',
     },
 };
 
 export const SpeakingPlayer: Story = {
     args: {
-        windowSize: { width: 1920, height: 1080 },
-        scaleX: 1,
-        scaleY: 1,
-        soundsReady: true,
-        musicStarted: true,
-        onlinePlayers: [],
-        speakingPlayers: 0,
-        type: 'speaking', // Added action type
+        width: 1280,
+        height: Math.round(1280 * 9 / 16),
+        scaleX: 1280 / 1920,
+        scaleY: Math.round(1280 * 9 / 16) / 1080,
+        type: 'speaking',
     },
 };
 
 export const WinnerAnnounced: Story = {
     args: {
-        windowSize: { width: 1920, height: 1080 },
-        scaleX: 1,
-        scaleY: 1,
-        soundsReady: true,
-        musicStarted: true,
-        onlinePlayers: [],
-        winnerPlayer: 0,
-        speakingPlayers: null,
-        type: 'winner', // Added action type
+        width: 1280,
+        height: Math.round(1280 * 9 / 16),
+        scaleX: 1280 / 1920,
+        scaleY: Math.round(1280 * 9 / 16) / 1080,
+        type: 'winner',
     },
 };
 
 export const LoserAnnounced: Story = {
     args: {
-        windowSize: { width: 1920, height: 1080 },
-        scaleX: 1,
-        scaleY: 1,
-        soundsReady: true,
-        musicStarted: true,
-        onlinePlayers: [],
-        loserPlayer: 0,
-        speakingPlayers: null,
-        type: 'loser', // Added action type
+        width: 1280,
+        height: Math.round(1280 * 9 / 16),
+        scaleX: 1280 / 1920,
+        scaleY: Math.round(1280 * 9 / 16) / 1080,
+        type: 'loser',
     },
 };
 
 export const GameOver: Story = {
     args: {
-        windowSize: { width: 1920, height: 1080 },
-        scaleX: 1,
-        scaleY: 1,
-        soundsReady: true,
-        musicStarted: true,
-        onlinePlayers: [],
-        gameOver: true,
-        playerRankings: [0, 1, 2, 3],
-        playerPoints: [100, 80, 60, 40],
-        medalFadeIn: { bronze: true, silver: true, gold: true },
-        type: 'gameover', // Added action type
+        width: 1280,
+        height: Math.round(1280 * 9 / 16),
+        scaleX: 1280 / 1920,
+        scaleY: Math.round(1280 * 9 / 16) / 1080,
+        type: 'gameover',
     },
 };

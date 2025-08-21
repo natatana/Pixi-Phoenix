@@ -1,16 +1,17 @@
 import { GameScene } from '../scenes/GameScene';
 import type { ACTION_TYPE } from './config';
 
-function GameSceneLoader({ type, windowSize, scaleX, scaleY }: {
+function GameSceneLoader({ type, width, height, scaleX, scaleY }: {
     type: ACTION_TYPE;
-    windowSize: { width: number; height: number };
+    width: number;
+    height: number;
     scaleX: number;
     scaleY: number
 }) {
 
     return (
         <GameScene
-            windowSize={windowSize}
+            windowSize={{ width: width, height: height }}
             scaleX={scaleX}
             scaleY={scaleY}
             type={type}
