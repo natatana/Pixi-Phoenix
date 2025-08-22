@@ -19,11 +19,12 @@ interface GameSceneProps {
     scaleX: number;
     scaleY: number;
     type: ACTION_TYPE;
+    selectedPlayer: 1 | 2 | 3 | 4;
 }
 
 export function GameScene(props: GameSceneProps) {
     const {
-        windowSize, scaleX, scaleY, type
+        windowSize, scaleX, scaleY, type, selectedPlayer
     } = props;
 
     const scale = Math.min(scaleX, scaleY);
@@ -51,7 +52,7 @@ export function GameScene(props: GameSceneProps) {
         {
             type: ACTION_TYPE.SPEAKING,
             action: () => {
-                const speakerIndex = Math.floor(Math.random() * 4);
+                const speakerIndex = selectedPlayer - 1;
                 setSpeakingPlayers(speakerIndex);
                 setOnlinePlayers([]);
                 Sound.stopMatchmaking();
@@ -60,7 +61,7 @@ export function GameScene(props: GameSceneProps) {
         {
             type: ACTION_TYPE.WINNER,
             action: () => {
-                const winnerIndex = Math.floor(Math.random() * 4);
+                const winnerIndex = selectedPlayer - 1;
                 setWinnerPlayer(winnerIndex);
                 setSpeakingPlayers(null);
                 Sound.stopMatchmaking();
@@ -71,7 +72,7 @@ export function GameScene(props: GameSceneProps) {
         {
             type: ACTION_TYPE.LOSER,
             action: () => {
-                const looserIndex = Math.floor(Math.random() * 4);
+                const looserIndex = selectedPlayer - 1;
                 setLoserPlayer(looserIndex);
             }
         },

@@ -1,12 +1,13 @@
 import { GameScene } from '../scenes/GameScene';
 import type { ACTION_TYPE } from './config';
 
-function GameSceneLoader({ type, width, height, scaleX, scaleY }: {
+function GameSceneLoader({ type, width, height, scaleX, scaleY, selectedPlayer }: {
     type: ACTION_TYPE;
     width: number;
     height: number;
     scaleX: number;
-    scaleY: number
+    scaleY: number;
+    selectedPlayer: 1 | 2 | 3 | 4;
 }) {
 
     return (
@@ -15,6 +16,7 @@ function GameSceneLoader({ type, width, height, scaleX, scaleY }: {
             scaleX={scaleX}
             scaleY={scaleY}
             type={type}
+            selectedPlayer={selectedPlayer}
         />
     );
 }

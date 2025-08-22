@@ -50,6 +50,11 @@ const meta: Meta<typeof GameSceneLoader> = {
                 type: { summary: 'string' },
                 defaultValue: { summary: 'normal' },
             },
+        },
+        selectedPlayer: {
+            control: { type: 'select' },
+            options: [1, 2, 3, 4],
+            description: 'Which player to display'
         }
     },
 };
@@ -84,6 +89,7 @@ export const SpeakingPlayer: Story = {
         scaleX: 1280 / 1920,
         scaleY: Math.round(1280 * 9 / 16) / 1080,
         type: 'speaking',
+        selectedPlayer: 4
     },
 };
 
@@ -94,6 +100,7 @@ export const WinnerAnnounced: Story = {
         scaleX: 1280 / 1920,
         scaleY: Math.round(1280 * 9 / 16) / 1080,
         type: 'winner',
+        selectedPlayer: 3
     },
 };
 
@@ -104,6 +111,7 @@ export const LoserAnnounced: Story = {
         scaleX: 1280 / 1920,
         scaleY: Math.round(1280 * 9 / 16) / 1080,
         type: 'loser',
+        selectedPlayer: 1
     },
 };
 
