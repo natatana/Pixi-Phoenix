@@ -9,7 +9,7 @@ A collection of three independent game projects organized in a single repository
 - **Description**: Interactive music quiz game
 - **Dev URL**: `http://localhost:3001`
 - **Location**: `./projects/song-quiz-pixi/`
-- **Storybook**: Not yet implemented
+- **Storybook**: ✅ All Scenes (Total Flow, Splash, Select Mode, Game - Normal, Online, Speaking, Winner, Loser, Game Over).
 
 ### 🏰 Dungeon
 - **Technology**: Pixi.js + GSAP
@@ -85,6 +85,7 @@ npm run storybook:serve
 ```
 
 ### What's in Storybook
+- **🎵 Song Quiz**: All Scenes (Total Flow, Splash, Select Mode, Game - Normal, Online, Speaking, Winner, Loser, Game Over)
 - **🏰 Dungeon**: Game scene with visual mockups and responsive testing
 - **❓ Jeopardy**: All game scenes (Main Menu, Game Board, Clue Card, Choose Question, Reply Question, Podium, Loading)
 - **Interactive Controls**: Adjust screen sizes, colors, and scene parameters
