@@ -52,7 +52,7 @@ function App() {
     [ACTION_TYPE.GAMEOVER]: 4
   };
   useEffect(() => {
-    if (!assetsReady) return;
+    if (!assetsReady && scene !== SCENES.GAME) return;
 
     const actionTypes = Object.values(ACTION_TYPE);
     let index = 0;
