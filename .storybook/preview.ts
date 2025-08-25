@@ -1,6 +1,7 @@
 import type { Preview } from '@storybook/react';
 import React from 'react';
 import { loadGameAssets } from '../projects/song-quiz-pixi/src/utils/AssetsLoader'
+import { preloadAllSounds } from '../projects/song-quiz-pixi/src/utils/SoundManager'
 
 const preview: Preview = {
   parameters: {
@@ -32,6 +33,7 @@ const preview: Preview = {
   loaders: [
     async () => {
       await loadGameAssets();
+      await preloadAllSounds();
       return {};
     },
   ],

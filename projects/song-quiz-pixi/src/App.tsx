@@ -5,6 +5,7 @@ import { SelectModeScreen } from "./scenes/SelectModeScreen";
 import { ACTION_TYPE, REF_HEIGHT, REF_WIDTH, SCENES } from "./utils/config";
 import { loadGameAssets } from "./utils/AssetsLoader";
 import GameSceneLoader from "./utils/GameSceneLoader";
+import { preloadAllSounds } from "./utils/SoundManager";
 
 type SceneType = typeof SCENES[keyof typeof SCENES];
 
@@ -20,6 +21,7 @@ function App() {
 
   const [scene, setScene] = useState<SceneType>(SCENES.SPLASH);
   const [assetsReady, setAssetsReady] = useState(false);
+  const [soundsReady, setSoundsReady] = useState(false);
 
 
   useEffect(() => {
@@ -39,6 +41,11 @@ function App() {
     loadGameAssets().then(() => setAssetsReady(true));
   }, []);
 
+  // Preload all sounds
+  useEffect(() => {
+    preloadAllSounds().then(() => setSoundsReady(true)).catch(() => setSoundsReady(true));
+  }, []);
+
   const [currentActionType, setCurrentActionType] = useState(ACTION_TYPE.NORMAL);
 
 
@@ -52,7 +59,7 @@ function App() {
     [ACTION_TYPE.GAMEOVER]: 4
   };
   useEffect(() => {
-    if (!assetsReady && scene !== SCENES.GAME) return;
+    if (!assetsReady && scene !== SCENES.GAME && !soundsReady) return;
 
     const actionTypes = Object.values(ACTION_TYPE);
     let index = 0;

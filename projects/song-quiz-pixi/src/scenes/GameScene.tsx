@@ -4,7 +4,7 @@ import { Player } from "../components/Player";
 import { SoundBar } from "../components/SoundBar";
 import { RoundText } from "../components/RoundText";
 import { Container, Graphics, Sprite, Text } from "pixi.js";
-import { preloadAllSounds, Sound } from "../utils/SoundManager";
+import { Sound } from "../utils/SoundManager";
 import { BackgroundSprite } from "../components/BackgroundSprite";
 import { ACTION_TYPE } from "../utils/config";
 
@@ -106,7 +106,6 @@ export function GameScene(props: GameSceneProps) {
     ];
 
     const [musicStarted, setMusicStarted] = useState(false);
-    const [soundsReady, setSoundsReady] = useState(false);
     const [playerFloatOffsets, setPlayerFloatOffsets] = useState(Array(playerCount).fill(0));
     const [gameOver, setGameOver] = useState(false);
     const floatAnimRef = React.useRef<number | null>(null);
@@ -128,30 +127,23 @@ export function GameScene(props: GameSceneProps) {
     const playerHeight = windowSize.height * 0.4;
     const screenSpace = (windowSize.width - playerSpacing * 3 - playerBarWidth * 4) / 2
 
-    // Preload all sounds
-    useEffect(() => {
-        preloadAllSounds().then(() => setSoundsReady(true)).catch(() => setSoundsReady(true));
-    }, []);
-
     // Execute the current simulation step
     useEffect(() => {
-        if (soundsReady) {
-            const step = simulationSteps.find(step => step.type === type);
-            if (step && typeof step.action === "function") {
-                step.action();
-            }
+        const step = simulationSteps.find(step => step.type === type);
+        if (step && typeof step.action === "function") {
+            step.action();
         }
-    }, [soundsReady, type]);
+    }, [type]);
 
     // Start matchmaking music after all ready (autoplay policies still apply)
     useEffect(() => {
-        if (musicStarted || !soundsReady) return;
+        if (musicStarted) return;
         const id = setTimeout(() => {
             setMusicStarted(true);
             try { Sound.playMatchmaking(); } catch { }
         }, 300);
         return () => clearTimeout(id);
-    }, [musicStarted, soundsReady]);
+    }, [musicStarted]);
 
     // Stop matchmaking when gameplay begins
     useEffect(() => {
@@ -196,25 +188,6 @@ export function GameScene(props: GameSceneProps) {
         try { Sound.playSuccessWebRemote(); } catch { }
     };
     void onWebRemoteConnected;
-
-    if (!soundsReady) {
-        return (
-            <div style={{
-                position: "fixed",
-                inset: 0,
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                background: "#0b0b18",
-                color: "#ecdeff",
-                fontFamily: "sans-serif",
-                fontSize: 20,
-                letterSpacing: 1,
-            }}>
-                Loading sounds...
-            </div>
-        );
-    }
 
     return (
         <Application width={windowSize.width} height={windowSize.height} autoDensity={true} resolution={window.devicePixelRatio || 1}>
