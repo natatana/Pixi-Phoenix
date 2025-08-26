@@ -3,10 +3,12 @@ import { Assets } from "pixi.js";
 import { PLAYER_COUNT } from "./config";
 
 let loaded = false;
+let assetLoadTime = 0;
 
 export async function loadGameAssets() {
-    if (loaded) return;
+    if (loaded) return assetLoadTime;
 
+    const startTime = performance.now();
     const commonAssets = [
         "/images/splash.jpg",
         "/images/selectmode.jpg",
@@ -47,4 +49,7 @@ export async function loadGameAssets() {
 
     await Assets.load([...commonAssets, ...selectModeAssets, ...perPlayerAssets, ...resultAssets]);
     loaded = true;
+    const endTime = performance.now()
+    assetLoadTime = endTime - startTime;
+    return assetLoadTime;
 }

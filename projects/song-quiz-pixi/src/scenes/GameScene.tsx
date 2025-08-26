@@ -6,7 +6,9 @@ import { RoundText } from "../components/RoundText";
 import { Container, Graphics, Sprite, Text } from "pixi.js";
 import { Sound } from "../utils/SoundManager";
 import { BackgroundSprite } from "../components/BackgroundSprite";
-import { ACTION_TYPE } from "../utils/config";
+import { ACTION_TYPE, REF_HEIGHT, REF_WIDTH } from "../utils/config";
+import { Ticker } from "pixi.js";
+import { isTVDevice } from "../utils/common";
 
 extend({
     Container,
@@ -20,11 +22,12 @@ interface GameSceneProps {
     scaleY: number;
     type: ACTION_TYPE;
     selectedPlayer: 1 | 2 | 3 | 4;
+    assetsLoadTime: number
 }
 
 export function GameScene(props: GameSceneProps) {
     const {
-        windowSize, scaleX, scaleY, type, selectedPlayer
+        windowSize, scaleX, scaleY, type, selectedPlayer, assetsLoadTime
     } = props;
 
     const scale = Math.min(scaleX, scaleY);
@@ -121,6 +124,62 @@ export function GameScene(props: GameSceneProps) {
         silver: false,
         gold: false
     });
+
+    const [debugTextVisible, setDebugTextVisible] = useState(true);
+
+    useEffect(() => {
+        const handleKeyPress = (event: KeyboardEvent) => {
+            console.log(event.key)
+            if (event.key === 'd' || event.key === 'D') {
+                setDebugTextVisible(prev => !prev);
+            }
+        };
+
+        window.addEventListener('keydown', handleKeyPress);
+        return () => {
+            window.removeEventListener('keydown', handleKeyPress);
+        };
+    }, []);
+
+    const [debugText, setDebugText] = useState("");
+    let fpsSamples: number[] = [];
+    useEffect(() => {
+        const ticker = Ticker.system;
+        ticker.minFPS = 30;
+        ticker.maxFPS = 40;
+        const intervalId = setInterval(() => {
+            const fps = ticker.FPS; // Update FPS state and round to 2 decimal places
+            const frameTime = 1000 / fps;
+            if (!fpsSamples) fpsSamples = [];
+            fpsSamples.push(fps);
+            if (fpsSamples.length > 60) fpsSamples.shift();
+            const avgFps = (
+                fpsSamples.reduce((a, b) => a + b, 0) / fpsSamples.length
+            ).toFixed(1);
+            const droppedFrames = fpsSamples.filter((f) => f < 30).length;
+            const droppedPercent = (
+                (droppedFrames / fpsSamples.length) *
+                100
+            ).toFixed(1);
+            const debugInfo = [
+                `[DEBUG MENU] - Press [D] to toggle`,
+                `FPS: ${fps.toFixed(1)} (average: ${avgFps})`,
+                `Frame Time: ${frameTime.toFixed(1)}ms`,
+                // `${ramText}`,
+                `Dropped Frames: ${droppedPercent}%`,
+                `Resolution: ${windowSize.width}x${windowSize.height}`,
+                `PIXI Screen Resolution: ${REF_WIDTH}x${REF_HEIGHT}`,
+                `Asset Load Time: ${assetsLoadTime.toFixed(1)} ms`,
+                // `Glow Cache: ${(cache.glowTime / 1_000).toFixed(2)} seconds`,
+                `Is TV: ${isTVDevice()}`,
+            ].join("\n");
+            setDebugText(debugInfo);
+        }, 100); // Update every 0.1 seconds
+
+        return () => {
+            clearInterval(intervalId);
+        };
+    }, []);
 
     const playerBarWidth = 324 * scale;
     const playerSpacing = 80 * scale;
@@ -236,6 +295,18 @@ export function GameScene(props: GameSceneProps) {
                     />
                 )}
                 <RoundText x={20 * scaleX} y={20 * scaleY} scale={scale} roundNumber={1} totalRounds={5} gameOver={gameOver} />
+
+                {debugTextVisible && <pixiText
+                    text={debugText}
+                    anchor={{ x: 0, y: 0.5 }}
+                    x={100 * scale}
+                    y={150 * scale}
+                    style={{
+                        fontSize: 20 * scale,
+                        fill: 0xFFFFFF,
+                        fontWeight: "bold",
+                    }}
+                />}
             </pixiContainer>
         </Application>
     );

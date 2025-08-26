@@ -22,6 +22,7 @@ function App() {
   const [scene, setScene] = useState<SceneType>(SCENES.SPLASH);
   const [assetsReady, setAssetsReady] = useState(false);
   const [soundsReady, setSoundsReady] = useState(false);
+  const [assetsLoadTime, setAssetsLoadTime] = useState(0);
 
 
   useEffect(() => {
@@ -38,7 +39,15 @@ function App() {
 
   // Preload all textures
   useEffect(() => {
-    loadGameAssets().then(() => setAssetsReady(true));
+    loadGameAssets().then((time) => {
+      if (time > 0) {
+        console.log("Assets load time =>", time)
+        setAssetsLoadTime(time);
+        setAssetsReady(true)
+      } else {
+        setAssetsReady(false);
+      }
+    });
   }, []);
 
   // Preload all sounds
@@ -112,6 +121,7 @@ function App() {
           scaleX={scaleX}
           scaleY={scaleY}
           selectedPlayer={actionTypeToPlayerMap[currentActionType] as 1 | 2 | 3 | 4}
+          assetsLoadTime={assetsLoadTime}
         />
       )}
     </div>
