@@ -32,13 +32,11 @@ export function SelectModeScreen(
 
     useEffect(() => {
         async function loadTextures() {
-            const [sTexture, sHighlightTexture, mTexture, mHighlightTexture, emailus] = await Promise.all([
-                Assets.load("/images/selectmode/single.png"),
-                Assets.load("/images/selectmode/single_highlight.png"),
-                Assets.load("/images/selectmode/multi.png"),
-                Assets.load("/images/selectmode/multi_highlight.png"),
-                Assets.load("/images/selectmode/emailus.png"),
-            ]);
+            const sTexture = Assets.get("images/selectmode/single.png") as Texture | undefined;
+            const sHighlightTexture = Assets.get("images/selectmode/single_highlight.png") as Texture | undefined;
+            const mTexture = Assets.get("images/selectmode/multi.png") as Texture | undefined;
+            const mHighlightTexture = Assets.get("images/selectmode/multi_highlight.png") as Texture | undefined;
+            const emailus = Assets.get("images/selectmode/emailus.png") as Texture | undefined;
             setSingleTexture(sTexture ?? Texture.EMPTY);
             setSingleHighlightTexture(sHighlightTexture ?? Texture.EMPTY);
             setMultiTexture(mTexture ?? Texture.EMPTY);
@@ -61,7 +59,7 @@ export function SelectModeScreen(
     return (
         <Application width={windowSize.width} height={windowSize.height} autoDensity={true} resolution={window.devicePixelRatio || 1}>
             <pixiContainer>
-                <BackgroundSprite assetUrl="/images/selectmode.jpg" width={windowSize.width} height={windowSize.height} />
+                <BackgroundSprite assetUrl="images/selectmode.jpg" width={windowSize.width} height={windowSize.height} />
                 <pixiSprite
                     texture={hovered === "single" ? singleHighlightTexture : singleTexture}
                     anchor={{ x: 0, y: 0.5 }}

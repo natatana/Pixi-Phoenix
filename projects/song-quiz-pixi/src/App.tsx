@@ -19,7 +19,7 @@ function App() {
   const scaleX = windowSize.width / REF_WIDTH;
   const scaleY = windowSize.height / REF_HEIGHT;
 
-  const [scene, setScene] = useState<SceneType>(SCENES.SPLASH);
+  const [scene, setScene] = useState<SceneType>(SCENES.NONE);
   const [assetsReady, setAssetsReady] = useState(false);
   const [soundsReady, setSoundsReady] = useState(false);
   const [assetsLoadTime, setAssetsLoadTime] = useState(0);
@@ -40,10 +40,12 @@ function App() {
   // Preload all textures
   useEffect(() => {
     loadGameAssets().then((time) => {
-      if (time > 0) {
+      console.log("Time ==> ", time)
+      if (time > 100) {
         console.log("Assets load time =>", time)
         setAssetsLoadTime(time);
         setAssetsReady(true)
+        setScene(SCENES.SPLASH);
       } else {
         setAssetsReady(false);
       }

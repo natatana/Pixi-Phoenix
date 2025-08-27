@@ -1,0 +1,535 @@
+{
+  "bundles": [
+    {
+      "name": "default",
+      "assets": [
+        {
+          "alias": [
+            "avatar_1.png"
+          ],
+          "src": [
+            "avatar_1-rq60uA.png",
+            "avatar_1-k8_xtg.webp"
+          ],
+          "data": {
+            "tags": {}
+          }
+        },
+        {
+          "alias": [
+            "avatar_1_buzz_hightlight.png"
+          ],
+          "src": [
+            "avatar_1_buzz_hightlight-QiX8.webp",
+            "avatar_1_buzz_hightlight-HWZAvA.png"
+          ],
+          "data": {
+            "tags": {}
+          }
+        },
+        {
+          "alias": [
+            "avatar_1_highlight.png"
+          ],
+          "src": [
+            "avatar_1_highlight-v-eaAw.webp",
+            "avatar_1_highlight-7ENDjQ.png"
+          ],
+          "data": {
+            "tags": {}
+          }
+        },
+        {
+          "alias": [
+            "avatar_1_jet1_trail.png"
+          ],
+          "src": [
+            "avatar_1_jet1_trail-x1ePrQ.png",
+            "avatar_1_jet1_trail-KJDIWg.webp"
+          ],
+          "data": {
+            "tags": {}
+          }
+        },
+        {
+          "alias": [
+            "avatar_1_jet2_trail.png"
+          ],
+          "src": [
+            "avatar_1_jet2_trail-Vngq4g.webp",
+            "avatar_1_jet2_trail-7GEbUA.png"
+          ],
+          "data": {
+            "tags": {}
+          }
+        },
+        {
+          "alias": [
+            "avatar_1_sound_bar.png"
+          ],
+          "src": [
+            "avatar_1_sound_bar-ha3X9A.webp",
+            "avatar_1_sound_bar--tkgeA.png"
+          ],
+          "data": {
+            "tags": {}
+          }
+        },
+        {
+          "alias": [
+            "avatar_2.png"
+          ],
+          "src": [
+            "avatar_2-iOhbSg.webp",
+            "avatar_2-GwDM7Q.png"
+          ],
+          "data": {
+            "tags": {}
+          }
+        },
+        {
+          "alias": [
+            "avatar_2_buzz_hightlight.png"
+          ],
+          "src": [
+            "avatar_2_buzz_hightlight-qtlVKQ.png",
+            "avatar_2_buzz_hightlight-30SMIg.webp"
+          ],
+          "data": {
+            "tags": {}
+          }
+        },
+        {
+          "alias": [
+            "avatar_2_highlight.png"
+          ],
+          "src": [
+            "avatar_2_highlight-q9Nsdw.webp",
+            "avatar_2_highlight-8lk4mQ.png"
+          ],
+          "data": {
+            "tags": {}
+          }
+        },
+        {
+          "alias": [
+            "avatar_2_jet1_trail.png"
+          ],
+          "src": [
+            "avatar_2_jet1_trail-RwlSuA.webp",
+            "avatar_2_jet1_trail-6UAT8Q.png"
+          ],
+          "data": {
+            "tags": {}
+          }
+        },
+        {
+          "alias": [
+            "avatar_2_jet2_trail.png"
+          ],
+          "src": [
+            "avatar_2_jet2_trail-OSzsIg.png",
+            "avatar_2_jet2_trail-fk-h1g.webp"
+          ],
+          "data": {
+            "tags": {}
+          }
+        },
+        {
+          "alias": [
+            "avatar_2_sound_bar.png"
+          ],
+          "src": [
+            "avatar_2_sound_bar-z7DTKg.webp",
+            "avatar_2_sound_bar-cfdiUw.png"
+          ],
+          "data": {
+            "tags": {}
+          }
+        },
+        {
+          "alias": [
+            "avatar_3.png"
+          ],
+          "src": [
+            "avatar_3-zP2quw.png",
+            "avatar_3-1eM-kw.webp"
+          ],
+          "data": {
+            "tags": {}
+          }
+        },
+        {
+          "alias": [
+            "avatar_3_buzz_hightlight.png"
+          ],
+          "src": [
+            "avatar_3_buzz_hightlight-MhnGHA.webp",
+            "avatar_3_buzz_hightlight-Jx3DKg.png"
+          ],
+          "data": {
+            "tags": {}
+          }
+        },
+        {
+          "alias": [
+            "avatar_3_highlight.png"
+          ],
+          "src": [
+            "avatar_3_highlight-ucjR.png",
+            "avatar_3_highlight-sJYBfw.webp"
+          ],
+          "data": {
+            "tags": {}
+          }
+        },
+        {
+          "alias": [
+            "avatar_3_jet1_trail.png"
+          ],
+          "src": [
+            "avatar_3_jet1_trail-yCdM7w.webp",
+            "avatar_3_jet1_trail-_qgB0A.png"
+          ],
+          "data": {
+            "tags": {}
+          }
+        },
+        {
+          "alias": [
+            "avatar_3_jet2_trail.png"
+          ],
+          "src": [
+            "avatar_3_jet2_trail-W_4f0w.png",
+            "avatar_3_jet2_trail-I2Uu1A.webp"
+          ],
+          "data": {
+            "tags": {}
+          }
+        },
+        {
+          "alias": [
+            "avatar_3_sound_bar.png"
+          ],
+          "src": [
+            "avatar_3_sound_bar-RSa_Pw.png",
+            "avatar_3_sound_bar-ILiHhQ.webp"
+          ],
+          "data": {
+            "tags": {}
+          }
+        },
+        {
+          "alias": [
+            "avatar_4.png"
+          ],
+          "src": [
+            "avatar_4-mCJzag.webp",
+            "avatar_4-GsWnjQ.png"
+          ],
+          "data": {
+            "tags": {}
+          }
+        },
+        {
+          "alias": [
+            "avatar_4_buzz_hightlight.png"
+          ],
+          "src": [
+            "avatar_4_buzz_hightlight-MpEakA.webp",
+            "avatar_4_buzz_hightlight-huIYBQ.png"
+          ],
+          "data": {
+            "tags": {}
+          }
+        },
+        {
+          "alias": [
+            "avatar_4_highlight.png"
+          ],
+          "src": [
+            "avatar_4_highlight-SVp1.webp",
+            "avatar_4_highlight-6vyKGw.png"
+          ],
+          "data": {
+            "tags": {}
+          }
+        },
+        {
+          "alias": [
+            "avatar_4_jet1_trail.png"
+          ],
+          "src": [
+            "avatar_4_jet1_trail-jU8Pag.webp",
+            "avatar_4_jet1_trail-IezoFw.png"
+          ],
+          "data": {
+            "tags": {}
+          }
+        },
+        {
+          "alias": [
+            "avatar_4_jet2_trail.png"
+          ],
+          "src": [
+            "avatar_4_jet2_trail-J1I-Xg.webp",
+            "avatar_4_jet2_trail-i70zpg.png"
+          ],
+          "data": {
+            "tags": {}
+          }
+        },
+        {
+          "alias": [
+            "avatar_4_sound_bar.png"
+          ],
+          "src": [
+            "avatar_4_sound_bar-uZEFPQ.png",
+            "avatar_4_sound_bar-s_RaMg.webp"
+          ],
+          "data": {
+            "tags": {}
+          }
+        },
+        {
+          "alias": [
+            "default_avatar_highlight.png"
+          ],
+          "src": [
+            "default_avatar_highlight-Y4qOTA.png",
+            "default_avatar_highlight-EWjbMA.webp"
+          ],
+          "data": {
+            "tags": {}
+          }
+        },
+        {
+          "alias": [
+            "incorrect_buzz_ighlight.png"
+          ],
+          "src": [
+            "incorrect_buzz_ighlight-TR3dkA.webp",
+            "incorrect_buzz_ighlight-5v8LEg.png"
+          ],
+          "data": {
+            "tags": {}
+          }
+        },
+        {
+          "alias": [
+            "incorrect_highlight.png"
+          ],
+          "src": [
+            "incorrect_highlight-V2d3Fg.png",
+            "incorrect_highlight-O6BBZA.webp"
+          ],
+          "data": {
+            "tags": {}
+          }
+        },
+        {
+          "alias": [
+            "jet_trail.png"
+          ],
+          "src": [
+            "jet_trail-O6HDeA.png",
+            "jet_trail-fSYSQg.webp"
+          ],
+          "data": {
+            "tags": {}
+          }
+        },
+        {
+          "alias": [
+            "player_base.png"
+          ],
+          "src": [
+            "player_base-YVGT.webp",
+            "player_base-dJ2_Qw.png"
+          ],
+          "data": {
+            "tags": {}
+          }
+        },
+        {
+          "alias": [
+            "result/bronze_medal.png",
+            "bronze_medal.png"
+          ],
+          "src": [
+            "result/bronze_medal-nYX1Vw.webp",
+            "result/bronze_medal-N2QogA.png"
+          ],
+          "data": {
+            "tags": {}
+          }
+        },
+        {
+          "alias": [
+            "result/confetti.png",
+            "confetti.png"
+          ],
+          "src": [
+            "result/confetti-s2giaQ.webp",
+            "result/confetti-fdIC.png"
+          ],
+          "data": {
+            "tags": {}
+          }
+        },
+        {
+          "alias": [
+            "result/gold_medal.png",
+            "gold_medal.png"
+          ],
+          "src": [
+            "result/gold_medal-ic0x4Q.png",
+            "result/gold_medal-1Ir59A.webp"
+          ],
+          "data": {
+            "tags": {}
+          }
+        },
+        {
+          "alias": [
+            "result/silver_medal.png",
+            "silver_medal.png"
+          ],
+          "src": [
+            "result/silver_medal-UMiZCw.png",
+            "result/silver_medal-8bu-8Q.webp"
+          ],
+          "data": {
+            "tags": {}
+          }
+        },
+        {
+          "alias": [
+            "result/winner_crown.png",
+            "winner_crown.png"
+          ],
+          "src": [
+            "result/winner_crown-nHIGdw.png",
+            "result/winner_crown-0R_0dA.webp"
+          ],
+          "data": {
+            "tags": {}
+          }
+        },
+        {
+          "alias": [
+            "selectmode/emailus.png",
+            "emailus.png"
+          ],
+          "src": [
+            "selectmode/emailus-WrUczQ.webp",
+            "selectmode/emailus-EsAU.png"
+          ],
+          "data": {
+            "tags": {}
+          }
+        },
+        {
+          "alias": [
+            "selectmode/multi.png",
+            "multi.png"
+          ],
+          "src": [
+            "selectmode/multi-Rdhx.webp",
+            "selectmode/multi-gx6fJg.png"
+          ],
+          "data": {
+            "tags": {}
+          }
+        },
+        {
+          "alias": [
+            "selectmode/multi_highlight.png",
+            "multi_highlight.png"
+          ],
+          "src": [
+            "selectmode/multi_highlight-Vy3IeQ.webp",
+            "selectmode/multi_highlight-SxFl6Q.png"
+          ],
+          "data": {
+            "tags": {}
+          }
+        },
+        {
+          "alias": [
+            "selectmode/single.png",
+            "single.png"
+          ],
+          "src": [
+            "selectmode/single-l2MviA.webp",
+            "selectmode/single-gl2Cww.png"
+          ],
+          "data": {
+            "tags": {}
+          }
+        },
+        {
+          "alias": [
+            "selectmode/single_highlight.png",
+            "single_highlight.png"
+          ],
+          "src": [
+            "selectmode/single_highlight-Mww1yA.webp",
+            "selectmode/single_highlight-GDo4pQ.png"
+          ],
+          "data": {
+            "tags": {}
+          }
+        },
+        {
+          "alias": [
+            "selectmode.jpg"
+          ],
+          "src": [
+            "selectmode-XrTNYA.webp",
+            "selectmode-PGy-VA.jpg"
+          ],
+          "data": {
+            "tags": {}
+          }
+        },
+        {
+          "alias": [
+            "sound_bar.png"
+          ],
+          "src": [
+            "sound_bar-GhnmVw.png",
+            "sound_bar-FfOyxw.webp"
+          ],
+          "data": {
+            "tags": {}
+          }
+        },
+        {
+          "alias": [
+            "splash.jpg"
+          ],
+          "src": [
+            "splash-jmuHsQ.webp",
+            "splash-8ZmpeQ.jpg"
+          ],
+          "data": {
+            "tags": {}
+          }
+        },
+        {
+          "alias": [
+            "stadium.jpg"
+          ],
+          "src": [
+            "stadium-WsMsWg.webp",
+            "stadium-4VozNg.jpg"
+          ],
+          "data": {
+            "tags": {}
+          }
+        }
+      ]
+    }
+  ]
+}

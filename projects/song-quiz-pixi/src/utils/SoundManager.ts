@@ -13,14 +13,14 @@ export type SoundKey =
 
 const SOUND_FILES: Record<SoundKey, string> = {
     matchmaking: '/sounds/MatchmakingMusic.mp3',
-    roundResultsBgm: '/sounds/RoundResultsBGM.wav',
+    roundResultsBgm: '/sounds/RoundResultsBGM.mp3',
     countdown: '/sounds/countdown.mp3',
-    vsCountdown: '/sounds/VSCountdown.wav',
-    opponentFound: '/sounds/OpponentFound.wav',
-    successWebRemote: '/sounds/SuccessWebRemote.wav',
-    winCheer: '/sounds/CheeringWinTie2.wav',
-    roundResultsCorrect: '/sounds/RoundResultsCorrect.wav',
-    shine: '/sounds/Shine_01.wav',
+    vsCountdown: '/sounds/VSCountdown.mp3',
+    opponentFound: '/sounds/OpponentFound.mp3',
+    successWebRemote: '/sounds/SuccessWebRemote.mp3',
+    winCheer: '/sounds/CheeringWinTie2.mp3',
+    roundResultsCorrect: '/sounds/RoundResultsCorrect.mp3',
+    shine: '/sounds/Shine_01.mp3',
 };
 
 const soundInstances: Partial<Record<SoundKey, Howl>> = {};

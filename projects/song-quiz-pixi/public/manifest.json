@@ -1,0 +1,516 @@
+{
+  "bundles": [
+    {
+      "name": "default",
+      "assets": [
+        {
+          "alias": [
+            "images/avatar_1.png"
+          ],
+          "src": [
+            "images/avatar_1-rq60uA.png"
+          ],
+          "data": {
+            "tags": {}
+          }
+        },
+        {
+          "alias": [
+            "images/avatar_1_buzz_hightlight.png"
+          ],
+          "src": [
+            "images/avatar_1_buzz_hightlight-HWZAvA.png"
+          ],
+          "data": {
+            "tags": {}
+          }
+        },
+        {
+          "alias": [
+            "images/avatar_1_highlight.png"
+          ],
+          "src": [
+            "images/avatar_1_highlight-7ENDjQ.png"
+          ],
+          "data": {
+            "tags": {}
+          }
+        },
+        {
+          "alias": [
+            "images/avatar_1_jet1_trail.png"
+          ],
+          "src": [
+            "images/avatar_1_jet1_trail-x1ePrQ.png"
+          ],
+          "data": {
+            "tags": {}
+          }
+        },
+        {
+          "alias": [
+            "images/avatar_1_jet2_trail.png"
+          ],
+          "src": [
+            "images/avatar_1_jet2_trail-7GEbUA.png"
+          ],
+          "data": {
+            "tags": {}
+          }
+        },
+        {
+          "alias": [
+            "images/avatar_1_sound_bar.png"
+          ],
+          "src": [
+            "images/avatar_1_sound_bar--tkgeA.png"
+          ],
+          "data": {
+            "tags": {}
+          }
+        },
+        {
+          "alias": [
+            "images/avatar_2.png"
+          ],
+          "src": [
+            "images/avatar_1-rq60uA.png"
+          ],
+          "data": {
+            "tags": {}
+          }
+        },
+        {
+          "alias": [
+            "images/avatar_2_buzz_hightlight.png"
+          ],
+          "src": [
+            "images/avatar_2_buzz_hightlight-qtlVKQ.png"
+          ],
+          "data": {
+            "tags": {}
+          }
+        },
+        {
+          "alias": [
+            "images/avatar_2_highlight.png"
+          ],
+          "src": [
+            "images/avatar_2_highlight-8lk4mQ.png"
+          ],
+          "data": {
+            "tags": {}
+          }
+        },
+        {
+          "alias": [
+            "images/avatar_2_jet1_trail.png",
+            "avatar_2_jet1_trail.png"
+          ],
+          "src": [
+            "images/avatar_2_jet1_trail-6UAT8Q.png"
+          ],
+          "data": {
+            "tags": {}
+          }
+        },
+        {
+          "alias": [
+            "images/avatar_2_jet2_trail.png",
+            "avatar_2_jet2_trail.png"
+          ],
+          "src": [
+            "images/avatar_2_jet2_trail-OSzsIg.png"
+          ],
+          "data": {
+            "tags": {}
+          }
+        },
+        {
+          "alias": [
+            "images/avatar_2_sound_bar.png",
+            "avatar_2_sound_bar.png"
+          ],
+          "src": [
+            "images/avatar_2_sound_bar-cfdiUw.png"
+          ],
+          "data": {
+            "tags": {}
+          }
+        },
+        {
+          "alias": [
+            "images/avatar_3.png",
+            "avatar_3.png"
+          ],
+          "src": [
+            "images/avatar_3-zP2quw.png"
+          ],
+          "data": {
+            "tags": {}
+          }
+        },
+        {
+          "alias": [
+            "images/avatar_3_buzz_hightlight.png",
+            "avatar_3_buzz_hightlight.png"
+          ],
+          "src": [
+            "images/avatar_3_buzz_hightlight-Jx3DKg.png"
+          ],
+          "data": {
+            "tags": {}
+          }
+        },
+        {
+          "alias": [
+            "images/avatar_3_highlight.png",
+            "avatar_3_highlight.png"
+          ],
+          "src": [
+            "images/avatar_3_highlight-ucjR.png"
+          ],
+          "data": {
+            "tags": {}
+          }
+        },
+        {
+          "alias": [
+            "images/avatar_3_jet1_trail.png",
+            "avatar_3_jet1_trail.png"
+          ],
+          "src": [
+            "images/avatar_3_jet1_trail-_qgB0A.png"
+          ],
+          "data": {
+            "tags": {}
+          }
+        },
+        {
+          "alias": [
+            "images/avatar_3_jet2_trail.png",
+            "avatar_3_jet2_trail.png"
+          ],
+          "src": [
+            "images/avatar_3_jet2_trail-W_4f0w.png"
+          ],
+          "data": {
+            "tags": {}
+          }
+        },
+        {
+          "alias": [
+            "images/avatar_3_sound_bar.png",
+            "avatar_3_sound_bar.png"
+          ],
+          "src": [
+            "images/avatar_3_sound_bar-RSa_Pw.png"
+          ],
+          "data": {
+            "tags": {}
+          }
+        },
+        {
+          "alias": [
+            "images/avatar_4.png",
+            "avatar_4.png"
+          ],
+          "src": [
+            "images/avatar_4-GsWnjQ.png"
+          ],
+          "data": {
+            "tags": {}
+          }
+        },
+        {
+          "alias": [
+            "images/avatar_4_buzz_hightlight.png",
+            "avatar_4_buzz_hightlight.png"
+          ],
+          "src": [
+            "images/avatar_4_buzz_hightlight-huIYBQ.png"
+          ],
+          "data": {
+            "tags": {}
+          }
+        },
+        {
+          "alias": [
+            "images/avatar_4_highlight.png",
+            "avatar_4_highlight.png"
+          ],
+          "src": [
+            "images/avatar_4_highlight-6vyKGw.png"
+          ],
+          "data": {
+            "tags": {}
+          }
+        },
+        {
+          "alias": [
+            "images/avatar_4_jet1_trail.png",
+            "avatar_4_jet1_trail.png"
+          ],
+          "src": [
+            "images/avatar_4_jet1_trail-IezoFw.png"
+          ],
+          "data": {
+            "tags": {}
+          }
+        },
+        {
+          "alias": [
+            "images/avatar_4_jet2_trail.png",
+            "avatar_4_jet2_trail.png"
+          ],
+          "src": [
+            "images/avatar_4_jet2_trail-i70zpg.png"
+          ],
+          "data": {
+            "tags": {}
+          }
+        },
+        {
+          "alias": [
+            "images/avatar_4_sound_bar.png",
+            "avatar_4_sound_bar.png"
+          ],
+          "src": [
+            "images/avatar_4_sound_bar-uZEFPQ.png"
+          ],
+          "data": {
+            "tags": {}
+          }
+        },
+        {
+          "alias": [
+            "images/default_avatar_highlight.png",
+            "default_avatar_highlight.png"
+          ],
+          "src": [
+            "images/default_avatar_highlight-Y4qOTA.png"
+          ],
+          "data": {
+            "tags": {}
+          }
+        },
+        {
+          "alias": [
+            "images/incorrect_buzz_ighlight.png",
+            "incorrect_buzz_ighlight.png"
+          ],
+          "src": [
+            "images/incorrect_buzz_ighlight-5v8LEg.png"
+          ],
+          "data": {
+            "tags": {}
+          }
+        },
+        {
+          "alias": [
+            "images/incorrect_highlight.png",
+            "incorrect_highlight.png"
+          ],
+          "src": [
+            "images/incorrect_highlight-V2d3Fg.png"
+          ],
+          "data": {
+            "tags": {}
+          }
+        },
+        {
+          "alias": [
+            "images/jet_trail.png",
+            "jet_trail.png"
+          ],
+          "src": [
+            "images/jet_trail-O6HDeA.png"
+          ],
+          "data": {
+            "tags": {}
+          }
+        },
+        {
+          "alias": [
+            "images/player_base.png",
+            "player_base.png"
+          ],
+          "src": [
+            "images/player_base-dJ2_Qw.png"
+          ],
+          "data": {
+            "tags": {}
+          }
+        },
+        {
+          "alias": [
+            "images/result/bronze_medal.png",
+            "bronze_medal.png"
+          ],
+          "src": [
+            "images/result/bronze_medal-N2QogA.png"
+          ],
+          "data": {
+            "tags": {}
+          }
+        },
+        {
+          "alias": [
+            "images/result/confetti.png",
+            "confetti.png"
+          ],
+          "src": [
+            "images/result/confetti-fdIC.png"
+          ],
+          "data": {
+            "tags": {}
+          }
+        },
+        {
+          "alias": [
+            "images/result/gold_medal.png",
+            "gold_medal.png"
+          ],
+          "src": [
+            "images/result/gold_medal-ic0x4Q.png"
+          ],
+          "data": {
+            "tags": {}
+          }
+        },
+        {
+          "alias": [
+            "images/result/silver_medal.png",
+            "silver_medal.png"
+          ],
+          "src": [
+            "images/result/silver_medal-UMiZCw.png"
+          ],
+          "data": {
+            "tags": {}
+          }
+        },
+        {
+          "alias": [
+            "images/result/winner_crown.png",
+            "winner_crown.png"
+          ],
+          "src": [
+            "images/result/winner_crown-nHIGdw.png"
+          ],
+          "data": {
+            "tags": {}
+          }
+        },
+        {
+          "alias": [
+            "images/selectmode/emailus.png",
+            "emailus.png"
+          ],
+          "src": [
+            "images/selectmode/emailus-EsAU.png"
+          ],
+          "data": {
+            "tags": {}
+          }
+        },
+        {
+          "alias": [
+            "images/selectmode/multi.png",
+            "multi.png"
+          ],
+          "src": [
+            "images/selectmode/multi-gx6fJg.png"
+          ],
+          "data": {
+            "tags": {}
+          }
+        },
+        {
+          "alias": [
+            "images/selectmode/multi_highlight.png",
+            "multi_highlight.png"
+          ],
+          "src": [
+            "images/selectmode/multi_highlight-SxFl6Q.png"
+          ],
+          "data": {
+            "tags": {}
+          }
+        },
+        {
+          "alias": [
+            "images/selectmode/single.png",
+            "single.png"
+          ],
+          "src": [
+            "images/selectmode/single-gl2Cww.png"
+          ],
+          "data": {
+            "tags": {}
+          }
+        },
+        {
+          "alias": [
+            "images/selectmode/single_highlight.png",
+            "single_highlight.png"
+          ],
+          "src": [
+            "images/selectmode/single_highlight-GDo4pQ.png"
+          ],
+          "data": {
+            "tags": {}
+          }
+        },
+        {
+          "alias": [
+            "images/selectmode.jpg",
+            "selectmode.jpg"
+          ],
+          "src": [
+            "images/selectmode-PGy-VA.jpg"
+          ],
+          "data": {
+            "tags": {}
+          }
+        },
+        {
+          "alias": [
+            "images/sound_bar.png",
+            "sound_bar.png"
+          ],
+          "src": [
+            "images/sound_bar-GhnmVw.png"
+          ],
+          "data": {
+            "tags": {}
+          }
+        },
+        {
+          "alias": [
+            "images/splash.jpg",
+            "splash.jpg"
+          ],
+          "src": [
+            "images/splash-8ZmpeQ.jpg"
+          ],
+          "data": {
+            "tags": {}
+          }
+        },
+        {
+          "alias": [
+            "images/stadium.jpg",
+            "stadium.jpg"
+          ],
+          "src": [
+            "images/stadium-4VozNg.jpg"
+          ],
+          "data": {
+            "tags": {}
+          }
+        }
+      ]
+    }
+  ]
+}

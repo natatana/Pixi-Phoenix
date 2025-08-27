@@ -121,19 +121,19 @@ export function Player({
 
   // Use globally preloaded textures
   useEffect(() => {
-    const loadedDefault = Assets.get("/images/default_avatar_highlight.png") as Texture;
-    const loadedAvatar = Assets.get("/images" + avatar + ".png") as Texture;
-    const loadedBase = Assets.get("/images/player_base.png") as Texture;
-    const loadedHighlight = Assets.get("/images" + avatar + "_highlight.png") as Texture;
-    const loadedJet = Assets.get("/images" + avatar + "_jet2_trail.png") as Texture;
-    const loadedBaseHL = Assets.get("/images" + avatar + "_buzz_hightlight.png") as Texture;
-    const loadedIncorrectAvatar = Assets.get("/images/incorrect_highlight.png") as Texture;
-    const loadedIncorrectBaseHL = Assets.get("/images/incorrect_buzz_ighlight.png") as Texture;
-    const loadedWinner = Assets.get("/images/result/winner_crown.png") as Texture;
-    const loadedGold = Assets.get("/images/result/gold_medal.png") as Texture;
-    const loadedSilver = Assets.get("/images/result/silver_medal.png") as Texture;
-    const loadedBronze = Assets.get("/images/result/bronze_medal.png") as Texture;
-    const loadedConfetti = Assets.get("/images/result/confetti.png") as Texture;
+    const loadedDefault = Assets.get("images/default_avatar_highlight.png") as Texture;
+    const loadedAvatar = Assets.get("images" + avatar + ".png") as Texture;
+    const loadedBase = Assets.get("images/player_base.png") as Texture;
+    const loadedHighlight = Assets.get("images" + avatar + "_highlight.png") as Texture;
+    const loadedJet = Assets.get("images" + avatar + "_jet2_trail.png") as Texture;
+    const loadedBaseHL = Assets.get("images" + avatar + "_buzz_hightlight.png") as Texture;
+    const loadedIncorrectAvatar = Assets.get("images/incorrect_highlight.png") as Texture;
+    const loadedIncorrectBaseHL = Assets.get("images/incorrect_buzz_ighlight.png") as Texture;
+    const loadedWinner = Assets.get("images/result/winner_crown.png") as Texture;
+    const loadedGold = Assets.get("images/result/gold_medal.png") as Texture;
+    const loadedSilver = Assets.get("images/result/silver_medal.png") as Texture;
+    const loadedBronze = Assets.get("images/result/bronze_medal.png") as Texture;
+    const loadedConfetti = Assets.get("images/result/confetti.png") as Texture;
 
     setDefaultAvatarTexture(loadedDefault ?? Texture.EMPTY);
     setAvatarTexture(loadedAvatar ?? Texture.EMPTY);

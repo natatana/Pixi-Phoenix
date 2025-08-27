@@ -145,8 +145,8 @@ export function GameScene(props: GameSceneProps) {
     let fpsSamples: number[] = [];
     useEffect(() => {
         const ticker = Ticker.system;
-        ticker.minFPS = 30;
-        ticker.maxFPS = 40;
+        ticker.minFPS = 10;
+        ticker.maxFPS = 30;
         const intervalId = setInterval(() => {
             const fps = ticker.FPS; // Update FPS state and round to 2 decimal places
             const frameTime = 1000 / fps;
@@ -251,7 +251,7 @@ export function GameScene(props: GameSceneProps) {
     return (
         <Application width={windowSize.width} height={windowSize.height} autoDensity={true} resolution={window.devicePixelRatio || 1}>
             <pixiContainer>
-                <BackgroundSprite assetUrl="/images/stadium.jpg" width={windowSize.width} height={windowSize.height} />
+                <BackgroundSprite assetUrl="images/stadium.jpg" width={windowSize.width} height={windowSize.height} />
                 {Array.from({ length: playerCount }).map((_, index) => {
                     let y = playerHeight + playerFloatOffsets[index];
                     if (gameOver && playerRankings.length === playerCount && playerPoints.length === playerCount) {
