@@ -51,6 +51,7 @@ export function GameScene(props: GameSceneProps) {
                         });
                     }, delay);
                 }
+                setAnimateSoundBar(true);
             }
         },
         {
@@ -59,6 +60,7 @@ export function GameScene(props: GameSceneProps) {
                 const speakerIndex = selectedPlayer - 1;
                 setSpeakingPlayers(speakerIndex);
                 setOnlinePlayers([]);
+                setAnimateSoundBar(false);
                 Sound.stopMatchmaking();
             }
         },
@@ -131,6 +133,48 @@ export function GameScene(props: GameSceneProps) {
     const playerHeight = windowSize.height * 0.4;
     const screenSpace = (windowSize.width - playerSpacing * 3 - playerBarWidth * 4) / 2
 
+    const soundBarHeight = 80 * scale; // adjust as needed
+    const soundBarShowY = windowSize.height + 8 * scale // visible position
+    const soundBarHideY = windowSize.height + soundBarHeight * 2; // hidden below screen
+
+    const [soundBarY, setSoundBarY] = useState(soundBarHideY);
+    const [showSoundBar, setShowSoundBar] = useState(!gameOver);
+    const [animateSoundBar, setAnimateSoundBar] = useState(false);
+
+    useEffect(() => {
+        setShowSoundBar(!gameOver);
+    }, [gameOver]);
+
+    useEffect(() => {
+        let animFrame: number | null = null;
+        const duration = 1000; // ms
+        const startY = soundBarY;
+        const endY = showSoundBar ? soundBarShowY : soundBarHideY;
+        const startTime = performance.now();
+
+        function animate(now: number) {
+            const elapsed = now - startTime;
+            const t = Math.min(1, elapsed / duration);
+            // Ease out
+            const eased = 1 - Math.pow(1 - t, 2);
+            setSoundBarY(startY + (endY - startY) * eased);
+            if (t < 1) {
+                animFrame = requestAnimationFrame(animate);
+            } else {
+                setSoundBarY(endY);
+            }
+        }
+
+        if (startY !== endY) {
+            animFrame = requestAnimationFrame(animate);
+        }
+
+        return () => {
+            if (animFrame) cancelAnimationFrame(animFrame);
+        };
+        // eslint-disable-next-line
+    }, [showSoundBar, soundBarShowY, soundBarHideY]);
+
     // Execute the current simulation step
     useEffect(() => {
         const step = simulationSteps.find(step => step.type === type);
@@ -141,6 +185,7 @@ export function GameScene(props: GameSceneProps) {
 
     // Start matchmaking music after all ready (autoplay policies still apply)
     useEffect(() => {
+        console.log("musicStarted", musicStarted);
         if (musicStarted) return;
         const id = setTimeout(() => {
             setMusicStarted(true);
@@ -158,46 +203,48 @@ export function GameScene(props: GameSceneProps) {
 
     // Floating animation effect
     useEffect(() => {
-        if (!musicStarted || speakingPlayers !== null || winnerPlayer !== null || loserPlayer !== null) {
+        if (!musicStarted || speakingPlayers !== null || winnerPlayer !== null || loserPlayer !== null || gameOver) {
             setPlayerFloatOffsets(Array(playerCount).fill(0));
             if (floatAnimRef.current) {
                 cancelAnimationFrame(floatAnimRef.current);
                 floatAnimRef.current = null;
             }
             return;
-        }
-        let start = performance.now();
-        let lastFrameTime = start;
+        } else {
+            let start = performance.now();
+            let lastFrameTime = start;
 
-        function animate(now: number) {
-            // Only update if at least 16ms (about 60fps) have passed
-            if (now - lastFrameTime >= 16) {
-                const elapsed = (now - start) / 1000;
-                // Use functional update to avoid unnecessary renders if values didn't change
-                setPlayerFloatOffsets(prev => {
-                    const next = Array.from({ length: playerCount }, (_, i) => Math.sin(elapsed * 2 + i) * 3);
-                    // Only update if values actually changed (shallow compare)
-                    const EPSILON = 0.001;
-                    if (
-                        prev.length !== next.length ||
-                        prev.some((v, i) => Math.abs(v - next[i]) > EPSILON)
-                    ) {
-                        return next;
-                    }
-                    return prev;
-                });
-                lastFrameTime = now;
+            function animate(now: number) {
+                // Only update if at least 16ms (about 60fps) have passed
+                if (now - lastFrameTime >= 16) {
+                    const elapsed = (now - start) / 1000;
+                    // Use functional update to avoid unnecessary renders if values didn't change
+                    setPlayerFloatOffsets(prev => {
+                        const next = Array.from({ length: playerCount }, (_, i) => Math.sin(elapsed * 2 + i) * 3);
+                        // Only update if values actually changed (shallow compare)
+                        const EPSILON = 0.001;
+                        if (
+                            prev.length !== next.length ||
+                            prev.some((v, i) => Math.abs(v - next[i]) > EPSILON)
+                        ) {
+                            return next;
+                        }
+                        return prev;
+                    });
+                    lastFrameTime = now;
+                }
+                floatAnimRef.current = requestAnimationFrame(animate);
             }
             floatAnimRef.current = requestAnimationFrame(animate);
+            return () => {
+                if (floatAnimRef.current) {
+                    cancelAnimationFrame(floatAnimRef.current);
+                    floatAnimRef.current = null;
+                }
+            };
         }
-        floatAnimRef.current = requestAnimationFrame(animate);
-        return () => {
-            if (floatAnimRef.current) {
-                cancelAnimationFrame(floatAnimRef.current);
-                floatAnimRef.current = null;
-            }
-        };
-    }, [musicStarted, speakingPlayers, winnerPlayer, loserPlayer, playerCount]);
+
+    }, [musicStarted, speakingPlayers, winnerPlayer, loserPlayer]);
 
     const onWebRemoteConnected = () => {
         try { Sound.playSuccessWebRemote(); } catch { }
@@ -246,14 +293,13 @@ export function GameScene(props: GameSceneProps) {
                         />
                     )
                 })}
-                {!gameOver && (
+                {(soundBarY < windowSize.height + soundBarHeight) && (
                     <SoundBarMemo
                         x={windowSize.width / 2}
-                        y={windowSize.height}
+                        y={soundBarY}
                         scale={scale}
                         speakerIndex={speakingPlayers}
-                        winnerIndex={winnerPlayer}
-                        loserIndex={loserPlayer}
+                        animate={animateSoundBar}
                     />
                 )}
                 <RoundTextMemo x={20 * scaleX} y={20 * scaleY} scale={scale} roundNumber={1} totalRounds={5} gameOver={gameOver} />

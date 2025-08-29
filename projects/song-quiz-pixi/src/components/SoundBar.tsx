@@ -6,12 +6,11 @@ interface SoundBarProps {
   x: number;
   y: number;
   scale: number;
-  speakerIndex?: number | null;
-  winnerIndex?: number | null;
-  loserIndex?: number | null;
+  speakerIndex?: number | null; // null/undefined = no speaker, 0-3 = player index
+  animate?: boolean;
 }
 
-export function SoundBar({ x, y, scale, speakerIndex = null, winnerIndex = null, loserIndex = null }: SoundBarProps) {
+export function SoundBar({ x, y, scale, speakerIndex, animate }: SoundBarProps) {
   const containerRef = useRef(null);
   const [soundBarTexture, setSoundBarTexture] = useState(Texture.EMPTY);
   const [barHeights, setBarHeights] = useState<number[]>([]);
@@ -36,12 +35,8 @@ export function SoundBar({ x, y, scale, speakerIndex = null, winnerIndex = null,
 
   // Update progress smoothly every 50ms for smooth animation
   useEffect(() => {
-    if (
-      (speakerIndex !== null && speakerIndex !== undefined) ||
-      (winnerIndex !== null && winnerIndex !== undefined) ||
-      (loserIndex !== null && loserIndex !== undefined)
-    ) {
-      // Stop animation when a speaker, winner, or loser is selected
+    if (!animate) {
+      // Stop animation when a speaker
       return;
     }
     const interval = setInterval(() => {
@@ -50,19 +45,15 @@ export function SoundBar({ x, y, scale, speakerIndex = null, winnerIndex = null,
         const increment = 20 / (7000 / 50); // 7 seconds total for all 20 bars
         return prevProgress >= 20 ? 0 : prevProgress + increment;
       });
-    }, 50); // 50ms for smooth updates
+    }, 100); // 50ms for smooth updates
 
     return () => clearInterval(interval);
-  }, [speakerIndex, winnerIndex, loserIndex]);
+  }, [animate]);
 
   // Per-frame grow/shrink animation for bar heights
   useTick((options) => {
     // Pause animation if selection is active
-    if (
-      (speakerIndex !== null && speakerIndex !== undefined) ||
-      (winnerIndex !== null && winnerIndex !== undefined) ||
-      (loserIndex !== null && loserIndex !== undefined)
-    ) {
+    if (!animate) {
       return;
     }
 
