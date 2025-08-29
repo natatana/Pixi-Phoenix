@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import { Application, extend } from "@pixi/react";
 import { SoundBar } from "../components/SoundBar";
 import { RoundText } from "../components/RoundText";
@@ -18,6 +18,7 @@ extend({
     Sprite,
     Text,
 });
+
 interface GameSceneProps {
     windowSize: { width: number; height: number };
     scaleX: number;
@@ -176,7 +177,11 @@ export function GameScene(props: GameSceneProps) {
                 setPlayerFloatOffsets(prev => {
                     const next = Array.from({ length: playerCount }, (_, i) => Math.sin(elapsed * 2 + i) * 3);
                     // Only update if values actually changed (shallow compare)
-                    if (prev.length !== next.length || prev.some((v, i) => v !== next[i])) {
+                    const EPSILON = 0.001;
+                    if (
+                        prev.length !== next.length ||
+                        prev.some((v, i) => Math.abs(v - next[i]) > EPSILON)
+                    ) {
                         return next;
                     }
                     return prev;
@@ -199,9 +204,16 @@ export function GameScene(props: GameSceneProps) {
     };
     void onWebRemoteConnected;
 
+    const playerPointsObj = useMemo(() =>
+        Array.from({ length: playerCount }, (_, index) =>
+            winnerPlayer === index ? { song: 10, singer: 10 } : { song: 0, singer: 0 }
+        ),
+        [winnerPlayer, playerCount]
+    );
+
     return (
         <Application width={windowSize.width} height={windowSize.height} autoDensity={true} resolution={window.devicePixelRatio || 1}>
-            <pixiContainer>
+            <pixiContainer cullable>
                 <BackgroundSprite assetUrl="images/stadium.jpg" width={windowSize.width} height={windowSize.height} />
                 {Array.from({ length: playerCount }).map((_, index) => {
                     let y = playerHeight + playerFloatOffsets[index];
@@ -225,7 +237,7 @@ export function GameScene(props: GameSceneProps) {
                             songTitle={winnerPlayer === index ? '24K Magic' : ''}
                             singer={winnerPlayer === index ? 'Bruno Mars' : ''}
                             bonus={winnerPlayer === index ? 10 : 0}
-                            points={winnerPlayer === index ? { song: 10, singer: 10 } : { song: 0, singer: 0 }}
+                            points={playerPointsObj[index]}
                             score={playerPoints[index]}
                             showBronzeMedal={gameOver && playerRankings[index] === 2 && medalFadeIn.bronze}
                             showSilverMedal={gameOver && playerRankings[index] === 1 && medalFadeIn.silver}
