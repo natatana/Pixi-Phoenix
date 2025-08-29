@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Assets, Texture } from "pixi.js";
 
 interface Props {
@@ -7,16 +7,24 @@ interface Props {
     height: number;
 }
 
-export function BackgroundSprite({ assetUrl, width, height }: Props) {
+const BackgroundSprite = React.memo(function BackgroundSprite({ assetUrl, width, height }: Props) {
     const [texture, setTexture] = useState(Texture.EMPTY);
+    const spriteRef = useRef<any>(null);
 
     useEffect(() => {
         const tex = Assets.get(assetUrl) as Texture | undefined;
         setTexture(tex ?? Texture.EMPTY);
     }, [assetUrl]);
 
+    useEffect(() => {
+        if (spriteRef.current) {
+            spriteRef.current.cacheAsBitmap = true; // ✅ Pixi property set directly
+        }
+    }, [texture]);
+
     return (
         <pixiSprite
+            ref={spriteRef}
             texture={texture}
             width={width}
             height={height}
@@ -25,4 +33,11 @@ export function BackgroundSprite({ assetUrl, width, height }: Props) {
             y={0}
         />
     );
-}
+},
+    (prev, next) =>
+        prev.assetUrl === next.assetUrl &&
+        prev.width === next.width &&
+        prev.height === next.height
+);
+
+export { BackgroundSprite };

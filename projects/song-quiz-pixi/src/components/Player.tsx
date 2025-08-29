@@ -1,5 +1,6 @@
+import { memo } from "react";
 import { Assets, Texture, Ticker } from "pixi.js";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, useCallback } from "react";
 import { useTick } from "@pixi/react";
 import { SpeakingAnimation } from "./SpeakingAnimation";
 import { WinnerPointsOverlay } from "./WinnerPointsOverlay";
@@ -27,7 +28,7 @@ interface PlayerProps {
   showWinnerCrown?: boolean;
 }
 
-export function Player({
+const Player = memo(function Player({
   avatar,
   playerName,
   isOnline = false,
@@ -72,17 +73,12 @@ export function Player({
     y: number;
     vx: number;
     vy: number;
-    alpha: number;
     life: number;
-    rotation: number;
-    rotationSpeed: number;
   };
-  const CONFETTI_PARTICLE_COUNT = 15;
+  const CONFETTI_PARTICLE_COUNT = 10;
 
-  const [confettiParticles, setConfettiParticles] = useState<ConfettiParticle[]>([]);
+  const confettiParticlesRef = useRef<ConfettiParticle[]>([]);
   const [showConfetti, setShowConfetti] = useState(false);
-  const [, setConfettiTimer] = useState(0);
-  // const [showCurrentHighlight, setShowCurrentHighlight] = useState(false);
 
   // Animation state
   const [floatOffset, setFloatOffset] = useState(Math.random() * Math.PI * 2);
@@ -106,18 +102,20 @@ export function Player({
   }
 
   // Animation tick
-  useTick((options) => {
+  const handleTick = useCallback((options: any) => {
     const riseMagnitude = 40 * scale; // pixels
     const target = isWinner ? -riseMagnitude : isLooser ? riseMagnitude : 0;
 
     setYOffset((prev) => {
-      const ease = 1 - Math.pow(0.001, options.deltaTime / 200);
+      const ease = 1 - Math.pow(0.001, options.deltaTime / 100);
       return prev + (target - prev) * ease;
     });
     if (isSpeaking) {
       setFloatOffset((prev) => (prev + floatSpeed * options.deltaTime) % (Math.PI * 2));
     }
-  });
+  }, [isWinner, isLooser, scale, isSpeaking, floatSpeed]);
+
+  useTick(handleTick);
 
   // Use globally preloaded textures
   useEffect(() => {
@@ -154,179 +152,91 @@ export function Player({
   // Show infinite confetti after gold medal appears
   useEffect(() => {
     if (showGoldMedal && goldMedalAlpha >= 1) {
-      // Start confetti after gold medal is fully visible
       const particles: ConfettiParticle[] = [];
       for (let i = 0; i < CONFETTI_PARTICLE_COUNT; i++) {
-        // Distribute particles across a wider area and different starting heights
-        const x = (Math.random() - 0.5) * 300 * scaleX; // wider spread
-        // Vary starting height to avoid clustering
-        const y = -300 * scale - Math.random() * 100 * scale; // random starting height
-        // More varied velocities for natural movement
-        const vx = (Math.random() - 0.5) * 80 * scaleX; // more horizontal variation
-        const vy = 80 + Math.random() * 80 * scale; // varied downward speed
-        particles.push({
-          x: x,
-          y: y,
-          vx: vx,
-          vy: vy,
-          alpha: 1,
-          life: Math.random() * 2, // random initial life to stagger appearance
-          rotation: Math.random() * Math.PI * 2, // random initial rotation
-          rotationSpeed: (Math.random() - 0.5) * 0.2, // random rotation speed
-        });
+        const x = (Math.random() - 0.5) * 300 * scale;
+        const y = -300 * scale - Math.random() * 100 * scale;
+        const vx = (Math.random() - 0.5) * 80 * scale;
+        const vy = 80 + Math.random() * 80 * scale;
+        particles.push({ x, y, vx, vy, life: Math.random() * 2 });
       }
-      setConfettiParticles(particles);
+      confettiParticlesRef.current = particles;
       setShowConfetti(true);
-      setConfettiTimer(0);
     } else if (!showGoldMedal) {
       setShowConfetti(false);
-      setConfettiParticles([]);
-      setConfettiTimer(0);
+      confettiParticlesRef.current = [];
     }
   }, [showGoldMedal, goldMedalAlpha, scaleX, scaleY]);
 
+  useTick(
+    useCallback((delta: Ticker) => {
+      if (showConfetti) {
+        const deltaTime = delta.deltaTime / 60;
+        confettiParticlesRef.current = confettiParticlesRef.current.map((p) => {
+          const newX = p.x + p.vx * deltaTime;
+          const newY = p.y + p.vy * deltaTime;
+          return { ...p, x: newX, y: newY, life: p.life + deltaTime };
+        }).filter(p => p.y < 500 * scale);
+      }
+    }, [showConfetti, scale])
+  );
+
   // Smooth medal fade-in animations
+  // Medal and crown fade-in animations using useTick
+  const FADE_DURATION = 800; // ms
+
+  // Store animation state for each medal/crown
+  const [bronzeStart, setBronzeStart] = useState<number | null>(null);
+  const [silverStart, setSilverStart] = useState<number | null>(null);
+  const [goldStart, setGoldStart] = useState<number | null>(null);
+  const [crownStart, setCrownStart] = useState<number | null>(null);
+
+  // Reset animation start times when show* changes
   useEffect(() => {
-    if (showBronzeMedal) {
-      const duration = 800; // 800ms fade-in duration
-      const startTime = performance.now();
-
-      const animate = (currentTime: number) => {
-        const elapsed = currentTime - startTime;
-        const progress = Math.min(1, elapsed / duration);
-        setBronzeMedalAlpha(progress);
-
-        if (progress < 1) {
-          requestAnimationFrame(animate);
-        }
-      };
-
-      requestAnimationFrame(animate);
-    } else {
-      setBronzeMedalAlpha(0);
-    }
+    setBronzeStart(showBronzeMedal ? performance.now() : null);
+    if (!showBronzeMedal) setBronzeMedalAlpha(0);
   }, [showBronzeMedal]);
 
   useEffect(() => {
-    if (showSilverMedal) {
-      const duration = 800; // 800ms fade-in duration
-      const startTime = performance.now();
-
-      const animate = (currentTime: number) => {
-        const elapsed = currentTime - startTime;
-        const progress = Math.min(1, elapsed / duration);
-        setSilverMedalAlpha(progress);
-
-        if (progress < 1) {
-          requestAnimationFrame(animate);
-        }
-      };
-
-      requestAnimationFrame(animate);
-    } else {
-      setSilverMedalAlpha(0);
-    }
+    setSilverStart(showSilverMedal ? performance.now() : null);
+    if (!showSilverMedal) setSilverMedalAlpha(0);
   }, [showSilverMedal]);
 
   useEffect(() => {
-    if (showGoldMedal) {
-      const duration = 800; // 800ms fade-in duration
-      const startTime = performance.now();
-
-      const animate = (currentTime: number) => {
-        const elapsed = currentTime - startTime;
-        const progress = Math.min(1, elapsed / duration);
-        setGoldMedalAlpha(progress);
-
-        if (progress < 1) {
-          requestAnimationFrame(animate);
-        }
-      };
-
-      requestAnimationFrame(animate);
-    } else {
-      setGoldMedalAlpha(0);
-    }
+    setGoldStart(showGoldMedal ? performance.now() : null);
+    if (!showGoldMedal) setGoldMedalAlpha(0);
   }, [showGoldMedal]);
 
   useEffect(() => {
-    if (showWinnerCrown) {
-      const duration = 800; // 800ms fade-in duration
-      const startTime = performance.now();
-
-      const animate = (currentTime: number) => {
-        const elapsed = currentTime - startTime;
-        const progress = Math.min(1, elapsed / duration);
-        setCrownAlpha(progress);
-
-        if (progress < 1) {
-          requestAnimationFrame(animate);
-        }
-      };
-
-      requestAnimationFrame(animate);
-    } else {
-      setCrownAlpha(0);
-    }
+    setCrownStart(showWinnerCrown ? performance.now() : null);
+    if (!showWinnerCrown) setCrownAlpha(0);
   }, [showWinnerCrown]);
 
-  useTick((delta: Ticker) => {
-    if (showConfetti) {
-      setConfettiTimer((prev) => {
-        const next = prev + delta.deltaTime / 60;
+  useTick(
+    useCallback(() => {
+      const now = performance.now();
 
-        setConfettiParticles((prevParticles) => {
-          // Update existing particles with continuous downward movement
-          let updatedParticles = prevParticles.map((p) => {
-            const deltaTime = delta.deltaTime / 60; // Convert to seconds
-            const newX = p.x + p.vx * deltaTime;
-            const newY = p.y + p.vy * deltaTime;
+      if (showBronzeMedal && bronzeStart !== null) {
+        const progress = Math.min(1, (now - bronzeStart) / FADE_DURATION);
+        setBronzeMedalAlpha(progress);
+      }
 
-            return {
-              ...p,
-              x: newX,
-              y: newY,
-              alpha: 1, // Keep alpha at 1 for continuous effect
-              life: p.life + deltaTime,
-            };
-          });
+      if (showSilverMedal && silverStart !== null) {
+        const progress = Math.min(1, (now - silverStart) / FADE_DURATION);
+        setSilverMedalAlpha(progress);
+      }
 
-          // Remove particles that have fallen below the screen
-          updatedParticles = updatedParticles.filter(p => p.y < 500 * scale);
+      if (showGoldMedal && goldStart !== null) {
+        const progress = Math.min(1, (now - goldStart) / FADE_DURATION);
+        setGoldMedalAlpha(progress);
+      }
 
-          // Add new particles at the top to maintain infinite effect
-          if (updatedParticles.length < CONFETTI_PARTICLE_COUNT) {
-            const particlesToAdd = CONFETTI_PARTICLE_COUNT - updatedParticles.length;
-            for (let i = 0; i < particlesToAdd; i++) {
-              // Distribute particles across a wider area and different starting heights
-              const x = (Math.random() - 0.5) * 300 * scaleX; // wider spread
-              // Vary starting height to avoid clustering
-              const y = -150 * scale - Math.random() * 100 * scale; // random starting height
-              // More varied velocities for natural movement
-              const vx = (Math.random() - 0.5) * 80 * scaleX; // more horizontal variation
-              const vy = 80 + Math.random() * 80 * scale; // varied downward speed
-              const rotation = Math.random() * Math.PI * 2;
-              const rotationSpeed = (Math.random() - 0.5) * 0.1;
-              updatedParticles.push({
-                x: x,
-                y: y,
-                vx: vx,
-                vy: vy,
-                alpha: 1,
-                life: 0,
-                rotation: rotation,
-                rotationSpeed: rotationSpeed,
-              });
-            }
-          }
-
-          return updatedParticles;
-        });
-
-        return next;
-      });
-    }
-  });
+      if (showWinnerCrown && crownStart !== null) {
+        const progress = Math.min(1, (now - crownStart) / FADE_DURATION);
+        setCrownAlpha(progress);
+      }
+    }, [showBronzeMedal, bronzeStart, showSilverMedal, silverStart, showGoldMedal, goldStart, showWinnerCrown, crownStart])
+  );
 
   // Select highlight textures based on isLooser and showCurrentHighlight
   const avatarHighlightTexture = isOnline
@@ -395,21 +305,23 @@ export function Player({
         scale={scale}
       />
       {/* Static highlight effect */}
-      {isOnline ?
+      {isOnline ? (
         <pixiSprite
           texture={avatarHighlightTexture}
           anchor={{ x: 0.5, y: 0.5 }}
           x={0}
           y={floatY * scale}
           scale={scale}
-        /> : <pixiSprite
+        />
+      ) : (
+        <pixiSprite
           texture={defaultAvatarTexture}
           anchor={{ x: 0.5, y: 0.5 }}
           x={0}
           y={floatY * scale}
           scale={scale}
         />
-      }
+      )}
       {isWinner && (
         <WinnerPointsOverlay
           songTitle={songTitle}
@@ -486,9 +398,8 @@ export function Player({
           fontWeight: "bold",
         }}
       />
-
       {/* Confetti effect for first place */}
-      {showConfetti && confettiParticles.map((p, i) => (
+      {showConfetti && confettiParticlesRef.current.map((p, i) => (
         <pixiSprite
           key={i}
           texture={confettiTexture}
@@ -496,11 +407,29 @@ export function Player({
           x={p.x}
           y={p.y}
           scale={0.5 * scaleX}
-          alpha={p.alpha}
         />
       ))}
       {/* Spreading highlight animations */}
       <SpeakingAnimation isActive={isSpeaking} scale={scale} avatar={avatar} />
     </pixiContainer>
   );
-}
+}, (prev, next) => {
+  return (
+    prev.x === next.x &&
+    prev.y === next.y &&
+    prev.scaleX === next.scaleX &&
+    prev.scaleY === next.scaleY &&
+    prev.isSpeaking === next.isSpeaking &&
+    prev.isLooser === next.isLooser &&
+    prev.showBronzeMedal === next.showBronzeMedal &&
+    prev.showSilverMedal === next.showSilverMedal &&
+    prev.showGoldMedal === next.showGoldMedal &&
+    prev.showWinnerCrown === next.showWinnerCrown &&
+    prev.avatar === next.avatar &&
+    prev.playerName === next.playerName &&
+    prev.score === next.score
+    // 🚀 ignore everything else to avoid useless redraws
+  );
+});
+
+export default Player;

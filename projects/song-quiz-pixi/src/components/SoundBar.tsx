@@ -107,6 +107,7 @@ export function SoundBar({ x, y, scale, speakerIndex = null, winnerIndex = null,
         x={0}
         y={0}
         scale={scale}
+        cacheAsTexture={() => true}
       />
 
       {/* Timeline bars (drawn graphics) */}

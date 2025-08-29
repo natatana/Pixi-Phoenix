@@ -46,16 +46,6 @@ export function SelectModeScreen(
         loadTextures();
     });
 
-    const texturesLoaded =
-        singleTexture !== Texture.EMPTY &&
-        singleHighlightTexture !== Texture.EMPTY &&
-        multiTexture !== Texture.EMPTY &&
-        multiHighlightTexture !== Texture.EMPTY &&
-        emailusTexture !== Texture.EMPTY;
-
-    if (!texturesLoaded) {
-        return <div>Loading...</div>;
-    }
     return (
         <Application width={windowSize.width} height={windowSize.height} autoDensity={true} resolution={window.devicePixelRatio || 1}>
             <pixiContainer>

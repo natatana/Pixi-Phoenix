@@ -13,7 +13,7 @@ extend({
 
 export function SplashScreen({ onContinue, windowSize }: { onContinue: () => void; windowSize: { width: number; height: number } }) {
     useEffect(() => {
-        const timeout = setTimeout(onContinue, 2500);
+        const timeout = setTimeout(onContinue, 1000);
         return () => clearTimeout(timeout);
     }, [onContinue]);
 

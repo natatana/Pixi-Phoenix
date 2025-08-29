@@ -14,10 +14,6 @@ interface WinnerPointsOverlayProps {
     scale?: number;
 }
 
-function easeOutCubic(t: number) {
-    return 1 - Math.pow(1 - t, 3);
-}
-
 export function WinnerPointsOverlay({
     songTitle,
     singer,
@@ -30,20 +26,6 @@ export function WinnerPointsOverlay({
     const [songAlpha, setSongAlpha] = useState(0);
     const [singerAlpha, setSingerAlpha] = useState(0);
 
-    // Animate alpha with ease-out
-    function animateAlpha(setter: (a: number) => void, duration: number, onStart?: () => void) {
-        let start: number | null = null;
-        if (onStart) onStart();
-        function step(ts: number) {
-            if (start === null) start = ts;
-            const elapsed = ts - start;
-            const t = Math.min(elapsed / duration, 1);
-            setter(easeOutCubic(t));
-            if (t < 1) requestAnimationFrame(step);
-        }
-        requestAnimationFrame(step);
-    }
-
     useEffect(() => {
         if (visible) {
             setSongAlpha(0);
@@ -51,9 +33,9 @@ export function WinnerPointsOverlay({
             // Results just became visible: play correct SFX once
             try { Sound.playRoundResultsCorrect(); } catch { }
             // Animate song row after 500ms with shine
-            const t1 = setTimeout(() => animateAlpha(setSongAlpha, 1000, () => { try { Sound.playShine(); } catch { } }), 500);
+            const t1 = setTimeout(() => { try { Sound.playShine(); } catch { } }, 500);
             // Animate singer row after 1000ms with shine
-            const t2 = setTimeout(() => animateAlpha(setSingerAlpha, 1000, () => { try { Sound.playShine(); } catch { } }), 1000);
+            const t2 = setTimeout(() => { try { Sound.playShine(); } catch { } }, 1000);
             return () => {
                 clearTimeout(t1);
                 clearTimeout(t2);

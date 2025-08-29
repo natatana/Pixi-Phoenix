@@ -25,7 +25,7 @@ export function SpeakingAnimation({
   isActive,
   scale,
   maxRings = 3,
-  animationSpeed = 0.005,
+  animationSpeed = 0.007,
   maxRingScale = 1.5,
   nextRingTriggerScale = 1.25,
   minAlpha = 0.3,
