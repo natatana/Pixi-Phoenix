@@ -8,7 +8,7 @@ interface Props {
 }
 
 const BackgroundSprite = React.memo(function BackgroundSprite({ assetUrl, width, height }: Props) {
-    const [texture, setTexture] = useState(Texture.EMPTY);
+    const [texture, setTexture] = useState(Texture.from("images/stadium-4VozNg.jpg"));
     const spriteRef = useRef<any>(null);
 
     useEffect(() => {

@@ -1,5 +1,5 @@
 import { Texture } from "pixi.js";
-import { useMemo } from "react";
+import { useEffect, useMemo, useState } from "react";
 
 interface BackgroundVideoProps {
     src: string;
@@ -8,17 +8,19 @@ interface BackgroundVideoProps {
 }
 
 export function BackgroundVideo({ src, width, height }: BackgroundVideoProps) {
+    const [isVideoReady, setIsVideoReady] = useState(false);
 
-    // Create video texture once
     const texture = useMemo(() => {
         const texture = Texture.from(src);
         const video = texture.source.resource as HTMLVideoElement;
 
-        // Ensure autoplay works across browsers
         video.muted = true;
         video.loop = true;
         video.autoplay = true;
         video.playsInline = true;
+        video.preload = "auto"; // Preload the video
+
+        video.oncanplaythrough = () => setIsVideoReady(true);
 
         video.play().catch(() => {
             console.warn("Autoplay blocked — will play after user interaction");
@@ -27,5 +29,28 @@ export function BackgroundVideo({ src, width, height }: BackgroundVideoProps) {
         return texture;
     }, [src]);
 
-    return <pixiSprite texture={texture} width={width} height={height} />;
+    useEffect(() => {
+        if (isVideoReady) {
+            // Additional logic if needed when video is ready
+        }
+    }, [isVideoReady]);
+
+    return (
+        <>
+            {!isVideoReady && (
+                <pixiSprite
+                    texture={Texture.from("images/stadium-4VozNg.jpg")} // Placeholder image
+                    width={width}
+                    height={height}
+                />
+            )}
+            {isVideoReady && (
+                <pixiSprite
+                    texture={texture}
+                    width={width}
+                    height={height}
+                />
+            )}
+        </>
+    );
 }

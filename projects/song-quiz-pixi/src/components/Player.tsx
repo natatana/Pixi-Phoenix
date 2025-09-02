@@ -151,16 +151,19 @@ const Player = memo(function Player({
 
   // Show infinite confetti after gold medal appears
   useEffect(() => {
-    if (showGoldMedal && goldMedalAlpha >= 1) {
-      const particles: ConfettiParticle[] = [];
-      for (let i = 0; i < CONFETTI_PARTICLE_COUNT; i++) {
-        const x = (Math.random() - 0.5) * 300 * scale;
-        const y = -300 * scale - Math.random() * 100 * scale;
-        const vx = (Math.random() - 0.5) * 80 * scale;
-        const vy = 80 + Math.random() * 80 * scale;
-        particles.push({ x, y, vx, vy, life: Math.random() * 2 });
+    if (showGoldMedal) {
+      if (!showConfetti) {
+        // Only generate new confetti when first showing
+        const particles: ConfettiParticle[] = [];
+        for (let i = 0; i < CONFETTI_PARTICLE_COUNT; i++) {
+          const x = (Math.random() - 0.8) * 300 * scale;
+          const y = -300 * scale - Math.random() * 100 * scale;
+          const vx = (Math.random() - 0.5) * 80 * scale;
+          const vy = 80 + Math.random() * 80 * scale;
+          particles.push({ x, y, vx, vy, life: Math.random() * 2 });
+        }
+        confettiParticlesRef.current = particles;
       }
-      confettiParticlesRef.current = particles;
       setShowConfetti(true);
     } else if (!showGoldMedal) {
       setShowConfetti(false);

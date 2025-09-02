@@ -1,6 +1,7 @@
 import { Assets, Texture } from "pixi.js";
 import { useEffect, useRef, useState } from "react";
 import { useTick } from "@pixi/react";
+import { SPEAK_COUNTDOWN_SECONDS } from "../utils/config";
 
 interface SoundBarProps {
   x: number;
@@ -15,11 +16,12 @@ export function SoundBar({ x, y, scale, speakerIndex, animate }: SoundBarProps) 
   const [soundBarTexture, setSoundBarTexture] = useState(Texture.EMPTY);
   const [barHeights, setBarHeights] = useState<number[]>([]);
   const [progress, setProgress] = useState(0); // Smooth progress from 0 to 20
+  const [countdown, setCountdown] = useState<number | null>(null);
   const MIN_BAR_HEIGHT = 30;
   const MAX_BAR_HEIGHT = 74;
   // Get 0, 0.5, or 1 randomly
   function randomZeroHalfOne() {
-    const choices = [0, 0.5, 1];
+    const choices = [0, 0.2, 0.4, 0.6, 0.8, 1];
     return choices[Math.floor(Math.random() * choices.length)];
   }
 
@@ -45,10 +47,30 @@ export function SoundBar({ x, y, scale, speakerIndex, animate }: SoundBarProps) 
         const increment = 20 / (7000 / 50); // 7 seconds total for all 20 bars
         return prevProgress >= 20 ? 0 : prevProgress + increment;
       });
-    }, 100); // 50ms for smooth updates
+    }, 100); // 100ms for smooth updates
 
     return () => clearInterval(interval);
   }, [animate]);
+
+  // Start countdown when speakerIndex becomes active
+  useEffect(() => {
+    if (speakerIndex !== null && speakerIndex !== undefined) {
+      setCountdown(SPEAK_COUNTDOWN_SECONDS);
+      const interval = setInterval(() => {
+        setCountdown(prev => {
+          if (prev === null) return null;
+          if (prev <= 1) {
+            clearInterval(interval);
+            return 0;
+          }
+          return prev - 1;
+        });
+      }, 1000);
+      return () => clearInterval(interval);
+    } else {
+      setCountdown(null);
+    }
+  }, [speakerIndex]);
 
   // Per-frame grow/shrink animation for bar heights
   useTick((options) => {
@@ -100,54 +122,68 @@ export function SoundBar({ x, y, scale, speakerIndex, animate }: SoundBarProps) 
         scale={scale}
         cacheAsTexture={() => true}
       />
+      {/* Show countdown if speaking, else show bars */}
+      {(speakerIndex !== null && countdown !== null) ? (
+        <pixiText
+          text={`: ${countdown.toString()}`}
+          anchor={{ x: 0.5, y: 0.5 }}
+          x={0}
+          y={-80 * scale}
+          style={{
+            fontFamily: ["Gilroy", 'serif'],
+            fontSize: 96 * scale,
+            fill: 0xffffff,
+            fontWeight: "bold",
+            align: "center",
+          }}
+        />
+      ) : (
+        < pixiGraphics
+          draw={(g) => {
+            g.clear();
 
-      {/* Timeline bars (drawn graphics) */}
-      <pixiGraphics
-        draw={(g) => {
-          g.clear();
+            // Draw multiple timeline bars with smooth progress
+            for (let i = 0; i < 20; i++) {
+              const barWidth = 16 * scale;
+              const barSpacing = 24 * scale;
+              const startX = -240 * scale + (i * barSpacing);
+              const barHeight = (barHeights[i] || MIN_BAR_HEIGHT) * scale;
+              const startY = -60 * scale - barHeight / 2;
 
-          // Draw multiple timeline bars with smooth progress
-          for (let i = 0; i < 20; i++) {
-            const barWidth = 16 * scale;
-            const barSpacing = 24 * scale;
-            const startX = -240 * scale + (i * barSpacing);
-            const barHeight = (barHeights[i] || MIN_BAR_HEIGHT) * scale;
-            const startY = -60 * scale - barHeight / 2;
+              // Calculate bar color with smooth progress
+              let barColor: number;
+              if (i < Math.floor(progress)) {
+                // Fully filled bars
+                barColor = 0xFFFFFF;
+              } else if (i === Math.floor(progress)) {
+                // Currently filling bar - water effect from left to right
+                const fillPercentage = progress - Math.floor(progress);
 
-            // Calculate bar color with smooth progress
-            let barColor: number;
-            if (i < Math.floor(progress)) {
-              // Fully filled bars
-              barColor = 0xFFFFFF;
-            } else if (i === Math.floor(progress)) {
-              // Currently filling bar - water effect from left to right
-              const fillPercentage = progress - Math.floor(progress);
+                // Draw dark background first
+                g.beginFill(0x1B0A33);
+                g.drawRoundedRect(startX, startY, barWidth, barHeight, 19 * scale);
+                g.endFill();
 
-              // Draw dark background first
-              g.beginFill(0x1B0A33);
+                // Draw filled portion from left to right like water
+                const filledWidth = barWidth * fillPercentage;
+
+                if (filledWidth > 0) {
+                  g.beginFill(0xFFFFFF);
+                  g.drawRoundedRect(startX, startY, filledWidth, barHeight, 19 * scale);
+                  g.endFill();
+                }
+                continue;
+              } else {
+                // Unfilled bars
+                barColor = 0x1B0A33;
+              }
+
+              g.beginFill(barColor);
               g.drawRoundedRect(startX, startY, barWidth, barHeight, 19 * scale);
               g.endFill();
-
-              // Draw filled portion from left to right like water
-              const filledWidth = barWidth * fillPercentage;
-
-              if (filledWidth > 0) {
-                g.beginFill(0xFFFFFF);
-                g.drawRoundedRect(startX, startY, filledWidth, barHeight, 19 * scale);
-                g.endFill();
-              }
-              continue;
-            } else {
-              // Unfilled bars
-              barColor = 0x1B0A33;
             }
-
-            g.beginFill(barColor);
-            g.drawRoundedRect(startX, startY, barWidth, barHeight, 19 * scale);
-            g.endFill();
-          }
-        }}
-      />
+          }}
+        />)}
     </pixiContainer>
   );
 }

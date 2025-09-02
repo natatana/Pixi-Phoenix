@@ -131,7 +131,7 @@ export function GameScene(props: GameSceneProps) {
 
     const playerBarWidth = 324 * scale;
     const playerSpacing = 80 * scale;
-    const playerHeight = windowSize.height * 0.4;
+    const playerHeight = windowSize.height * 0.43;
     const screenSpace = (windowSize.width - playerSpacing * 3 - playerBarWidth * 4) / 2
 
     const soundBarHeight = 80 * scale; // adjust as needed
@@ -139,12 +139,9 @@ export function GameScene(props: GameSceneProps) {
     const soundBarHideY = windowSize.height + soundBarHeight * 2; // hidden below screen
 
     const [soundBarY, setSoundBarY] = useState(soundBarHideY);
-    const [showSoundBar, setShowSoundBar] = useState(!gameOver);
     const [animateSoundBar, setAnimateSoundBar] = useState(false);
 
-    useEffect(() => {
-        setShowSoundBar(!gameOver);
-    }, [gameOver]);
+    const showSoundBar = (!gameOver || speakingPlayers !== null) && winnerPlayer === null;
 
     useEffect(() => {
         let animFrame: number | null = null;
@@ -221,7 +218,16 @@ export function GameScene(props: GameSceneProps) {
                     const elapsed = (now - start) / 1000;
                     // Use functional update to avoid unnecessary renders if values didn't change
                     setPlayerFloatOffsets(prev => {
-                        const next = Array.from({ length: playerCount }, (_, i) => Math.sin(elapsed * 2 + i) * 3);
+                        // 0,2 same offset; 1,3 same offset
+                        const next = Array.from({ length: playerCount }, (_, i) => {
+                            if (i % 2 === 0) {
+                                // 0,2,...
+                                return Math.sin(elapsed * 2) * 10;
+                            } else {
+                                // 1,3,...
+                                return Math.sin(elapsed * 2 + 1) * 10;
+                            }
+                        });
                         // Only update if values actually changed (shallow compare)
                         const EPSILON = 0.001;
                         if (
@@ -262,17 +268,17 @@ export function GameScene(props: GameSceneProps) {
     return (
         <Application width={windowSize.width} height={windowSize.height} autoDensity={true} resolution={window.devicePixelRatio || 1}>
             <pixiContainer cullable>
-                {winnerPlayer !== null ? (
+                <BackgroundSprite assetUrl="images/stadium.jpg" width={windowSize.width} height={windowSize.height} />
+                {winnerPlayer !== null && (
                     <BackgroundVideo
                         src={`videos/winner_${winnerPlayer}.mp4`}
                         width={windowSize.width}
                         height={windowSize.height}
                     />
-                ) : (
-                    <BackgroundSprite assetUrl="images/stadium.jpg" width={windowSize.width} height={windowSize.height} />
                 )}
+
                 {Array.from({ length: playerCount }).map((_, index) => {
-                    let y = playerHeight + playerFloatOffsets[index];
+                    let y = index % 2 == 0 ? playerHeight + playerFloatOffsets[index] : playerHeight - playerFloatOffsets[index];
                     if (gameOver && playerRankings.length === playerCount && playerPoints.length === playerCount) {
                         const rank = playerRankings[index];
                         y = playerHeight + (rank - 1) * 152 * scale;

@@ -15,4 +15,5 @@ export enum ACTION_TYPE {
     LOSER = "loser",
     GAMEOVER = "gameover",
 }
+export const SPEAK_COUNTDOWN_SECONDS = 10; // seconds to speak
 
