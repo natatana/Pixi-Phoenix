@@ -18,7 +18,7 @@ const BackgroundSprite = React.memo(function BackgroundSprite({ assetUrl, width,
 
     useEffect(() => {
         if (spriteRef.current) {
-            spriteRef.current.cacheAsBitmap = true; // ✅ Pixi property set directly
+            spriteRef.current.cacheAsTexture = true; // ✅ Pixi property set directly
         }
     }, [texture]);
 

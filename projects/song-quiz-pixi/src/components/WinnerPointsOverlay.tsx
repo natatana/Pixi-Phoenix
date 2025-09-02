@@ -10,7 +10,6 @@ interface WinnerPointsOverlayProps {
         song: number;
         singer: number;
     };
-    visible: boolean;
     scale?: number;
 }
 
@@ -19,7 +18,6 @@ export function WinnerPointsOverlay({
     singer,
     // bonus,
     points,
-    visible,
     scale = 1,
 }: WinnerPointsOverlayProps) {
     // Animation state
@@ -27,26 +25,32 @@ export function WinnerPointsOverlay({
     const [singerAlpha, setSingerAlpha] = useState(0);
 
     useEffect(() => {
-        if (visible) {
-            setSongAlpha(0);
-            setSingerAlpha(0);
-            // Results just became visible: play correct SFX once
-            try { Sound.playRoundResultsCorrect(); } catch { }
-            // Animate song row after 500ms with shine
-            const t1 = setTimeout(() => { try { Sound.playShine(); } catch { } }, 500);
-            // Animate singer row after 1000ms with shine
-            const t2 = setTimeout(() => { try { Sound.playShine(); } catch { } }, 1000);
-            return () => {
-                clearTimeout(t1);
-                clearTimeout(t2);
-            };
-        } else {
-            setSongAlpha(0);
-            setSingerAlpha(0);
-        }
-    }, [visible, songTitle, singer, points.song, points.singer]);
+        setSongAlpha(0);
+        setSingerAlpha(0);
+        // Results just became visible: play correct SFX once
+        try { Sound.playRoundResultsCorrect(); } catch { }
+        // Animate song row after 500ms with shine
+        const t1 = setTimeout(() => {
+            try {
+                Sound.playShine();
+            }
+            catch { }
+            setSongAlpha(1);
+        }, 500);
+        // Animate singer row after 1000ms with shine
+        const t2 = setTimeout(() => {
+            try {
+                Sound.playShine();
+            }
+            catch { }
+            setSingerAlpha(1);
+        }, 1000);
+        return () => {
+            clearTimeout(t1);
+            clearTimeout(t2);
+        };
+    }, [songTitle, singer, points.song, points.singer]);
 
-    if (!visible) return null;
     // Layout constants
     const width = 320 * scale;
     const padding = 16 * scale;

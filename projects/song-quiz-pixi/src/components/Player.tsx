@@ -328,7 +328,6 @@ const Player = memo(function Player({
           singer={singer}
           bonus={bonus}
           points={points}
-          visible={isWinner}
           scale={scale}
         />
       )}

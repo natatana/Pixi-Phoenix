@@ -7,6 +7,7 @@ import { Sound } from "../utils/SoundManager";
 import { BackgroundSprite } from "../components/BackgroundSprite";
 import { ACTION_TYPE } from "../utils/config";
 import Player from "../components/Player";
+import { BackgroundVideo } from "../components/BackgroundVideo";
 
 const PlayerMemo = React.memo(Player);
 const SoundBarMemo = React.memo(SoundBar);
@@ -261,7 +262,15 @@ export function GameScene(props: GameSceneProps) {
     return (
         <Application width={windowSize.width} height={windowSize.height} autoDensity={true} resolution={window.devicePixelRatio || 1}>
             <pixiContainer cullable>
-                <BackgroundSprite assetUrl="images/stadium.jpg" width={windowSize.width} height={windowSize.height} />
+                {winnerPlayer !== null ? (
+                    <BackgroundVideo
+                        src={`videos/winner_${winnerPlayer}.mp4`}
+                        width={windowSize.width}
+                        height={windowSize.height}
+                    />
+                ) : (
+                    <BackgroundSprite assetUrl="images/stadium.jpg" width={windowSize.width} height={windowSize.height} />
+                )}
                 {Array.from({ length: playerCount }).map((_, index) => {
                     let y = playerHeight + playerFloatOffsets[index];
                     if (gameOver && playerRankings.length === playerCount && playerPoints.length === playerCount) {
