@@ -146,6 +146,15 @@ export function GameScene(props: GameSceneProps) {
         gold: false
     });
 
+    const [showPlayersAndSoundBar, setShowPlayersAndSoundBar] = useState(false);
+    useEffect(() => {
+        const timer = setTimeout(() => {
+            setShowPlayersAndSoundBar(true);
+        }, 1000);
+
+        return () => clearTimeout(timer);
+    }, []);
+
     const playerBarWidth = 324 * scale;
     const playerSpacing = 80 * scale;
     const playerHeight = windowSize.height * 0.43;
@@ -161,34 +170,36 @@ export function GameScene(props: GameSceneProps) {
     const showSoundBar = (!gameOver || speakingPlayers !== null) && winnerPlayer === null;
 
     useEffect(() => {
-        let animFrame: number | null = null;
-        const duration = 1000; // ms
-        const startY = soundBarY;
-        const endY = showSoundBar ? soundBarShowY : soundBarHideY;
-        const startTime = performance.now();
+        if (showPlayersAndSoundBar) {
+            let animFrame: number | null = null;
+            const duration = 1000; // ms
+            const startY = soundBarY;
+            const endY = showSoundBar ? soundBarShowY : soundBarHideY;
+            const startTime = performance.now();
 
-        function animate(now: number) {
-            const elapsed = now - startTime;
-            const t = Math.min(1, elapsed / duration);
-            // Ease out
-            const eased = 1 - Math.pow(1 - t, 2);
-            setSoundBarY(startY + (endY - startY) * eased);
-            if (t < 1) {
-                animFrame = requestAnimationFrame(animate);
-            } else {
-                setSoundBarY(endY);
+            function animate(now: number) {
+                const elapsed = now - startTime;
+                const t = Math.min(1, elapsed / duration);
+                // Ease out
+                const eased = 1 - Math.pow(1 - t, 2);
+                setSoundBarY(startY + (endY - startY) * eased);
+                if (t < 1) {
+                    animFrame = requestAnimationFrame(animate);
+                } else {
+                    setSoundBarY(endY);
+                }
             }
+
+            if (startY !== endY) {
+                animFrame = requestAnimationFrame(animate);
+            }
+            return () => {
+                if (animFrame) cancelAnimationFrame(animFrame);
+            };
         }
 
-        if (startY !== endY) {
-            animFrame = requestAnimationFrame(animate);
-        }
-
-        return () => {
-            if (animFrame) cancelAnimationFrame(animFrame);
-        };
         // eslint-disable-next-line
-    }, [showSoundBar, soundBarShowY, soundBarHideY]);
+    }, [showSoundBar, soundBarShowY, soundBarHideY, showPlayersAndSoundBar]);
 
     // Execute the current simulation step
     useEffect(() => {
@@ -211,7 +222,7 @@ export function GameScene(props: GameSceneProps) {
 
     // Floating animation effect
     useEffect(() => {
-        if (!musicStarted || speakingPlayers !== null || winnerPlayer !== null || loserPlayer !== null || gameOver) {
+        if (!musicStarted || speakingPlayers !== null || winnerPlayer !== null || loserPlayer !== null || gameOver || !showPlayersAndSoundBar || soundBarShowY != soundBarY) {
             setPlayerFloatOffsets(Array(playerCount).fill(0));
             if (floatAnimRef.current) {
                 cancelAnimationFrame(floatAnimRef.current);
@@ -261,7 +272,7 @@ export function GameScene(props: GameSceneProps) {
             };
         }
 
-    }, [musicStarted, speakingPlayers, winnerPlayer, loserPlayer]);
+    }, [musicStarted, speakingPlayers, winnerPlayer, loserPlayer, showPlayersAndSoundBar, soundBarY]);
 
     const playerPointsObj = useMemo(() =>
         Array.from({ length: playerCount }, (_, index) =>
@@ -282,7 +293,7 @@ export function GameScene(props: GameSceneProps) {
                     />
                 )}
 
-                {Array.from({ length: playerCount }).map((_, index) => {
+                {showPlayersAndSoundBar && Array.from({ length: playerCount }).map((_, index) => {
                     let y = index % 2 == 0 ? playerHeight + playerFloatOffsets[index] : playerHeight - playerFloatOffsets[index];
                     if (gameOver && playerRankings.length === playerCount && playerPoints.length === playerCount) {
                         const rank = playerRankings[index];
@@ -313,7 +324,7 @@ export function GameScene(props: GameSceneProps) {
                         />
                     )
                 })}
-                {(soundBarY < windowSize.height + soundBarHeight) && (
+                {showPlayersAndSoundBar && (soundBarY < windowSize.height + soundBarHeight) && (
                     <SoundBarMemo
                         x={windowSize.width / 2}
                         y={soundBarY}
