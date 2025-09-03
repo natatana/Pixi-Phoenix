@@ -80,7 +80,7 @@ function App() {
 
   // Preload all sounds
   useEffect(() => {
-    preloadAllSounds().then(() => setSoundsReady(true)).catch(() => setSoundsReady(true));
+    preloadAllSounds().then(() => setSoundsReady(true)).catch(() => setSoundsReady(false));
   }, []);
 
   const [currentActionType, setCurrentActionType] = useState(ACTION_TYPE.NORMAL);
@@ -138,7 +138,7 @@ function App() {
     };
   }, []);
 
-  if (!assetsReady) {
+  if (!assetsReady && !soundsReady) {
     return (
       <div style={{
         position: "fixed",
@@ -152,7 +152,7 @@ function App() {
         fontSize: 20,
         letterSpacing: 1,
       }}>
-        Loading assets...
+        Loading assets & sounds...
       </div>
     );
   }

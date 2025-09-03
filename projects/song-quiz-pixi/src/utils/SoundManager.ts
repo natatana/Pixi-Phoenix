@@ -1,24 +1,40 @@
 import { Howl } from 'howler';
 
 export type SoundKey =
+    | 'intro'
+    | 'select'
+    | 'navigate'
+    | 'startcheer'
     | 'matchmaking'
-    | 'roundResultsBgm'
+    | 'finalResult'
+    | 'buzzer'
+    | 'thinking'
     | 'countdown'
     | 'vsCountdown'
     | 'opponentFound'
     | 'successWebRemote'
-    | 'winCheer'
+    | 'successWebRemoteFinal'
+    | 'wincheer'
+    | 'drum'
     | 'roundResultsCorrect'
     | 'shine';
 
 const SOUND_FILES: Record<SoundKey, string> = {
+    intro: '/sounds/selectmode.ogg',
+    select: '/sounds/select.ogg',
+    navigate: '/sounds/navigate.ogg',
+    startcheer: '/sounds/startcheer.ogg',
     matchmaking: '/sounds/MatchmakingMusic.mp3',
-    roundResultsBgm: '/sounds/RoundResultsBGM.mp3',
+    finalResult: '/sounds/finalResult.ogg',
+    buzzer: '/sounds/buzzer.ogg',
+    thinking: '/sounds/thinking.ogg',
     countdown: '/sounds/countdown.mp3',
     vsCountdown: '/sounds/VSCountdown.mp3',
     opponentFound: '/sounds/OpponentFound.mp3',
-    successWebRemote: '/sounds/SuccessWebRemote.mp3',
-    winCheer: '/sounds/CheeringWinTie2.mp3',
+    successWebRemote: '/sounds/playerconnect.ogg',
+    successWebRemoteFinal: '/sounds/playerconnect_final.ogg',
+    drum: '/sounds/drum.ogg',
+    wincheer: '/sounds/wincheer.ogg',
     roundResultsCorrect: '/sounds/RoundResultsCorrect.mp3',
     shine: '/sounds/Shine_01.mp3',
 };
@@ -29,8 +45,8 @@ export function preloadAllSounds(): Promise<void> {
     const createHowl = (key: SoundKey): Promise<Howl> => {
         return new Promise((resolve, reject) => {
             // Choose sensible defaults per key
-            const loop = key === 'matchmaking' || key === 'roundResultsBgm';
-            const volume = key === 'roundResultsBgm' ? 0.7 : key === 'matchmaking' ? 0.6 : 1.0;
+            const loop = key === 'matchmaking' || key === 'intro' || key === 'thinking';
+            const volume = key === 'finalResult' || key === 'matchmaking' || key === 'intro' ? 0.6 : 1.0;
 
             const howl = new Howl({
                 src: [SOUND_FILES[key]],
@@ -66,19 +82,44 @@ export function stopSound(key: SoundKey) {
 }
 
 export const Sound = {
+    // Select Mode background sound
+    playIntro: () => playSound('intro'),
+    stopIntro: () => stopSound('intro'),
+
+    // Select
+    playSelect: () => playSound('select'),
+    stopSelect: () => stopSound('select'),
+
+    // Navigate
+    playNavigate: () => playSound('navigate'),
+    stopNavigate: () => stopSound('navigate'),
+
+    // Start Cheer
+    playStartCheer: () => playSound('startcheer'),
+    stopStartCheer: () => stopSound('startcheer'),
     // BGM
     playMatchmaking: () => playSound('matchmaking'),
     stopMatchmaking: () => stopSound('matchmaking'),
 
-    playRoundResultsBgm: () => playSound('roundResultsBgm'),
-    stopRoundResultsBgm: () => stopSound('roundResultsBgm'),
+    playFinalResult: () => playSound('finalResult'),
+    stopFinalResult: () => stopSound('finalResult'),
+
+    // Buzzer
+    playBuzzer: () => playSound('buzzer'),
+    stopBuzzer: () => stopSound('buzzer'),
+
+    // Thinking
+    playThinking: () => playSound('thinking'),
+    stopThinking: () => stopSound('thinking'),
 
     // Events / SFX
     playCountdown: () => playSound('countdown'),
     playVsCountdown: () => playSound('vsCountdown'),
     playOpponentFound: () => playSound('opponentFound'),
     playSuccessWebRemote: () => playSound('successWebRemote'),
-    playWinCheer: () => playSound('winCheer'),
+    playSuccessWebRemoteFinal: () => playSound('successWebRemoteFinal'),
+    playDrum: () => playSound('drum'),
+    playWinCheer: () => playSound('wincheer'),
     playRoundResultsCorrect: () => playSound('roundResultsCorrect'),
     playShine: () => playSound('shine'),
 }; 

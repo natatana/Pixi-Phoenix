@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { Application, extend } from "@pixi/react";
 import { Assets, Container, Graphics, Sprite, Text, Texture } from "pixi.js";
 import { BackgroundSprite } from "../components/BackgroundSprite";
+import { Sound } from "../utils/SoundManager";
 
 extend({
     Container,
@@ -29,6 +30,7 @@ export function SelectModeScreen(
     const [emailusTexture, setEmailusTexture] = useState(Texture.EMPTY);
 
     const [hovered, setHovered] = useState<"single" | "multi">("single");
+    // const [musicStarted, setMusicStarted] = useState(false);
 
     useEffect(() => {
         async function loadTextures() {
@@ -46,6 +48,10 @@ export function SelectModeScreen(
         loadTextures();
     });
 
+    useEffect(() => {
+        Sound.playIntro();
+    }, []);
+
     return (
         <Application width={windowSize.width} height={windowSize.height} autoDensity={true} resolution={window.devicePixelRatio || 1}>
             <pixiContainer>
@@ -57,8 +63,15 @@ export function SelectModeScreen(
                     y={810 * scaleY}
                     scale={scaleX}
                     interactive={true}
-                    onPointerTap={() => onSelectMode("single")}
-                    onPointerOver={() => setHovered("single")}
+                    onPointerTap={() => {
+                        Sound.stopIntro();
+                        Sound.playNavigate();
+                        onSelectMode("single")
+                    }}
+                    onPointerOver={() => {
+                        Sound.playSelect();
+                        setHovered("single")
+                    }}
                 />
                 <pixiSprite
                     texture={hovered === "multi" ? multiHighlightTexture : multiTexture}
@@ -67,8 +80,15 @@ export function SelectModeScreen(
                     y={810 * scaleY}
                     scale={scaleX}
                     interactive={true}
-                    onPointerTap={() => onSelectMode("multi")}
-                    onPointerOver={() => setHovered("multi")}
+                    onPointerTap={() => {
+                        Sound.stopIntro();
+                        Sound.playNavigate();
+                        onSelectMode("multi")
+                    }}
+                    onPointerOver={() => {
+                        Sound.playSelect();
+                        setHovered("multi")
+                    }}
                 />
                 <pixiSprite
                     texture={emailusTexture}

@@ -78,7 +78,6 @@ const Player = memo(function Player({
   const CONFETTI_PARTICLE_COUNT = 10;
 
   const confettiParticlesRef = useRef<ConfettiParticle[]>([]);
-  const [showConfetti, setShowConfetti] = useState(false);
 
   // Animation state
   const [floatOffset, setFloatOffset] = useState(Math.random() * Math.PI * 2);
@@ -152,36 +151,39 @@ const Player = memo(function Player({
   // Show infinite confetti after gold medal appears
   useEffect(() => {
     if (showGoldMedal) {
-      if (!showConfetti) {
-        // Only generate new confetti when first showing
-        const particles: ConfettiParticle[] = [];
-        for (let i = 0; i < CONFETTI_PARTICLE_COUNT; i++) {
-          const x = (Math.random() - 0.8) * 300 * scale;
-          const y = -300 * scale - Math.random() * 100 * scale;
-          const vx = (Math.random() - 0.5) * 80 * scale;
-          const vy = 80 + Math.random() * 80 * scale;
-          particles.push({ x, y, vx, vy, life: Math.random() * 2 });
-        }
-        confettiParticlesRef.current = particles;
+      // Initialize confetti particles
+      const particles: ConfettiParticle[] = [];
+      for (let i = 0; i < CONFETTI_PARTICLE_COUNT; i++) {
+        const x = (Math.random() - 0.5) * 300 * scale; // Centered around 0
+        const y = -300 * scale - Math.random() * 100 * scale; // Start above the view
+        const vx = (Math.random() - 0.5) * 80 * scale; // Horizontal spread
+        const vy = 80 + Math.random() * 40 * scale; // Consistent downward speed
+        particles.push({ x, y, vx, vy, life: Math.random() * 2 }); // Start life at 0
       }
-      setShowConfetti(true);
-    } else if (!showGoldMedal) {
-      setShowConfetti(false);
+      confettiParticlesRef.current = particles;
+    } else {
       confettiParticlesRef.current = [];
     }
-  }, [showGoldMedal, goldMedalAlpha, scaleX, scaleY]);
+  }, [showGoldMedal]);
 
-  useTick(
-    useCallback((delta: Ticker) => {
-      if (showConfetti) {
-        const deltaTime = delta.deltaTime / 60;
-        confettiParticlesRef.current = confettiParticlesRef.current.map((p) => {
-          const newX = p.x + p.vx * deltaTime;
-          const newY = p.y + p.vy * deltaTime;
-          return { ...p, x: newX, y: newY, life: p.life + deltaTime };
-        }).filter(p => p.y < 500 * scale);
-      }
-    }, [showConfetti, scale])
+  useTick((delta: Ticker) => {
+    if (showGoldMedal) {
+      const deltaTime = delta.deltaTime / 60;
+      confettiParticlesRef.current = confettiParticlesRef.current.map((p) => {
+        let newX = p.x + p.vx * deltaTime;
+        let newY = p.y + p.vy * deltaTime;
+
+        // Recycle particles that fall out of view
+        if (newY > 500 * scale) {
+          newX = (Math.random() - 0.5) * 300 * scale; // Reset x position
+          newY = -300 * scale - Math.random() * 100 * scale; // Reset y position
+          p.life = 0; // Reset life
+        }
+
+        return { ...p, x: newX, y: newY, life: p.life + deltaTime };
+      });
+    }
+  }
   );
 
   // Smooth medal fade-in animations
@@ -401,7 +403,7 @@ const Player = memo(function Player({
         }}
       />
       {/* Confetti effect for first place */}
-      {showConfetti && confettiParticlesRef.current.map((p, i) => (
+      {showGoldMedal && confettiParticlesRef.current.map((p, i) => (
         <pixiSprite
           key={i}
           texture={confettiTexture}

@@ -41,15 +41,19 @@ export function GameScene(props: GameSceneProps) {
         {
             type: ACTION_TYPE.ONLINE,
             action: () => {
-                Sound.playOpponentFound();
-                Sound.stopMatchmaking();
                 for (let i = 0; i < 4; i++) {
-                    const delay = Math.random() * 1500;
+                    const delay = i * 500;
                     setTimeout(() => {
                         setOnlinePlayers(prev => {
                             if (prev.includes(i)) return prev;
                             return [...prev, i];
                         });
+
+                        if (i === 3) {
+                            Sound.playSuccessWebRemoteFinal();
+                        } else {
+                            Sound.playSuccessWebRemote();
+                        }
                     }, delay);
                 }
                 setAnimateSoundBar(true);
@@ -58,22 +62,29 @@ export function GameScene(props: GameSceneProps) {
         {
             type: ACTION_TYPE.SPEAKING,
             action: () => {
-                const speakerIndex = selectedPlayer - 1;
-                setSpeakingPlayers(speakerIndex);
-                setOnlinePlayers([]);
-                setAnimateSoundBar(false);
                 Sound.stopMatchmaking();
+                Sound.playBuzzer();
+                const speakerIndex = selectedPlayer - 1;
+                setTimeout(() => {
+                    setSpeakingPlayers(speakerIndex);
+                    setOnlinePlayers([]);
+                    setAnimateSoundBar(false);
+                    Sound.playThinking();
+                }, 500);
             }
         },
         {
             type: ACTION_TYPE.WINNER,
             action: () => {
-                const winnerIndex = selectedPlayer - 1;
-                setWinnerPlayer(winnerIndex);
-                setSpeakingPlayers(null);
-                Sound.stopMatchmaking();
-                Sound.playRoundResultsBgm();
-                Sound.playWinCheer();
+                Sound.stopThinking();
+                // Drum
+                Sound.playDrum();
+                setTimeout(() => {
+                    const winnerIndex = selectedPlayer - 1;
+                    setWinnerPlayer(winnerIndex);
+                    setSpeakingPlayers(null);
+                    Sound.playWinCheer();
+                }, 1500);
             }
         },
         {
@@ -86,9 +97,8 @@ export function GameScene(props: GameSceneProps) {
         {
             type: ACTION_TYPE.NORMAL,
             action: () => {
-                Sound.stopRoundResultsBgm();
-                Sound.playCountdown();
-                Sound.playVsCountdown();
+                Sound.stopFinalResult();
+                Sound.playMatchmaking();
             }
         },
         {
@@ -105,9 +115,16 @@ export function GameScene(props: GameSceneProps) {
                     rankings[playerIdx] = rank;
                 });
                 setPlayerRankings(rankings);
-                setTimeout(() => setMedalFadeIn(prev => ({ ...prev, bronze: true })), 500);
-                setTimeout(() => setMedalFadeIn(prev => ({ ...prev, silver: true })), 1500);
-                setTimeout(() => setMedalFadeIn(prev => ({ ...prev, gold: true })), 2500);
+                Sound.playDrum();
+                setTimeout(() => {
+                    Sound.playFinalResult();
+                    setTimeout(() => setMedalFadeIn(prev => ({ ...prev, bronze: true })), 500);
+                    setTimeout(() => setMedalFadeIn(prev => ({ ...prev, silver: true })), 1500);
+                    setTimeout(() => {
+                        setMedalFadeIn(prev => ({ ...prev, gold: true }))
+                        Sound.playWinCheer();
+                    }, 2500);
+                }, 1500);
             }
         }
     ];
@@ -187,17 +204,10 @@ export function GameScene(props: GameSceneProps) {
         if (musicStarted) return;
         const id = setTimeout(() => {
             setMusicStarted(true);
-            try { Sound.playMatchmaking(); } catch { }
+            // try { Sound.playMatchmaking(); } catch { }
         }, 300);
         return () => clearTimeout(id);
     }, [musicStarted]);
-
-    // Stop matchmaking when gameplay begins
-    useEffect(() => {
-        if (speakingPlayers !== null) {
-            Sound.stopMatchmaking();
-        }
-    }, [speakingPlayers]);
 
     // Floating animation effect
     useEffect(() => {
@@ -252,11 +262,6 @@ export function GameScene(props: GameSceneProps) {
         }
 
     }, [musicStarted, speakingPlayers, winnerPlayer, loserPlayer]);
-
-    const onWebRemoteConnected = () => {
-        try { Sound.playSuccessWebRemote(); } catch { }
-    };
-    void onWebRemoteConnected;
 
     const playerPointsObj = useMemo(() =>
         Array.from({ length: playerCount }, (_, index) =>
