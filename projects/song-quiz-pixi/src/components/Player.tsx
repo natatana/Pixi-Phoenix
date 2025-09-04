@@ -82,7 +82,7 @@ const Player = memo(function Player({
   const [bronzeMedalAlpha, setBronzeMedalAlpha] = useState(0);
   const [silverMedalAlpha, setSilverMedalAlpha] = useState(0);
   const [goldMedalAlpha, setGoldMedalAlpha] = useState(0);
-  const [crownAlpha, setCrownAlpha] = useState(0);
+  // const [crownAlpha, setCrownAlpha] = useState(0);
 
   // Medal vertical position state
   const [bronzeMedalY, setBronzeMedalY] = useState(150); // Start above the view
@@ -170,13 +170,17 @@ const Player = memo(function Player({
 
   // Smooth medal fade-in animations
   // Medal and crown fade-in animations using useTick
-  const FADE_DURATION = 1500; // ms
+  const FADE_DURATION = 500; // ms
 
   // Store animation state for each medal/crown
   const [bronzeStart, setBronzeStart] = useState<number | null>(null);
   const [silverStart, setSilverStart] = useState<number | null>(null);
   const [goldStart, setGoldStart] = useState<number | null>(null);
   const [crownStart, setCrownStart] = useState<number | null>(null);
+
+  const [crownScale, setCrownScale] = useState(1);
+  const CROWN_POP_SCALE = 1.2; // How big the crown should pop
+  const CROWN_POP_DURATION = 800; // ms, how long the pop animation lasts
 
   // Reset animation start times when show* changes
   useEffect(() => {
@@ -196,7 +200,12 @@ const Player = memo(function Player({
 
   useEffect(() => {
     setCrownStart(showWinnerCrown ? performance.now() : null);
-    if (!showWinnerCrown) setCrownAlpha(0);
+    if (!showWinnerCrown) {
+      // setCrownAlpha(0);
+      setCrownScale(1);
+    } else {
+      setCrownScale(CROWN_POP_SCALE); // <-- Start at pop scale
+    }
   }, [showWinnerCrown]);
 
   useEffect(() => {
@@ -213,10 +222,10 @@ const Player = memo(function Player({
 
   useEffect(() => {
     if (showConfetti) {
-      confettiParticlesRef.current = Array.from({ length: 10 }, () => ({
-        x: (Math.random() - 0.5) * 200 * scaleX,
+      confettiParticlesRef.current = Array.from({ length: 1 }, () => ({
+        x: 0,
         y: (-200 - Math.random() * 100) * scale,
-        vy: 2 + Math.random() * 2,
+        vy: 1.4 + Math.random(),
       }));
       forceRerender(n => n + 1); // Trigger a re-render to show confetti
     } else {
@@ -248,13 +257,30 @@ const Player = memo(function Player({
           if (newY !== p.y) changed = true;
           return { ...p, y: newY };
         })
-        .filter((p) => p.y < 300 * scale);
+        .filter((p) => p.y < 600 * scale);
       if (changed) shouldRerender = true;
     }
 
+    // Infinite confetti animation
+    // if (showConfetti && confettiParticlesRef.current.length > 0) {
+    //   let changed = false;
+    //   confettiParticlesRef.current = confettiParticlesRef.current.map((p) => {
+    //     let newY = p.y + p.vy * delta.deltaTime;
+    //     // If confetti falls below the bottom, reset to top
+    //     if (newY > 400 * scale) {
+    //       newY = (-200 - Math.random() * 100) * scale;
+    //       changed = true;
+    //     } else if (newY !== p.y) {
+    //       changed = true;
+    //     }
+    //     return { ...p, y: newY };
+    //   });
+    //   if (changed) shouldRerender = true;
+    // }
+
     // Only rerender if enough time has passed since last rerender
     const now = performance.now();
-    if (shouldRerender && now - lastRerenderRef.current > 33) {
+    if (shouldRerender && now - lastRerenderRef.current > 50) {
       lastRerenderRef.current = now;
       forceRerender(n => n + 1);
     }
@@ -283,8 +309,24 @@ const Player = memo(function Player({
       }
 
       if (showWinnerCrown && crownStart !== null) {
-        const progress = Math.min(1, (now - crownStart) / FADE_DURATION);
-        setCrownAlpha(progress);
+        // setCrownAlpha(progress);
+        const elapsed = now - crownStart;
+        if (elapsed < CROWN_POP_DURATION) {
+          const half = CROWN_POP_DURATION / 2;
+          let scale;
+          if (elapsed < half) {
+            // First half: scale 1 -> 1.5
+            const t = elapsed / half;
+            scale = 1 + (CROWN_POP_SCALE - 1) * t;
+          } else {
+            // Second half: scale 1.5 -> 1
+            const t = (elapsed - half) / half;
+            scale = CROWN_POP_SCALE - (CROWN_POP_SCALE - 1) * t;
+          }
+          setCrownScale(scale);
+        } else if (crownScale !== 1) {
+          setCrownScale(1); // Snap to normal at end
+        }
       }
     }, [showBronzeMedal, bronzeStart, showSilverMedal, silverStart, showGoldMedal, goldStart, showWinnerCrown, crownStart])
   );
@@ -342,8 +384,8 @@ const Player = memo(function Player({
           anchor={{ x: 1, y: 1 }}
           x={54 * scaleX}
           y={(-50 + floatY) * scale}
-          scale={scale}
-          alpha={crownAlpha}
+          scale={scale * crownScale}
+          alpha={1}
         />
       )}
       {/* Avatar (top layer) */}
@@ -455,7 +497,7 @@ const Player = memo(function Player({
           anchor={{ x: 0.5, y: 0.5 }}
           x={p.x}
           y={p.y}
-          scale={0.5 * scaleX}
+          scale={0.7 * scale}
           alpha={1}
         />
       ))}
