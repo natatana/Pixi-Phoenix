@@ -99,38 +99,41 @@ const Player = memo(function Player({
   }
 
   // Animation tick
+  // Only animate yOffset ONCE when isWinner or isLooser changes, not every frame
   useEffect(() => {
-    if (!isWinner && !isLooser) return;
-
-    let animationFrame: number;
-    let lastTime = performance.now();
-
     const riseMagnitude = 40 * scale; // pixels
-    const target = isWinner ? -riseMagnitude : isLooser ? riseMagnitude : 0;
+    let animFrame: number | null = null;
+    let running = true;
 
-    function animate() {
-      animationFrame = requestAnimationFrame(animate);
-      const now = performance.now();
-      const deltaTime = now - lastTime;
-      lastTime = now;
-
-      setYOffset(prev => {
-        const ease = 1 - Math.pow(0.001, deltaTime / 100);
-        const next = prev + (target - prev) * ease;
-        // If close enough to target, snap and stop animating
-        if (Math.abs(next - target) < 0.5) {
-          cancelAnimationFrame(animationFrame);
-          return target;
+    // Only animate if winner or looser
+    if (isWinner || isLooser) {
+      const target = isWinner ? -riseMagnitude : riseMagnitude;
+      function animate() {
+        setYOffset(prev => {
+          const ease = 0.03;
+          const next = prev + (target - prev) * ease;
+          // If close enough to target, snap and stop animating
+          if (Math.abs(next - target) < 0.5) {
+            running = false;
+            return target;
+          }
+          return next;
+        });
+        if (running) {
+          animFrame = requestAnimationFrame(animate);
         }
-        return next;
-      });
+      }
+      animFrame = requestAnimationFrame(animate);
+    } else {
+      // Reset to 0 if neither winner nor looser
+      setYOffset(0);
     }
 
-    animate();
-
     return () => {
-      cancelAnimationFrame(animationFrame);
+      running = false;
+      if (animFrame) cancelAnimationFrame(animFrame);
     };
+    // Only rerun when isWinner, isLooser, or scale changes
   }, [isWinner, isLooser, scale]);
 
   // Use globally preloaded textures

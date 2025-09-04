@@ -320,7 +320,11 @@ export function GameScene(props: GameSceneProps) {
                     // Calculate initial and game-over X positions
                     const initialX = screenSpace + 136 * scale * index + playerBarWidth * index + playerBarWidth / 2;
                     const gameOverX = screenSpace + 80 * scale * index + playerBarWidth * index + playerBarWidth / 2;
-                    const x = gameOver ? initialX + (gameOverX - initialX) * playerAnimationProgress : initialX;
+                    const x = gameOver ?
+                        index !== 0 ?
+                            initialX + (gameOverX - initialX) * playerAnimationProgress :
+                            initialX + 28 * scale * playerAnimationProgress :
+                        initialX;
 
                     return (
                         <PlayerMemo
