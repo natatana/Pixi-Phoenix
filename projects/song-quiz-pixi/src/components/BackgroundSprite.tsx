@@ -1,13 +1,14 @@
 import React, { useEffect, useRef, useState } from "react";
-import { Assets, Texture } from "pixi.js";
+import { Assets, BlurFilter, Texture } from "pixi.js";
 
 interface Props {
     assetUrl: string;
     width: number;
     height: number;
+    gameOver?: boolean;
 }
 
-const BackgroundSprite = React.memo(function BackgroundSprite({ assetUrl, width, height }: Props) {
+const BackgroundSprite = React.memo(function BackgroundSprite({ assetUrl, width, height, gameOver }: Props) {
     const [texture, setTexture] = useState(Texture.from("images/stadium-4VozNg.jpg"));
     const spriteRef = useRef<any>(null);
 
@@ -31,13 +32,15 @@ const BackgroundSprite = React.memo(function BackgroundSprite({ assetUrl, width,
             anchor={{ x: 0, y: 0 }}
             x={0}
             y={0}
+            filters={gameOver ? [new BlurFilter({ strength: 5 })] : []}
         />
     );
 },
     (prev, next) =>
         prev.assetUrl === next.assetUrl &&
         prev.width === next.width &&
-        prev.height === next.height
+        prev.height === next.height &&
+        prev.gameOver === next.gameOver
 );
 
 export { BackgroundSprite };

@@ -107,7 +107,7 @@ export function GameScene(props: GameSceneProps) {
                 setGameOver(true);
                 setWinnerPlayer(null);
                 setLoserPlayer(null);
-                const points = Array.from({ length: 4 }, () => Math.floor(Math.random() * 24) * 10 - 30);
+                const points = [140, -20, 170, 115];
                 setPlayerPoints(points);
                 const sortedIndices = points.map((pt, idx) => ({ pt, idx })).sort((a, b) => b.pt - a.pt).map(obj => obj.idx);
                 const rankings = Array(4);
@@ -156,7 +156,7 @@ export function GameScene(props: GameSceneProps) {
     }, []);
 
     const playerBarWidth = 324 * scale;
-    const playerSpacing = 80 * scale;
+    const playerSpacing = gameOver ? 80 * scale : 136 * scale;
     const playerHeight = windowSize.height * 0.43;
     const screenSpace = (windowSize.width - playerSpacing * 3 - playerBarWidth * 4) / 2
 
@@ -166,6 +166,7 @@ export function GameScene(props: GameSceneProps) {
 
     const [soundBarY, setSoundBarY] = useState(soundBarHideY);
     const [animateSoundBar, setAnimateSoundBar] = useState(false);
+    const [playerAnimationProgress, setPlayerAnimationProgress] = useState(0);
 
     const showSoundBar = (!gameOver || speakingPlayers !== null) && winnerPlayer === null;
 
@@ -209,6 +210,30 @@ export function GameScene(props: GameSceneProps) {
         }
     }, [type]);
 
+    useEffect(() => {
+        if (gameOver) {
+            let animFrame: number | null = null;
+            const duration = 1500; // 1 second
+            const startTime = performance.now();
+
+            function animate(now: number) {
+                const elapsed = now - startTime;
+                const progress = Math.min(1, elapsed / duration);
+                setPlayerAnimationProgress(progress);
+
+                if (progress < 1) {
+                    animFrame = requestAnimationFrame(animate);
+                }
+            }
+
+            animFrame = requestAnimationFrame(animate);
+
+            return () => {
+                if (animFrame) cancelAnimationFrame(animFrame);
+            };
+        }
+    }, [gameOver]);
+
     // Start matchmaking music after all ready (autoplay policies still apply)
     useEffect(() => {
         console.log("musicStarted", musicStarted);
@@ -240,14 +265,8 @@ export function GameScene(props: GameSceneProps) {
                     // Use functional update to avoid unnecessary renders if values didn't change
                     setPlayerFloatOffsets(prev => {
                         // 0,2 same offset; 1,3 same offset
-                        const next = Array.from({ length: playerCount }, (_, i) => {
-                            if (i % 2 === 0) {
-                                // 0,2,...
-                                return Math.sin(elapsed * 2) * 10;
-                            } else {
-                                // 1,3,...
-                                return Math.sin(elapsed * 2 + 1) * 10;
-                            }
+                        const next = Array.from({ length: playerCount }, (_) => {
+                            return Math.sin(elapsed * 2) * 10;
                         });
                         // Only update if values actually changed (shallow compare)
                         const EPSILON = 0.001;
@@ -284,7 +303,7 @@ export function GameScene(props: GameSceneProps) {
     return (
         <Application width={windowSize.width} height={windowSize.height} autoDensity={true} resolution={window.devicePixelRatio || 1}>
             <pixiContainer cullable>
-                <BackgroundSprite assetUrl="images/stadium.jpg" width={windowSize.width} height={windowSize.height} />
+                <BackgroundSprite assetUrl="images/stadium.jpg" width={windowSize.width} height={windowSize.height} gameOver={gameOver} />
                 {winnerPlayer !== null && (
                     <BackgroundVideo
                         src={`videos/winner_${winnerPlayer}.mp4`}
@@ -294,17 +313,21 @@ export function GameScene(props: GameSceneProps) {
                 )}
 
                 {showPlayersAndSoundBar && Array.from({ length: playerCount }).map((_, index) => {
-                    let y = index % 2 == 0 ? playerHeight + playerFloatOffsets[index] : playerHeight - playerFloatOffsets[index];
-                    if (gameOver && playerRankings.length === playerCount && playerPoints.length === playerCount) {
-                        const rank = playerRankings[index];
-                        y = playerHeight + (rank - 1) * 152 * scale;
-                    }
+                    const initialY = index % 2 === 0 ? playerHeight - playerFloatOffsets[index] : playerHeight + playerFloatOffsets[index];
+                    const gameOverY = playerHeight + (playerRankings[index] - 1) * 152 * scale;
+                    const y = gameOver ? initialY + (gameOverY - initialY) * playerAnimationProgress : initialY;
+
+                    // Calculate initial and game-over X positions
+                    const initialX = screenSpace + 136 * scale * index + playerBarWidth * index + playerBarWidth / 2;
+                    const gameOverX = screenSpace + 80 * scale * index + playerBarWidth * index + playerBarWidth / 2;
+                    const x = gameOver ? initialX + (gameOverX - initialX) * playerAnimationProgress : initialX;
+
                     return (
                         <PlayerMemo
                             key={index}
                             playerName={playerNames[index]}
                             avatar={`/avatar_${index + 1}`}
-                            x={screenSpace + playerSpacing * index + playerBarWidth * index + playerBarWidth / 2}
+                            x={x}
                             y={y}
                             scaleX={scaleX}
                             scaleY={scaleY}

@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import "./resources/css/App.css";
 import { SplashScreen } from "./scenes/SplashScreen";
 import { SelectModeScreen } from "./scenes/SelectModeScreen";
@@ -26,28 +26,32 @@ function App() {
   const [assetsLoadTime, setAssetsLoadTime] = useState(0);
 
   const [fps, setFps] = useState(0);
+  const frameCountRef = useRef(0);
+  const lastTimeRef = useRef(performance.now());
 
   useEffect(() => {
-    let lastFrameTime = performance.now();
-    let frameCount = 0;
+    let animationFrameId: number;
 
-    const calculateFps = () => {
-      const now = performance.now();
-      frameCount++;
+    const tick = (currentTime: number) => {
+      frameCountRef.current++;
+      const timeElapsed = currentTime - lastTimeRef.current;
 
-      if (now - lastFrameTime >= 1000) {
-        setFps(frameCount < 40 ? frameCount * 1.5 : frameCount);
-        frameCount = 0;
-        lastFrameTime = now;
+      // Update FPS every second
+      if (timeElapsed >= 1000) {
+        const result = Math.round((frameCountRef.current * 1000) / timeElapsed);
+
+        setFps(result < 25 ? result * 2 : result);
+        frameCountRef.current = 0;
+        lastTimeRef.current = currentTime;
       }
 
-      requestAnimationFrame(calculateFps);
+      animationFrameId = requestAnimationFrame(tick);
     };
 
-    requestAnimationFrame(calculateFps);
+    animationFrameId = requestAnimationFrame(tick);
 
     return () => {
-      // Cleanup if necessary
+      cancelAnimationFrame(animationFrameId);
     };
   }, []);
 
