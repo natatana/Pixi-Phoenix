@@ -7,6 +7,7 @@ import { loadGameAssets } from "./utils/AssetsLoader";
 import GameSceneLoader from "./utils/GameSceneLoader";
 import { preloadAllSounds } from "./utils/SoundManager";
 import { isTVDevice } from "./utils/common";
+import SelectPlayList from "./scenes/SelectPlayList";
 
 type SceneType = (typeof SCENES)[keyof typeof SCENES];
 
@@ -40,7 +41,7 @@ function App() {
       if (timeElapsed >= 1000) {
         const result = Math.round((frameCountRef.current * 1000) / timeElapsed);
 
-        setFps(result < 25 ? result * 2 : result);
+        setFps(result < 28 ? result * 2 : result);
         frameCountRef.current = 0;
         lastTimeRef.current = currentTime;
       }
@@ -193,7 +194,16 @@ function App() {
         <SplashScreen windowSize={windowSize} onContinue={() => setScene(SCENES.SELECT_MODE)} />
       )}
       {scene === SCENES.SELECT_MODE && (
-        <SelectModeScreen windowSize={windowSize} scaleX={scaleX} scaleY={scaleY} onSelectMode={() => setScene(SCENES.GAME)} />
+        <SelectModeScreen windowSize={windowSize} scaleX={scaleX} scaleY={scaleY} onSelectMode={(mode) => {
+          if (mode === "multi") {
+            setScene(SCENES.GAME)
+          } else {
+            alert("Not added yet");
+          }
+        }} />
+      )}
+      {scene === SCENES.SELECT_PLAYLIST && (
+        <SelectPlayList />
       )}
       {scene === SCENES.GAME && (
         <GameSceneLoader

@@ -134,7 +134,7 @@ const Player = memo(function Player({
       if (animFrame) cancelAnimationFrame(animFrame);
     };
     // Only rerun when isWinner, isLooser, or scale changes
-  }, [isWinner, isLooser, scale]);
+  }, [isWinner, isLooser]);
 
   // Use globally preloaded textures
   useEffect(() => {
@@ -204,7 +204,7 @@ const Player = memo(function Player({
       // setCrownAlpha(0);
       setCrownScale(1);
     } else {
-      setCrownScale(CROWN_POP_SCALE); // <-- Start at pop scale
+      setCrownScale(CROWN_POP_SCALE);
     }
   }, [showWinnerCrown]);
 
@@ -224,15 +224,15 @@ const Player = memo(function Player({
     if (showConfetti) {
       confettiParticlesRef.current = Array.from({ length: 1 }, () => ({
         x: 0,
-        y: (-200 - Math.random() * 100) * scale,
-        vy: 1.4 + Math.random(),
+        y: -300 * scale,
+        vy: 3 * scale,
       }));
       forceRerender(n => n + 1); // Trigger a re-render to show confetti
     } else {
       confettiParticlesRef.current = [];
       forceRerender(n => n + 1); // Hide confetti
     }
-  }, [showConfetti, scale]);
+  }, [showConfetti]);
 
   // Reduce FPS drop by throttling rerenders for float/confetti animations
 
@@ -257,7 +257,7 @@ const Player = memo(function Player({
           if (newY !== p.y) changed = true;
           return { ...p, y: newY };
         })
-        .filter((p) => p.y < 600 * scale);
+        .filter((p) => p.y < 400 * scale);
       if (changed) shouldRerender = true;
     }
 
@@ -280,7 +280,7 @@ const Player = memo(function Player({
 
     // Only rerender if enough time has passed since last rerender
     const now = performance.now();
-    if (shouldRerender && now - lastRerenderRef.current > 50) {
+    if (shouldRerender && now - lastRerenderRef.current > 33) {
       lastRerenderRef.current = now;
       forceRerender(n => n + 1);
     }
@@ -292,7 +292,7 @@ const Player = memo(function Player({
 
       if (showBronzeMedal && bronzeStart !== null) {
         const progress = Math.min(1, (now - bronzeStart) / FADE_DURATION);
-        setBronzeMedalAlpha(Math.pow(progress, 1.5));
+        setBronzeMedalAlpha(progress);
         setBronzeMedalY((230 + 50 * progress) * scale);
       }
 
@@ -519,7 +519,8 @@ const Player = memo(function Player({
     prev.showWinnerCrown === next.showWinnerCrown &&
     prev.avatar === next.avatar &&
     prev.playerName === next.playerName &&
-    prev.score === next.score
+    prev.score === next.score &&
+    prev.isOnline === next.isOnline
     // 🚀 ignore everything else to avoid useless redraws
   );
 });

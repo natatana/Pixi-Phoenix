@@ -15,7 +15,7 @@ export function BackgroundVideo({ src, width, height }: BackgroundVideoProps) {
         const video = texture.source.resource as HTMLVideoElement;
 
         video.muted = true;
-        video.loop = true;
+        video.loop = false;
         video.autoplay = true;
         video.playsInline = true;
         video.preload = "auto"; // Preload the video

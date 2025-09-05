@@ -5,6 +5,7 @@ export const SCENES = {
     NONE: "",
     SPLASH: "splash",
     SELECT_MODE: "select_mode",
+    SELECT_PLAYLIST: "select_playlist",
     GAME: "game",
 } as const;
 export enum ACTION_TYPE {

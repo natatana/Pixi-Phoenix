@@ -56,7 +56,7 @@ export function GameScene(props: GameSceneProps) {
                         }
                     }, delay);
                 }
-                setAnimateSoundBar(true);
+                setAnimateSoundBar(false);
             }
         },
         {
@@ -68,7 +68,6 @@ export function GameScene(props: GameSceneProps) {
                 setTimeout(() => {
                     setSpeakingPlayers(speakerIndex);
                     setOnlinePlayers([]);
-                    setAnimateSoundBar(false);
                     Sound.playThinking();
                 }, 500);
             }
@@ -87,43 +86,45 @@ export function GameScene(props: GameSceneProps) {
                 }, 1500);
             }
         },
-        {
-            type: ACTION_TYPE.LOSER,
-            action: () => {
-                const looserIndex = selectedPlayer - 1;
-                setLoserPlayer(looserIndex);
-            }
-        },
+        // {
+        //     type: ACTION_TYPE.LOSER,
+        //     action: () => {
+        //         const looserIndex = selectedPlayer - 1;
+        //         setLoserPlayer(looserIndex);
+        //     }
+        // },
         {
             type: ACTION_TYPE.NORMAL,
             action: () => {
                 Sound.stopFinalResult();
                 Sound.playMatchmaking();
+                setAnimateSoundBar(true);
             }
         },
         {
             type: ACTION_TYPE.GAMEOVER,
             action: () => {
-                setGameOver(true);
-                setWinnerPlayer(null);
-                setLoserPlayer(null);
                 const points = [140, -20, 170, 115];
                 setPlayerPoints(points);
                 const sortedIndices = points.map((pt, idx) => ({ pt, idx })).sort((a, b) => b.pt - a.pt).map(obj => obj.idx);
-                const rankings = Array(4);
-                sortedIndices.forEach((playerIdx, rank) => {
-                    rankings[playerIdx] = rank;
-                });
-                setPlayerRankings(rankings);
+
                 Sound.playDrum();
                 setTimeout(() => {
+                    setGameOver(true);
+                    setWinnerPlayer(null);
+                    setLoserPlayer(null);
+                    const rankings = Array(4);
+                    sortedIndices.forEach((playerIdx, rank) => {
+                        rankings[playerIdx] = rank;
+                    });
+                    setPlayerRankings(rankings);
                     Sound.playFinalResult();
-                    setTimeout(() => setMedalFadeIn(prev => ({ ...prev, bronze: true })), 500);
-                    setTimeout(() => setMedalFadeIn(prev => ({ ...prev, silver: true })), 1500);
+                    setTimeout(() => setMedalFadeIn(prev => ({ ...prev, bronze: true })), 3000);
+                    setTimeout(() => setMedalFadeIn(prev => ({ ...prev, silver: true })), 4000);
                     setTimeout(() => {
                         setMedalFadeIn(prev => ({ ...prev, gold: true }))
                         Sound.playWinCheer();
-                    }, 2500);
+                    }, 5000);
                 }, 1500);
             }
         }
@@ -167,6 +168,7 @@ export function GameScene(props: GameSceneProps) {
     const [soundBarY, setSoundBarY] = useState(soundBarHideY);
     const [animateSoundBar, setAnimateSoundBar] = useState(false);
     const [playerAnimationProgress, setPlayerAnimationProgress] = useState(0);
+    const [showWinnerVideo, setShowWinnerVideo] = useState(false);
 
     const showSoundBar = (!gameOver || speakingPlayers !== null) && winnerPlayer === null;
 
@@ -177,13 +179,18 @@ export function GameScene(props: GameSceneProps) {
             const startY = soundBarY;
             const endY = showSoundBar ? soundBarShowY : soundBarHideY;
             const startTime = performance.now();
+            let lastUpdate = startTime;
 
             function animate(now: number) {
                 const elapsed = now - startTime;
                 const t = Math.min(1, elapsed / duration);
                 // Ease out
                 const eased = 1 - Math.pow(1 - t, 2);
-                setSoundBarY(startY + (endY - startY) * eased);
+                // Cap at 30 FPS
+                if (now - lastUpdate >= 33) {
+                    setSoundBarY(startY + (endY - startY) * eased);
+                    lastUpdate = now;
+                }
                 if (t < 1) {
                     animFrame = requestAnimationFrame(animate);
                 } else {
@@ -211,16 +218,31 @@ export function GameScene(props: GameSceneProps) {
     }, [type]);
 
     useEffect(() => {
+        let timeout: number | undefined;
+        if (winnerPlayer !== null) {
+            timeout = window.setTimeout(() => setShowWinnerVideo(true), 2000);
+        } else {
+            setShowWinnerVideo(false);
+        }
+        return () => {
+            if (timeout) clearTimeout(timeout);
+        };
+    }, [winnerPlayer]);
+
+    useEffect(() => {
         if (gameOver) {
             let animFrame: number | null = null;
-            const duration = 1500; // 1 second
+            const duration = 2000; // 2 second
             const startTime = performance.now();
+            let lastUpdate = startTime;
 
             function animate(now: number) {
                 const elapsed = now - startTime;
                 const progress = Math.min(1, elapsed / duration);
-                setPlayerAnimationProgress(progress);
-
+                if (now - lastUpdate >= 33) {
+                    setPlayerAnimationProgress(progress);
+                    lastUpdate = now;
+                }
                 if (progress < 1) {
                     animFrame = requestAnimationFrame(animate);
                 }
@@ -247,51 +269,68 @@ export function GameScene(props: GameSceneProps) {
 
     // Floating animation effect
     useEffect(() => {
-        if (!musicStarted || speakingPlayers !== null || winnerPlayer !== null || loserPlayer !== null || gameOver || !showPlayersAndSoundBar || soundBarShowY != soundBarY) {
+        // Cancel any previous animation frame
+        if (floatAnimRef.current) {
+            cancelAnimationFrame(floatAnimRef.current);
+            floatAnimRef.current = null;
+        }
+
+
+        if (
+            !musicStarted ||
+            speakingPlayers !== null ||
+            winnerPlayer !== null ||
+            loserPlayer !== null ||
+            gameOver ||
+            !showPlayersAndSoundBar ||
+            soundBarShowY != soundBarY ||
+            onlinePlayers.length > 0
+        ) {
             setPlayerFloatOffsets(Array(playerCount).fill(0));
+            return;
+        }
+
+        let start = performance.now();
+        let lastFrameTime = start;
+
+        function animate(now: number) {
+            if (now - lastFrameTime >= 33) {
+                const elapsed = (now - start) / 1000;
+                setPlayerFloatOffsets(prev => {
+                    const next = Array.from({ length: playerCount }, () => Math.sin(elapsed * 2) * 10);
+                    const EPSILON = 0.001;
+                    if (
+                        prev.length !== next.length ||
+                        prev.some((v, i) => Math.abs(v - next[i]) > EPSILON)
+                    ) {
+                        return next;
+                    }
+                    return prev;
+                });
+                lastFrameTime = now;
+            }
+            floatAnimRef.current = requestAnimationFrame(animate);
+        }
+        floatAnimRef.current = requestAnimationFrame(animate);
+
+        return () => {
             if (floatAnimRef.current) {
                 cancelAnimationFrame(floatAnimRef.current);
                 floatAnimRef.current = null;
             }
-            return;
-        } else {
-            let start = performance.now();
-            let lastFrameTime = start;
-
-            function animate(now: number) {
-                // Only update if at least 16ms (about 60fps) have passed
-                if (now - lastFrameTime >= 16) {
-                    const elapsed = (now - start) / 1000;
-                    // Use functional update to avoid unnecessary renders if values didn't change
-                    setPlayerFloatOffsets(prev => {
-                        // 0,2 same offset; 1,3 same offset
-                        const next = Array.from({ length: playerCount }, (_) => {
-                            return Math.sin(elapsed * 2) * 10;
-                        });
-                        // Only update if values actually changed (shallow compare)
-                        const EPSILON = 0.001;
-                        if (
-                            prev.length !== next.length ||
-                            prev.some((v, i) => Math.abs(v - next[i]) > EPSILON)
-                        ) {
-                            return next;
-                        }
-                        return prev;
-                    });
-                    lastFrameTime = now;
-                }
-                floatAnimRef.current = requestAnimationFrame(animate);
-            }
-            floatAnimRef.current = requestAnimationFrame(animate);
-            return () => {
-                if (floatAnimRef.current) {
-                    cancelAnimationFrame(floatAnimRef.current);
-                    floatAnimRef.current = null;
-                }
-            };
-        }
-
-    }, [musicStarted, speakingPlayers, winnerPlayer, loserPlayer, showPlayersAndSoundBar, soundBarY]);
+        };
+    }, [
+        musicStarted,
+        speakingPlayers,
+        winnerPlayer,
+        loserPlayer,
+        showPlayersAndSoundBar,
+        soundBarY,
+        soundBarShowY,
+        gameOver,
+        playerCount,
+        onlinePlayers
+    ]);
 
     const playerPointsObj = useMemo(() =>
         Array.from({ length: playerCount }, (_, index) =>
@@ -304,9 +343,9 @@ export function GameScene(props: GameSceneProps) {
         <Application width={windowSize.width} height={windowSize.height} autoDensity={true} resolution={window.devicePixelRatio || 1}>
             <pixiContainer cullable>
                 <BackgroundSprite assetUrl="images/stadium.jpg" width={windowSize.width} height={windowSize.height} gameOver={gameOver} />
-                {winnerPlayer !== null && (
+                {showWinnerVideo && winnerPlayer !== null && (
                     <BackgroundVideo
-                        src={`videos/winner_${winnerPlayer}.mp4`}
+                        src={`videos/winner-${winnerPlayer}.mp4`}
                         width={windowSize.width}
                         height={windowSize.height}
                     />
@@ -335,7 +374,7 @@ export function GameScene(props: GameSceneProps) {
                             y={y}
                             scaleX={scaleX}
                             scaleY={scaleY}
-                            isOnline={speakingPlayers === index || winnerPlayer === index || loserPlayer === index || onlinePlayers.includes(index)}
+                            isOnline={onlinePlayers.includes(index)}
                             isSpeaking={speakingPlayers === index}
                             isWinner={winnerPlayer === index}
                             isLooser={loserPlayer === index}
