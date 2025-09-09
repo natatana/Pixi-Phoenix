@@ -69,6 +69,16 @@
   border-radius: 4px;
 }
 
+.focusHighlight {
+  position: absolute;
+  pointer-events: none;
+  border: 3px solid #FFD600;
+  border-radius: 12px;
+  box-shadow: 0 0 12px #FFD600;
+  transition: left 0.25s cubic-bezier(.4,2,.6,1), top 0.25s cubic-bezier(.4,2,.6,1), width 0.25s, height 0.25s;
+  z-index: 10;
+}
+
 .playlistItem {
   width: 234px;
   height: 308px;
@@ -81,6 +91,8 @@
   align-items: center;
   justify-content: flex-start;
   transition: border 0.2s, box-shadow 0.2s;
+  transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  will-change: transform;
 }
 
 .playlistItem:focus {
@@ -90,6 +102,7 @@
 }
 
 .playlistItem.selected {
+  transform: scale(1.05);
   border: 3px solid #FFD600;
   box-shadow: 0 0 12px #FFD600;
 }

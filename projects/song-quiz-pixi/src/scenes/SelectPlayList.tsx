@@ -66,6 +66,7 @@ export default function SelectPlayList({ scale = 1, onHomeHandle }: SelectPlayLi
     // Track focused item: [sectionIndex, itemIndex]
     const [focusPos, setFocusPos] = useState<[number, number]>([0, 0]);
 
+
     // Create refs for all items
     const itemRefs = useRef<Array<Array<HTMLDivElement | null>>>(
         sections.map(section => section.items.map(() => null))
@@ -84,19 +85,20 @@ export default function SelectPlayList({ scale = 1, onHomeHandle }: SelectPlayLi
         const item = itemRefs.current[sectionIdx][itemIdx];
         const container = scrollListRefs.current[sectionIdx];
         if (item && container) {
-            if (itemIdx === 0) {
-                // Always scroll to the very left for the first item
-                container.scrollLeft = 0;
-            } else {
-                const itemRect = item.getBoundingClientRect();
-                const containerRect = container.getBoundingClientRect();
+            // Option 1: Scroll so the item is at the very left
+            // container.scrollTo({
+            //     left: item.offsetLeft,
+            //     behavior: "smooth"
+            // });
 
-                if (itemRect.left < containerRect.left) {
-                    container.scrollLeft -= (containerRect.left - itemRect.left);
-                } else if (itemRect.right > containerRect.right) {
-                    container.scrollLeft += (itemRect.right - containerRect.right);
-                }
-            }
+            // Option 2: Scroll so the item is centered
+            const itemRect = item.getBoundingClientRect();
+            const containerRect = container.getBoundingClientRect();
+            const scrollLeft = item.offsetLeft - (containerRect.width / 2) + (itemRect.width / 2);
+            container.scrollTo({
+                left: scrollLeft,
+                behavior: "smooth"
+            });
         }
     }, [focusPos]);
 
@@ -142,14 +144,14 @@ export default function SelectPlayList({ scale = 1, onHomeHandle }: SelectPlayLi
             if (sectionIdx < sections.length - 1) {
                 // Clamp to available items in next section
                 newSection = sectionIdx + 1;
-                newItem = Math.min(itemIdx, sections[newSection].items.length - 1);
+                newItem = 0;
             }
         }
         if (e.key === "ArrowUp") {
             e.preventDefault();
             if (sectionIdx > 0) {
                 newSection = sectionIdx - 1;
-                newItem = Math.min(itemIdx, sections[newSection].items.length - 1);
+                newItem = 0;
             }
         }
 
@@ -204,90 +206,107 @@ export default function SelectPlayList({ scale = 1, onHomeHandle }: SelectPlayLi
             <div style={{ textAlign: "center", margin: `${24 * scale}px 0 0 0`, fontSize: `${32 * scale}px` }}>
                 Select <b>1-3 Playlists</b>
             </div>
-            {sections.map((section, sectionIdx) => (
-                <div className={styles.section} key={section.key}>
-                    <div className={styles.sectionTitle} style={{ fontSize: `${32 * scale}px` }}>{section.title}</div>
-                    <div
-                        className={styles.scrollList}
-                        ref={el => { scrollListRefs.current[sectionIdx] = el; }}
-                    >
-                        {section.items.map((item, itemIdx) => (
+            {sections.map((section, sectionIdx) => {
+                const isFocusedSection = focusPos[0] === sectionIdx;
+                return (
+                    <div className={styles.section} key={section.key}>
+                        <div className={styles.sectionTitle} style={{ fontSize: `${32 * scale}px` }}>{section.title}</div>
+                        <div
+                            className={styles.scrollList}
+                            ref={el => { scrollListRefs.current[sectionIdx] = el; }}
+                            style={{ overflow: "hidden", width: "100%" }}
+                        >
                             <div
-                                key={item.id}
-                                className={`${styles.playlistItem} ${(selected.includes(item.id) || (focusPos[0] === sectionIdx && focusPos[1] === itemIdx)) ? styles.selected : ""}`}
-                                onClick={() => handleSelect(item.id, sectionIdx, itemIdx)}
-                                tabIndex={0}
-                                ref={el => {
-                                    itemRefs.current[sectionIdx][itemIdx] = el;
-                                }}
-                                onKeyDown={e => handleKeyDown(e, sectionIdx, itemIdx, item.id)}
-                                role="button"
-                                aria-pressed={selected.includes(item.id)}
+                                className={styles.scrollListInner}
                                 style={{
-                                    width: ITEM_WIDTH,
-                                    height: ITEM_HEIGHT,
-                                    flex: `0 0 ${ITEM_WIDTH}px`,
-                                    outline: "none",
-                                    position: "relative"
+                                    display: "flex",
+                                    transition: "transform 0.4s cubic-bezier(0.4,0,0.2,1)",
+                                    transform: isFocusedSection
+                                        ? `translateX(-${focusPos[1] * (ITEM_WIDTH + 32)}px)`
+                                        : "translateX(0)",
+                                    gap: `${32 * scale}px`
                                 }}
-                                // Auto-focus the current item
-                                autoFocus={focusPos[0] === sectionIdx && focusPos[1] === itemIdx}
                             >
-                                <img
-                                    src={item.image}
-                                    alt={item.title}
-                                    style={{
-                                        width: "100%",
-                                        objectFit: "cover",
-                                        borderRadius: `${BORDER_RADIUS}px`
-                                    }}
-                                />
-                                <div className={styles.playlistTitle} style={{ fontSize: `${24 * scale}px` }}>{item.title}</div>
-                                <div
-                                    className={styles.checkMarkBox}
-                                    style={{
-                                        width: CHECKBOX_SIZE,
-                                        height: CHECKBOX_SIZE,
-                                        top: 10 * scale,
-                                        left: 10 * scale
-                                    }}
-                                >
-                                    {selected.includes(item.id) ? (
-                                        <span
-                                            className={styles.checkMark}
+                                {section.items.map((item, itemIdx) => (
+                                    <div
+                                        key={item.id}
+                                        className={`${styles.playlistItem} ${isFocusedSection && itemIdx === focusPos[1] ? styles.selected : ""}`}
+                                        onClick={() => handleSelect(item.id, sectionIdx, itemIdx)}
+                                        tabIndex={0}
+                                        ref={el => {
+                                            itemRefs.current[sectionIdx][itemIdx] = el;
+                                        }}
+                                        onKeyDown={e => handleKeyDown(e, sectionIdx, itemIdx, item.id)}
+                                        role="button"
+                                        aria-pressed={selected.includes(item.id)}
+                                        style={{
+                                            width: ITEM_WIDTH,
+                                            height: ITEM_HEIGHT,
+                                            flex: `0 0 ${ITEM_WIDTH}px`,
+                                            outline: "none",
+                                            position: "relative"
+                                        }}
+                                        autoFocus={isFocusedSection && itemIdx === focusPos[1]}
+                                    >
+                                        <img
+                                            src={item.image}
+                                            alt={item.title}
                                             style={{
-                                                fontSize: `${2 * scale}rem`,
+                                                width: "100%",
+                                                objectFit: "cover",
+                                                borderRadius: `${BORDER_RADIUS}px`
+                                            }}
+                                        />
+                                        <div className={styles.playlistTitle} style={{ fontSize: `${24 * scale}px` }}>{item.title}</div>
+                                        <div
+                                            className={styles.checkMarkBox}
+                                            style={{
                                                 width: CHECKBOX_SIZE,
-                                                height: CHECKBOX_SIZE
+                                                height: CHECKBOX_SIZE,
+                                                top: 10 * scale,
+                                                left: 10 * scale
                                             }}
                                         >
-                                            ✓
-                                        </span>
-                                    ) : (
-                                        <svg
-                                            width={CHECKBOX_SIZE}
-                                            height={CHECKBOX_SIZE}
-                                            viewBox={`0 0 ${CHECKBOX_SIZE} ${CHECKBOX_SIZE}`}
-                                            style={{ display: "block" }}
-                                        >
-                                            <rect
-                                                x={2 * scale}
-                                                y={2 * scale}
-                                                width={56 * scale}
-                                                height={56 * scale}
-                                                rx={6 * scale}
-                                                fill="#18103A"
-                                                stroke="#FFD600"
-                                                strokeWidth={4 * scale}
-                                            />
-                                        </svg>
-                                    )}
-                                </div>
+                                            {selected.includes(item.id) ? (
+                                                <span
+                                                    className={styles.checkMark}
+                                                    style={{
+                                                        fontSize: `${2 * scale}rem`,
+                                                        width: CHECKBOX_SIZE,
+                                                        height: CHECKBOX_SIZE
+                                                    }}
+                                                >
+                                                    ✓
+                                                </span>
+                                            ) : (
+                                                <svg
+                                                    width={CHECKBOX_SIZE}
+                                                    height={CHECKBOX_SIZE}
+                                                    viewBox={`0 0 ${CHECKBOX_SIZE} ${CHECKBOX_SIZE}`}
+                                                    style={{ display: "block" }}
+                                                >
+                                                    <rect
+                                                        x={2 * scale}
+                                                        y={2 * scale}
+                                                        width={56 * scale}
+                                                        height={56 * scale}
+                                                        rx={6 * scale}
+                                                        fill="#18103A"
+                                                        stroke="#FFD600"
+                                                        strokeWidth={4 * scale}
+                                                    />
+                                                </svg>
+                                            )}
+                                        </div>
+                                    </div>
+                                )
+                                )}
                             </div>
-                        ))}
+                        </div>
                     </div>
-                </div>
-            ))}
+                )
+            }
+            )}
         </div>
     );
 }
