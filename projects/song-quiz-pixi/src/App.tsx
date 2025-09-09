@@ -110,7 +110,7 @@ function App() {
     [ACTION_TYPE.ONLINE]: 1,
     [ACTION_TYPE.SPEAKING]: 2,
     [ACTION_TYPE.WINNER]: 3,
-    // [ACTION_TYPE.LOSER]: 3,
+    [ACTION_TYPE.LOSER]: 3,
     [ACTION_TYPE.GAMEOVER]: 4
   };
   useEffect(() => {
@@ -119,9 +119,10 @@ function App() {
     const actionTypes = Object.values(ACTION_TYPE);
     let index = 0;
 
+    const filteredActionTypes = actionTypes.filter(type => type !== ACTION_TYPE.LOSER);
     const interval = setInterval(() => {
-      if (index < actionTypes.length) {
-        setCurrentActionType(actionTypes[index]);
+      if (index < filteredActionTypes.length) {
+        setCurrentActionType(filteredActionTypes[index]);
         index += 1;
       } else {
         clearInterval(interval);
