@@ -26,9 +26,11 @@ function App() {
   const [soundsReady, setSoundsReady] = useState(false);
   const [assetsLoadTime, setAssetsLoadTime] = useState(0);
 
-  const [fps, setFps] = useState(0);
+  // const [fps, setFps] = useState(0);
+  const [avgFps, setAvgFps] = useState(0);
   const frameCountRef = useRef(0);
   const lastTimeRef = useRef(performance.now());
+  const fpsBufferRef = useRef<number[]>([]);
 
   useEffect(() => {
     let animationFrameId: number;
@@ -41,7 +43,18 @@ function App() {
       if (timeElapsed >= 1000) {
         const result = Math.round((frameCountRef.current * 1000) / timeElapsed);
 
-        setFps(result < 28 ? result * 2 : result);
+        // setFps(result < 28 ? result * 2 : result);
+
+        // --- FPS Buffer logic ---
+        const fpsValue = result < 28 ? result * 2 : result;
+        fpsBufferRef.current.push(fpsValue);
+        if (fpsBufferRef.current.length > 100) {
+          fpsBufferRef.current.shift();
+        }
+        const sum = fpsBufferRef.current.reduce((a, b) => a + b, 0);
+        setAvgFps(sum / fpsBufferRef.current.length);
+        // --- End FPS Buffer logic ---
+
         frameCountRef.current = 0;
         lastTimeRef.current = currentTime;
       }
@@ -96,8 +109,8 @@ function App() {
     [ACTION_TYPE.NORMAL]: 1,
     [ACTION_TYPE.ONLINE]: 1,
     [ACTION_TYPE.SPEAKING]: 2,
-    [ACTION_TYPE.WINNER]: 2,
-    [ACTION_TYPE.LOSER]: 3,
+    [ACTION_TYPE.WINNER]: 3,
+    // [ACTION_TYPE.LOSER]: 3,
     [ACTION_TYPE.GAMEOVER]: 4
   };
   useEffect(() => {
@@ -113,7 +126,7 @@ function App() {
       } else {
         clearInterval(interval);
       }
-    }, 3000);
+    }, 5000);
 
     return () => clearInterval(interval);
   }, [scene, assetsReady, soundsReady]);
@@ -125,7 +138,7 @@ function App() {
     `PIXI Screen Resolution: ${REF_WIDTH}x${REF_HEIGHT}`,
     `Asset Load Time: ${assetsLoadTime.toFixed(1)} ms`,
     `Is TV: ${isTVDevice()}`,
-    `FPS: ${fps.toFixed(1)}` // Display FPS
+    `Avg FPS (100): ${avgFps.toFixed(1)}` // Display FPS
   ].join("\n");
 
 
@@ -203,7 +216,7 @@ function App() {
         }} />
       )}
       {scene === SCENES.SELECT_PLAYLIST && (
-        <SelectPlayList />
+        <SelectPlayList scale={Math.min(scaleX, scaleY)} onHomeHandle={() => setScene(SCENES.SELECT_MODE)} />
       )}
       {scene === SCENES.GAME && (
         <GameSceneLoader

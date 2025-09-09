@@ -81,24 +81,29 @@ export function GameScene(props: GameSceneProps) {
                 setSpeakingPlayers(null);
                 setTimeout(() => {
                     const winnerIndex = selectedPlayer - 1;
+                    setOnlinePlayers([winnerIndex]);
                     setWinnerPlayer(winnerIndex);
                     Sound.playWinCheer();
                 }, 1500);
             }
         },
-        // {
-        //     type: ACTION_TYPE.LOSER,
-        //     action: () => {
-        //         const looserIndex = selectedPlayer - 1;
-        //         setLoserPlayer(looserIndex);
-        //     }
-        // },
+        {
+            type: ACTION_TYPE.LOSER,
+            action: () => {
+                const looserIndex = selectedPlayer - 1;
+                setSpeakingPlayers(null);
+                setOnlinePlayers([looserIndex]);
+                setLoserPlayer(looserIndex);
+            }
+        },
         {
             type: ACTION_TYPE.NORMAL,
             action: () => {
                 Sound.stopFinalResult();
                 Sound.playMatchmaking();
-                setAnimateSoundBar(true);
+                setTimeout(() => {
+                    setAnimateSoundBar(true);
+                }, 2000);
             }
         },
         {
@@ -151,16 +156,13 @@ export function GameScene(props: GameSceneProps) {
     useEffect(() => {
         const timer = setTimeout(() => {
             setShowPlayers(true);
-            setShowSoundBar(true);
         }, 1000);
 
         return () => clearTimeout(timer);
     }, []);
 
     const playerBarWidth = 324 * scale;
-    const playerSpacing = gameOver ? 80 * scale : 136 * scale;
     const playerHeight = windowSize.height * 0.43;
-    const screenSpace = (windowSize.width - playerSpacing * 3 - playerBarWidth * 4) / 2
 
     const soundBarHeight = 80 * scale; // adjust as needed
     const soundBarShowY = windowSize.height + 8 * scale // visible position
@@ -174,10 +176,10 @@ export function GameScene(props: GameSceneProps) {
     const [showSoundBar, setShowSoundBar] = useState(false);
 
     useEffect(() => {
-        if (type === ACTION_TYPE.WINNER && speakingPlayers === null) {
+        if ((type === ACTION_TYPE.WINNER || type === ACTION_TYPE.LOSER) && speakingPlayers === null) {
             setShowSoundBar(false);
         } else {
-            setShowSoundBar((!gameOver || speakingPlayers !== null) && winnerPlayer === null);
+            setShowSoundBar((!gameOver || speakingPlayers !== null) && winnerPlayer === null && loserPlayer === null);
         }
     }, [winnerPlayer, gameOver, speakingPlayers, type]);
 
@@ -309,11 +311,25 @@ export function GameScene(props: GameSceneProps) {
         let start = performance.now();
         let lastFrameTime = start;
 
+        // Use a linear up/down floating animation instead of sinusoidal
+        let direction = 1; // 1 for down, -1 for up
+        let offset = 0;
+        const FLOAT_SPEED = 20; // pixels per second
+        const FLOAT_RANGE = 10; // max offset in px
+
         function animate(now: number) {
             if (now - lastFrameTime >= 33) {
-                const elapsed = (now - start) / 1000;
+                const delta = (now - lastFrameTime) / 1000;
+                offset += direction * FLOAT_SPEED * delta;
+                if (offset > FLOAT_RANGE) {
+                    offset = FLOAT_RANGE;
+                    direction = -1;
+                } else if (offset < -FLOAT_RANGE) {
+                    offset = -FLOAT_RANGE;
+                    direction = 1;
+                }
                 setPlayerFloatOffsets(prev => {
-                    const next = Array.from({ length: playerCount }, () => Math.sin(elapsed * 2) * 10);
+                    const next = Array.from({ length: playerCount }, () => offset);
                     const EPSILON = 0.001;
                     if (
                         prev.length !== next.length ||
@@ -375,12 +391,12 @@ export function GameScene(props: GameSceneProps) {
                     const y = gameOver ? initialY + (gameOverY - initialY) * playerAnimationProgress : initialY;
 
                     // Calculate initial and game-over X positions
-                    const initialX = screenSpace + 136 * scale * index + playerBarWidth * index + playerBarWidth / 2;
-                    const gameOverX = screenSpace + 80 * scale * index + playerBarWidth * index + playerBarWidth / 2;
+                    const initialX = (windowSize.width - 136 * scale * 3 - playerBarWidth * 4) / 2 + 136 * scale * index + playerBarWidth * index + playerBarWidth / 2;
+                    const gameOverX = (windowSize.width - 80 * scale * 3 - playerBarWidth * 4) / 2 + 80 * scale * index + playerBarWidth * index + playerBarWidth / 2;
                     const x = gameOver ?
                         index !== 0 ?
                             initialX + (gameOverX - initialX) * playerAnimationProgress :
-                            initialX + 28 * scale * playerAnimationProgress :
+                            initialX + 56 * scale * playerAnimationProgress :
                         initialX;
 
                     return (

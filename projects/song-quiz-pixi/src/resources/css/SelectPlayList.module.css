@@ -1,108 +1,128 @@
 /* src/scenes/SelectPlayList.module.css */
 .container {
-    background: #1C0C36;
-    min-height: 100vh;
-    color: #fff;
-    padding: 0;
-  }
-  
-  .header {
-    display: flex;
-    align-items: center;
-    padding: 24px 32px 0 32px;
-  }
-  
-  .homeButton {
-    background: none;
-    border: none;
-    color: #fff;
-    font-size: 1.2rem;
-    margin-right: 24px;
-    cursor: pointer;
-  }
-  
-  .logo {
-    flex: 1;
-    text-align: center;
-    font-size: 2rem;
-    font-weight: bold;
-  }
-  
-  .section {
-    margin: 32px 0 0 0;
-  }
-  
-  .sectionTitle {
-    margin: 0 0 16px 32px;
-    font-size: 1.3rem;
-    font-weight: 600;
-  }
-  
-  .scrollList {
-    display: flex;
-    overflow-x: auto;
-    padding: 0 0 16px 32px;
-    gap: 20px;
-    scrollbar-width: thin;
-    scrollbar-color: #FFD600 #2a1850;
-  }
+  background: #1C0C36;
+  min-height: 100vh;
+  color: #fff;
+  padding: 0;
+}
 
-  .scrollList::-webkit-scrollbar {
-    height: 8px;
-  }
-  .scrollList::-webkit-scrollbar-thumb {
-    background: #FFD600;
-    border-radius: 4px;
-  }
-  .scrollList::-webkit-scrollbar-track {
-    background: #2a1850;
-    border-radius: 4px;
-  }
-  
-  .playlistItem {
-    width: 234px;
-    height: 308px;
-    border-radius: 16px;
-    border: 3px solid transparent;
-    cursor: pointer;
-    position: relative;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: flex-start;
-    transition: border 0.2s, box-shadow 0.2s;
-  }
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: relative;
+  width: 100%;
+}
 
-  .playlistItem:focus {
-    outline: 3px solid #FFD600;
-    outline-offset: 2px;
-    z-index: 1;
-  }
+.homeButton {
+  min-width: 90px;
+  text-align: left;
+  background: none;
+  border: none;
+  font-size: 1.1rem;
+  color: #ffffff88;
+  cursor: pointer;
+  padding: 0 16px;
+  height: 48px;
+}
 
-  .playlistItem.selected {
-    border: 3px solid #FFD600;
-    box-shadow: 0 0 12px #FFD600;
-  }
-  
-  .playlistTitle {
-    margin: 12px 0;
-    font-size: 1.1rem;
-    font-weight: 500;
-    text-align: center;
-  }
-  
-  .checkMark {
-    position: absolute;
-    top: 10px;
-    left: 10px;
-    width: 28px;
-    height: 28px;
-    background: #FFD600;
-    border-radius: 8px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-weight: bold;
-    color: #1C0C36;
-    font-size: 1.2rem;
-  }
+.headerSpacer {
+  min-width: 90px;
+  height: 48px;
+}
+
+.logo {
+  flex: 1;
+  text-align: center;
+  font-size: 2rem;
+  font-weight: bold;
+}
+
+.section {
+  margin: 32px 0 0 0;
+}
+
+.sectionTitle {
+  margin: 0 0 16px 32px;
+  font-size: 1.3rem;
+  font-weight: 600;
+}
+
+.scrollList {
+  display: flex;
+  overflow-x: auto;
+  padding: 16px 32px 16px 32px;
+  gap: 20px;
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none;  /* IE and Edge */
+}
+
+.scrollList::-webkit-scrollbar {
+  display: none;
+}
+.scrollList::-webkit-scrollbar-thumb {
+  background: #FFD600;
+  border-radius: 4px;
+}
+.scrollList::-webkit-scrollbar-track {
+  background: #2a1850;
+  border-radius: 4px;
+}
+
+.playlistItem {
+  width: 234px;
+  height: 308px;
+  border-radius: 12px;
+  border: 3px solid transparent;
+  cursor: pointer;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  transition: border 0.2s, box-shadow 0.2s;
+}
+
+.playlistItem:focus {
+  outline: 3px solid #FFD600;
+  outline-offset: 2px;
+  z-index: 1;
+}
+
+.playlistItem.selected {
+  border: 3px solid #FFD600;
+  box-shadow: 0 0 12px #FFD600;
+}
+
+.playlistTitle {
+  margin: 12px 0;
+  font-size: 1.1rem;
+  font-weight: 500;
+  text-align: center;
+}
+
+.checkMarkBox {
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  z-index: 2;
+  width: 64px;
+  height: 64px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.checkMark {
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  background: #FFD600;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  color: #1C0C36;
+  font-size: 1.2rem;
+}

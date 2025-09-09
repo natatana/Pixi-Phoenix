@@ -513,6 +513,7 @@ const Player = memo(function Player({
     prev.scaleY === next.scaleY &&
     prev.isSpeaking === next.isSpeaking &&
     prev.isLooser === next.isLooser &&
+    prev.isWinner === next.isWinner &&
     prev.showBronzeMedal === next.showBronzeMedal &&
     prev.showSilverMedal === next.showSilverMedal &&
     prev.showGoldMedal === next.showGoldMedal &&

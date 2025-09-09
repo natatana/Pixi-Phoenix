@@ -22,6 +22,10 @@ a:hover {
   color: #535bf2;
 }
 
+body, html, #root {
+  font-family: 'Gilroy', Arial, sans-serif;
+}
+
 body {
   margin: 0;
   padding: 0;
@@ -65,4 +69,18 @@ button:focus-visible {
   button {
     background-color: #f9f9f9;
   }
+}
+
+@font-face {
+  font-family: 'Gilroy';
+  src: url('../font/Gilroy-Regular.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Gilroy';
+  src: url('../font/Gilroy-Bold.otf') format('truetype');
+  font-weight: bold;
+  font-style: normal;
 }
