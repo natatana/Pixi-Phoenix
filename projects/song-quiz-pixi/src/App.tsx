@@ -210,8 +210,8 @@ function App() {
       {scene === SCENES.SELECT_MODE && (
         <SelectModeScreen windowSize={windowSize} scaleX={scaleX} scaleY={scaleY} onSelectMode={(mode) => {
           if (mode === "multi") {
-            // setScene(SCENES.GAME)
-            setScene(SCENES.SELECT_PLAYLIST)
+            setScene(SCENES.GAME)
+            // setScene(SCENES.SELECT_PLAYLIST)
           } else {
             alert("Not added yet");
           }
