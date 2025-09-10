@@ -118,6 +118,7 @@ export function GameScene(props: GameSceneProps) {
                     setGameOver(true);
                     setWinnerPlayer(null);
                     setLoserPlayer(null);
+                    setOnlinePlayers([]);
                     const rankings = Array(4);
                     sortedIndices.forEach((playerIdx, rank) => {
                         rankings[playerIdx] = rank;

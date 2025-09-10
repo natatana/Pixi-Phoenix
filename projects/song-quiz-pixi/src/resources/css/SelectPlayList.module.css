@@ -9,9 +9,10 @@
 .stickyHeader {
   position: sticky;
   top: 0;
-  z-index: 100;
+  z-index: 1;
   background: #18103A; /* or your app's background color */
   /* Add a box-shadow or border-bottom if you want a visual separation */
+  pointer-events: none;
 }
 
 .header {

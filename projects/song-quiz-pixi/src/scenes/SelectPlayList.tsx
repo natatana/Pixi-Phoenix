@@ -1,6 +1,8 @@
 // src/scenes/SelectPlayList.tsx
-import { useRef, useState, useEffect } from "react";
+import { useRef, useState, useEffect, useMemo } from "react";
 import styles from "../resources/css/SelectPlayList.module.css";
+import PartyConnectDialog from "../components/PartyConnectDialog";
+import SideView from "../components/SideView";
 
 // Dummy Data
 const sections = [
@@ -49,9 +51,10 @@ const sections = [
 type SelectPlayListProps = {
     scale?: number;
     onHomeHandle?: () => void;
+    onNextScreen?: () => void;
 };
 
-export default function SelectPlayList({ scale = 1, onHomeHandle }: SelectPlayListProps) {
+export default function SelectPlayList({ scale = 1, onHomeHandle, onNextScreen }: SelectPlayListProps) {
 
     const ITEM_WIDTH = 234 * scale;
     const ITEM_HEIGHT = 308 * scale;
@@ -66,6 +69,53 @@ export default function SelectPlayList({ scale = 1, onHomeHandle }: SelectPlayLi
     // Track focused item: [sectionIndex, itemIndex]
     const [focusPos, setFocusPos] = useState<[number, number]>([0, 0]);
     const [visibleSectionIdx, setVisibleSectionIdx] = useState(0);
+
+    // Dummy state for joined users (replace with real logic)
+    const [showPartyDialog, setShowPartyDialog] = useState(true);
+    const [partyJoined, setPartyJoined] = useState([false, false, false, false]);
+    const [showSideView, setShowSideView] = useState(false);
+
+    const memoizedSideView = useMemo(() => (
+        <SideView
+            roomCode="X47H"
+            joined={partyJoined}
+            open={showSideView}
+            scale={scale}
+        />
+    ), [partyJoined, showSideView, scale]);
+
+
+
+    const handleReadyToSelect = () => {
+        setShowPartyDialog(false);
+        setShowSideView(true);
+    };
+
+    const simulateJoin = (idx: number) => {
+        setPartyJoined(prev => prev.map((j, i) => (i === idx ? true : j)));
+    };
+
+    useEffect(() => {
+        const timers: NodeJS.Timeout[] = [];
+        for (let i = 0; i < 4; i++) {
+            timers.push(setTimeout(() => {
+                simulateJoin(i);
+            }, 3000 + i * 2000));
+        }
+        return () => {
+            timers.forEach(clearTimeout);
+        };
+    }, []);
+
+    useEffect(() => {
+        const allJoined = partyJoined.every(Boolean);
+        if (allJoined && selected.length > 2 && typeof onNextScreen === "function") {
+            setTimeout(() => {
+                onNextScreen();
+            }, 2000);
+        }
+    }, [partyJoined, selected]);
+
     const SECTION_HEIGHT = (ITEM_HEIGHT + 64);
 
     // Create refs for all items
@@ -82,17 +132,11 @@ export default function SelectPlayList({ scale = 1, onHomeHandle }: SelectPlayLi
     }, []);
 
     useEffect(() => {
+        if (!showSideView) return;
         const [sectionIdx, itemIdx] = focusPos;
         const item = itemRefs.current[sectionIdx][itemIdx];
         const container = scrollListRefs.current[sectionIdx];
         if (item && container) {
-            // Option 1: Scroll so the item is at the very left
-            // container.scrollTo({
-            //     left: item.offsetLeft,
-            //     behavior: "smooth"
-            // });
-
-            // Option 2: Scroll so the item is centered
             const itemRect = item.getBoundingClientRect();
             const containerRect = container.getBoundingClientRect();
             const scrollLeft = item.offsetLeft - (containerRect.width / 2) + (itemRect.width / 2);
@@ -100,8 +144,11 @@ export default function SelectPlayList({ scale = 1, onHomeHandle }: SelectPlayLi
                 left: scrollLeft,
                 behavior: "smooth"
             });
+            requestAnimationFrame(() => {
+                item.focus();
+            });
         }
-    }, [focusPos]);
+    }, [focusPos, showSideView]);
 
     // Select/deselect logic
     const handleSelect = (id: string, sectionIdx: number, itemIdx: number) => {
@@ -122,6 +169,8 @@ export default function SelectPlayList({ scale = 1, onHomeHandle }: SelectPlayLi
     ) => {
         let newSection = sectionIdx;
         let newItem = itemIdx;
+
+        console.log("e.key =>", e.key)
 
         if (e.key === "Enter" || e.key === " ") {
             e.preventDefault();
@@ -160,10 +209,6 @@ export default function SelectPlayList({ scale = 1, onHomeHandle }: SelectPlayLi
 
         if (newSection !== sectionIdx || newItem !== itemIdx) {
             setFocusPos([newSection, newItem]);
-            // Focus the new item after render
-            setTimeout(() => {
-                itemRefs.current[newSection][newItem]?.focus();
-            }, 0);
         }
     };
 
@@ -174,6 +219,14 @@ export default function SelectPlayList({ scale = 1, onHomeHandle }: SelectPlayLi
 
     return (
         <div className={styles.container} tabIndex={-1}>
+            <PartyConnectDialog
+                roomCode="X47H"
+                joined={partyJoined}
+                open={showPartyDialog}
+                scale={scale}
+                onReadyToSelect={handleReadyToSelect}
+            />
+            {memoizedSideView}
             <div className={styles.stickyHeader} style={{ paddingTop: `${LOGO_MARGIN_TOP}px` }}>
                 <div className={styles.header}>
                     <div
@@ -215,11 +268,11 @@ export default function SelectPlayList({ scale = 1, onHomeHandle }: SelectPlayLi
                 className={styles.focusFrame}
                 style={{
                     position: "absolute",
-                    top: SECTION_HEIGHT - 20 * scale,
-                    left: 28 * scale, // <-- left-aligned
+                    top: SECTION_HEIGHT - 24 * scale,
+                    left: 27 * scale, // <-- left-aligned
                     width: ITEM_WIDTH,
-                    height: ITEM_HEIGHT,
-                    border: "2px solid #FFD600",
+                    height: ITEM_WIDTH,
+                    border: "4px solid #FFD600",
                     borderRadius: `${BORDER_RADIUS}px`,
                     boxShadow: "0 0 16px #FFD60088",
                     pointerEvents: "none",
@@ -231,7 +284,7 @@ export default function SelectPlayList({ scale = 1, onHomeHandle }: SelectPlayLi
                 className={styles.sectionsWrapper}
                 style={{
                     transition: "transform 0.4s cubic-bezier(0.4,0,0.2,1)",
-                    transform: `translateY(-${visibleSectionIdx * (SECTION_HEIGHT + 64 * scale)}px)`
+                    transform: `translateY(-${visibleSectionIdx * (SECTION_HEIGHT + 60 * scale)}px)`
                 }}
             >
                 {sections.map((section, sectionIdx) => {
@@ -249,25 +302,6 @@ export default function SelectPlayList({ scale = 1, onHomeHandle }: SelectPlayLi
                                     padding: `${16 * scale}px ${32 * scale}px`,
                                 }}
                             >
-                                {/* Focus Frame */}
-                                {/* {isFocusedSection && (
-                                    <div
-                                        className={styles.focusFrame}
-                                        style={{
-                                            position: "absolute",
-                                            top: 16 * scale,
-                                            left: 28 * scale, // <-- left-aligned
-                                            width: ITEM_WIDTH,
-                                            height: ITEM_HEIGHT,
-                                            border: "2px solid #FFD600",
-                                            borderRadius: `${BORDER_RADIUS}px`,
-                                            boxShadow: "0 0 16px #FFD60088",
-                                            pointerEvents: "none",
-                                            zIndex: 2,
-                                            transition: "left 0.4s cubic-bezier(0.4,0,0.2,1)"
-                                        }}
-                                    />
-                                )} */}
                                 <div
                                     className={styles.scrollListInner}
                                     style={{

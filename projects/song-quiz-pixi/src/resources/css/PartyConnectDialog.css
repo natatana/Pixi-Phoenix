@@ -1,0 +1,7 @@
+.dialog-fade {
+    opacity: 1;
+    transition: opacity 1s;
+}
+.dialog-fade.out {
+    opacity: 0;
+}

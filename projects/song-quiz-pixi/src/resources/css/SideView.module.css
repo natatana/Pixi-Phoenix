@@ -1,0 +1,152 @@
+.sideView {
+    position: absolute;
+    top: 0;
+    right: 0;
+    height: 100vh;
+    background: linear-gradient(180deg, #27114A 0%, #00001F 100%);
+    color: #fff;
+    box-shadow: -4px 0 24px #0008;
+    z-index: 2;
+    transform: translateX(100%);
+    opacity: 0;
+    transition: transform 1s cubic-bezier(0.4,0,0.2,1), opacity 1s cubic-bezier(0.4,0,0.2,1);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    pointer-events: none;
+}
+  
+.visible {
+    transform: translateX(0);
+    opacity: 1;
+}
+  
+.topBg {
+    position: absolute;
+    top: 0;
+    right: 0;
+    pointer-events: none;
+    z-index: 1;
+}
+  
+.bottomBg {
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    pointer-events: none;
+    z-index: 1;
+}
+  
+.topSection {
+    position: relative;
+    z-index: 2;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+  
+.title {
+    font-weight: bold;
+    text-align: center;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+  
+.qrText {
+    width: 70%;
+    text-align: center;
+    opacity: 0.85;
+}
+  
+.orRow {
+    display: flex;
+    align-items: center;
+    width: 80%;
+}
+  
+.orLineLeft {
+    flex: 1;
+    height: 2px;
+    background: linear-gradient(90deg, #fff0 0%, #fff 100%);
+}
+
+.orLineRight {
+    flex: 1;
+    height: 2px;
+    background: linear-gradient(90deg, #fff 0%, #fff0 100%);
+}
+  
+.orText {
+    margin: 0 12px;
+    opacity: 0.7;
+}
+  
+.roomCode {
+    font-size: 28px;
+    font-weight: bold;
+    background: #fff;
+    color: #1a1040;
+    padding: 8px 24px;
+    border-radius: 8px;
+    letter-spacing: 4px;
+    box-shadow: 0 2px 8px #0002;
+    display: inline-block;
+}
+  
+.instructions {
+    width: 80%;
+    text-align: center;
+    color: #fff;
+    opacity: 0.85;
+}
+  
+.instructions a {
+    color: #ffd600;
+    text-decoration: underline;
+}
+  
+.bottomSection {
+    position: relative;
+    z-index: 2;
+    border-top: 2px solid #fff3;
+}
+  
+.subtitle {
+    text-align: center;
+    opacity: 0.8;
+}
+  
+.users {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 24px;
+    justify-content: center;
+}
+  
+.user {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 70px;
+}
+  
+.avatar {
+    border-radius: 50%;
+    background: #fff;
+    margin-bottom: 4px;
+    box-shadow: 0 2px 8px #0002;
+}
+  
+.name {
+    font-size: 13px;
+    text-align: center;
+    margin-top: 2px;
+    color: #fff;
+    text-shadow: 0 1px 2px #0006;
+}
+
+.sideView .topSection,
+.sideView .bottomSection {
+    pointer-events: auto;
+}

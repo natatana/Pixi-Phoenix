@@ -210,15 +210,15 @@ function App() {
       {scene === SCENES.SELECT_MODE && (
         <SelectModeScreen windowSize={windowSize} scaleX={scaleX} scaleY={scaleY} onSelectMode={(mode) => {
           if (mode === "multi") {
-            setScene(SCENES.GAME)
-            // setScene(SCENES.SELECT_PLAYLIST)
+            // setScene(SCENES.GAME)
+            setScene(SCENES.SELECT_PLAYLIST)
           } else {
             alert("Not added yet");
           }
         }} />
       )}
       {scene === SCENES.SELECT_PLAYLIST && (
-        <SelectPlayList scale={Math.min(scaleX, scaleY)} onHomeHandle={() => setScene(SCENES.SELECT_MODE)} />
+        <SelectPlayList scale={Math.min(scaleX, scaleY)} onHomeHandle={() => setScene(SCENES.SELECT_MODE)} onNextScreen={() => setScene(SCENES.GAME)} />
       )}
       {scene === SCENES.GAME && (
         <GameSceneLoader
