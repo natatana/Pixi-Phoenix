@@ -89,6 +89,12 @@ export default function SelectPlayList({ scale = 1, onHomeHandle, onNextScreen }
     const handleReadyToSelect = () => {
         setShowPartyDialog(false);
         setShowSideView(true);
+        // Set focus for current item
+        const [sectionIdx, itemIdx] = focusPos;
+        const currentItem = itemRefs.current[sectionIdx]?.[itemIdx];
+        if (currentItem) {
+            currentItem.focus();
+        }
     };
 
     const simulateJoin = (idx: number) => {
@@ -109,10 +115,10 @@ export default function SelectPlayList({ scale = 1, onHomeHandle, onNextScreen }
 
     useEffect(() => {
         const allJoined = partyJoined.every(Boolean);
-        if (allJoined && selected.length > 2 && typeof onNextScreen === "function") {
+        if (allJoined && selected.length > 0 && typeof onNextScreen === "function") {
             setTimeout(() => {
                 onNextScreen();
-            }, 2000);
+            }, 1000);
         }
     }, [partyJoined, selected]);
 
@@ -350,8 +356,8 @@ export default function SelectPlayList({ scale = 1, onHomeHandle, onNextScreen }
                                                 style={{
                                                     width: CHECKBOX_SIZE,
                                                     height: CHECKBOX_SIZE,
-                                                    top: 10 * scale,
-                                                    left: 10 * scale
+                                                    top: 0,
+                                                    left: 0
                                                 }}
                                             >
                                                 {selected.includes(item.id) ? (
@@ -363,7 +369,9 @@ export default function SelectPlayList({ scale = 1, onHomeHandle, onNextScreen }
                                                             height: CHECKBOX_SIZE
                                                         }}
                                                     >
-                                                        ✓
+                                                        <svg width="36" height="33" viewBox="0 0 36 33" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                            <path d="M12.9085 21.7037L8.21094 14.1844C7.52309 13.1955 6.48291 12.5135 5.29175 12.2918C4.11736 12.0872 2.89264 12.343 1.91957 13.042C0.946504 13.7411 0.275425 14.7982 0.0741007 15.9918C-0.144 17.1853 0.124432 18.4129 0.812288 19.4189L8.79814 31.0303C9.23434 31.6782 9.82153 32.1897 10.5094 32.5307C11.1972 32.8717 11.969 33.0422 12.724 32.9911C13.4957 32.957 14.2339 32.7183 14.8882 32.3091C15.5425 31.8998 16.0794 31.3201 16.4484 30.6381V30.604C16.5491 30.4165 16.633 30.2118 16.7169 30.0072C18.1094 26.9723 24.5853 13.4683 33.9133 3.7666C37.1345 0.424717 36.6312 -1.00752 32.3698 0.765726C26.8837 3.06754 19.4683 9.61491 12.9085 21.7037Z" fill="#080427" />
+                                                        </svg>
                                                     </span>
                                                 ) : (
                                                     <svg
