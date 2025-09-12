@@ -1,5 +1,4 @@
-// src/scenes/SelectPlayList.tsx
-import { useRef, useState, useEffect, useMemo } from "react";
+import { useRef, useState, useEffect, useMemo, memo } from "react";
 import styles from "../resources/css/SelectPlayList.module.css";
 import PartyConnectDialog from "../components/PartyConnectDialog";
 import SideView from "../components/SideView";
@@ -54,8 +53,31 @@ type SelectPlayListProps = {
     onNextScreen?: () => void;
 };
 
-export default function SelectPlayList({ scale = 1, onHomeHandle, onNextScreen }: SelectPlayListProps) {
+const SelectPlayList = ({ scale = 1, onHomeHandle, onNextScreen }: SelectPlayListProps) => {
+    // All hooks must be called before any return!
+    const allImages = useMemo(
+        () => sections.flatMap(section => section.items.map(item => item.image)),
+        []
+    );
+    const [imagesLoaded, setImagesLoaded] = useState(false);
 
+    useEffect(() => {
+        let loaded = 0;
+        if (allImages.length === 0) {
+            setImagesLoaded(true);
+            return;
+        }
+        allImages.forEach(src => {
+            const img = new window.Image();
+            img.onload = img.onerror = () => {
+                loaded += 1;
+                if (loaded === allImages.length) setImagesLoaded(true);
+            };
+            img.src = src;
+        });
+    }, [allImages]);
+
+    // All other hooks here (no hooks after any return!)
     const ITEM_WIDTH = 234 * scale;
     const ITEM_HEIGHT = 308 * scale;
     const CHECKBOX_SIZE = 64 * scale;
@@ -63,14 +85,12 @@ export default function SelectPlayList({ scale = 1, onHomeHandle, onNextScreen }
     const LOGO_HEIGHT = 66 * scale;
     const BUTTON_HEIGHT = 48 * scale;
     const BUTTON_MIN_WIDTH = 90 * scale;
-    const BORDER_RADIUS = 12 * scale;
+    const BORDER_RADIUS = 20 * scale;
 
     const [selected, setSelected] = useState<string[]>([]);
-    // Track focused item: [sectionIndex, itemIndex]
     const [focusPos, setFocusPos] = useState<[number, number]>([0, 0]);
     const [visibleSectionIdx, setVisibleSectionIdx] = useState(0);
 
-    // Dummy state for joined users (replace with real logic)
     const [showPartyDialog, setShowPartyDialog] = useState(true);
     const [partyJoined, setPartyJoined] = useState([false, false, false, false]);
     const [showSideView, setShowSideView] = useState(false);
@@ -82,14 +102,11 @@ export default function SelectPlayList({ scale = 1, onHomeHandle, onNextScreen }
             open={showSideView}
             scale={scale}
         />
-    ), [partyJoined, showSideView, scale]);
-
-
+    ), [partyJoined, showSideView]);
 
     const handleReadyToSelect = () => {
         setShowPartyDialog(false);
         setShowSideView(true);
-        // Set focus for current item
         const [sectionIdx, itemIdx] = focusPos;
         const currentItem = itemRefs.current[sectionIdx]?.[itemIdx];
         if (currentItem) {
@@ -150,9 +167,7 @@ export default function SelectPlayList({ scale = 1, onHomeHandle, onNextScreen }
                 left: scrollLeft,
                 behavior: "smooth"
             });
-            requestAnimationFrame(() => {
-                item.focus();
-            });
+            item.focus();
         }
     }, [focusPos, showSideView]);
 
@@ -176,8 +191,6 @@ export default function SelectPlayList({ scale = 1, onHomeHandle, onNextScreen }
         let newSection = sectionIdx;
         let newItem = itemIdx;
 
-        console.log("e.key =>", e.key)
-
         if (e.key === "Enter" || e.key === " ") {
             e.preventDefault();
             handleSelect(id, sectionIdx, itemIdx);
@@ -198,7 +211,6 @@ export default function SelectPlayList({ scale = 1, onHomeHandle, onNextScreen }
         if (e.key === "ArrowDown") {
             e.preventDefault();
             if (sectionIdx < sections.length - 1) {
-                // Clamp to available items in next section
                 newSection = sectionIdx + 1;
                 setVisibleSectionIdx(visibleSectionIdx + 1);
                 newItem = 0;
@@ -222,6 +234,23 @@ export default function SelectPlayList({ scale = 1, onHomeHandle, onNextScreen }
     itemRefs.current = sections.map((section, sIdx) =>
         section.items.map((_, iIdx) => itemRefs.current[sIdx]?.[iIdx] || null)
     );
+
+    // Now you can safely return early
+    if (!imagesLoaded) {
+        return (
+            <div style={{
+                width: "100vw",
+                height: "100vh",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                fontSize: "2rem",
+                background: "#18103A"
+            }}>
+                Loading playlists...
+            </div>
+        );
+    }
 
     return (
         <div className={styles.container} tabIndex={-1}>
@@ -274,23 +303,21 @@ export default function SelectPlayList({ scale = 1, onHomeHandle, onNextScreen }
                 className={styles.focusFrame}
                 style={{
                     position: "absolute",
-                    top: SECTION_HEIGHT - 24 * scale,
-                    left: 27 * scale, // <-- left-aligned
-                    width: ITEM_WIDTH,
-                    height: ITEM_WIDTH,
-                    border: "4px solid #FFD600",
+                    top: SECTION_HEIGHT - 28 * scale,
+                    left: 24 * scale,
+                    width: ITEM_WIDTH - 8,
+                    height: ITEM_WIDTH - 8,
+                    border: "8px solid #FFD600",
                     borderRadius: `${BORDER_RADIUS}px`,
-                    boxShadow: "0 0 16px #FFD60088",
                     pointerEvents: "none",
                     zIndex: 2,
-                    transition: "left 0.4s cubic-bezier(0.4,0,0.2,1)"
                 }}
             />
             <div
                 className={styles.sectionsWrapper}
                 style={{
                     transition: "transform 0.4s cubic-bezier(0.4,0,0.2,1)",
-                    transform: `translateY(-${visibleSectionIdx * (SECTION_HEIGHT + 60 * scale)}px)`
+                    transform: `translateY(-${visibleSectionIdx * (SECTION_HEIGHT + 62 * scale)}px)`
                 }}
             >
                 {sections.map((section, sectionIdx) => {
@@ -313,7 +340,6 @@ export default function SelectPlayList({ scale = 1, onHomeHandle, onNextScreen }
                                     style={{
                                         display: "flex",
                                         transition: "transform 0.4s cubic-bezier(0.4,0,0.2,1)",
-                                        // Move items so focused is at left:
                                         transform: isFocusedSection
                                             ? `translateX(-${focusPos[1] * (ITEM_WIDTH + 32 * scale)}px)`
                                             : "translateX(0)",
@@ -381,14 +407,14 @@ export default function SelectPlayList({ scale = 1, onHomeHandle, onNextScreen }
                                                         style={{ display: "block" }}
                                                     >
                                                         <rect
-                                                            x={2 * scale}
-                                                            y={2 * scale}
+                                                            x={4 * scale}
+                                                            y={4 * scale}
                                                             width={56 * scale}
                                                             height={56 * scale}
-                                                            rx={6 * scale}
+                                                            rx={8 * scale}
                                                             fill="#18103A"
                                                             stroke="#FFD600"
-                                                            strokeWidth={4 * scale}
+                                                            strokeWidth={8 * scale}
                                                         />
                                                     </svg>
                                                 )}
@@ -405,4 +431,12 @@ export default function SelectPlayList({ scale = 1, onHomeHandle, onNextScreen }
             </div>
         </div>
     );
-}
+};
+
+export default memo(SelectPlayList, (prevProps, nextProps) => {
+    return (
+        prevProps.scale === nextProps.scale &&
+        prevProps.onHomeHandle === nextProps.onHomeHandle &&
+        prevProps.onNextScreen === nextProps.onNextScreen
+    );
+});

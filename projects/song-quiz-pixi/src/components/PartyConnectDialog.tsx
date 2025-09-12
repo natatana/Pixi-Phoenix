@@ -1,5 +1,5 @@
 // src/components/PartyConnectDialog.tsx
-import { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import '../resources/css/PartyConnectDialog.css';
 
 type PartyConnectDialogProps = {
@@ -10,7 +10,13 @@ type PartyConnectDialogProps = {
     onReadyToSelect: () => void;
 };
 
-export default function PartyConnectDialog({ roomCode, joined, open, scale, onReadyToSelect }: PartyConnectDialogProps) {
+const PartyConnectDialog = React.memo(function PartyConnectDialog({
+    roomCode,
+    joined,
+    open,
+    scale,
+    onReadyToSelect,
+}: PartyConnectDialogProps) {
     const dialogRef = useRef<HTMLDialogElement>(null);
     const [isClosing, setIsClosing] = useState(false);
 
@@ -30,9 +36,11 @@ export default function PartyConnectDialog({ roomCode, joined, open, scale, onRe
 
     useEffect(() => {
         if (joined.some(j => j)) {
-            onReadyToSelect(); // Call the callback when at least one player has joined
+            setTimeout(() => {
+                onReadyToSelect();
+            }, 1000);
         }
-    }, [joined, onReadyToSelect]);
+    }, [joined]);
 
     return (
         <dialog
@@ -321,4 +329,6 @@ export default function PartyConnectDialog({ roomCode, joined, open, scale, onRe
             </div>
         </dialog>
     );
-}
+});
+
+export default PartyConnectDialog;

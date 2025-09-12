@@ -553,6 +553,50 @@
           "data": {
             "tags": {}
           }
+        },
+        {
+          "alias": [
+            "images/selectround/modal.png"
+          ],
+          "src": [
+            "images/selectround/modal.png"
+          ],
+          "data": {
+            "tags": {}
+          }
+        },
+        {
+          "alias": [
+            "images/selectround/round1.png"
+          ],
+          "src": [
+            "images/selectround/round1.png"
+          ],
+          "data": {
+            "tags": {}
+          }
+        },
+        {
+          "alias": [
+            "images/selectround/round2.png"
+          ],
+          "src": [
+            "images/selectround/round2.png"
+          ],
+          "data": {
+            "tags": {}
+          }
+        },
+        {
+          "alias": [
+            "images/selectround/round3.png"
+          ],
+          "src": [
+            "images/selectround/round3.png"
+          ],
+          "data": {
+            "tags": {}
+          }
         }
       ]
     }

@@ -8,6 +8,7 @@ import GameSceneLoader from "./utils/GameSceneLoader";
 import { preloadAllSounds } from "./utils/SoundManager";
 import { isTVDevice } from "./utils/common";
 import SelectPlayList from "./scenes/SelectPlayList";
+import { SelectRoundScreen } from "./scenes/SelectRoundScreen";
 
 type SceneType = (typeof SCENES)[keyof typeof SCENES];
 
@@ -218,7 +219,13 @@ function App() {
         }} />
       )}
       {scene === SCENES.SELECT_PLAYLIST && (
-        <SelectPlayList scale={Math.min(scaleX, scaleY)} onHomeHandle={() => setScene(SCENES.SELECT_MODE)} onNextScreen={() => setScene(SCENES.GAME)} />
+        <SelectPlayList scale={Math.min(scaleX, scaleY)} onHomeHandle={() => setScene(SCENES.SELECT_MODE)} onNextScreen={() => setScene(SCENES.SELECT_ROUND)} />
+      )}
+      {scene === SCENES.SELECT_ROUND && (
+        <SelectRoundScreen windowSize={windowSize} scaleX={scaleX} scaleY={scaleY} onSelectRound={(round) => {
+          console.log(round)
+          setScene(SCENES.GAME);
+        }} />
       )}
       {scene === SCENES.GAME && (
         <GameSceneLoader
