@@ -1,4 +1,5 @@
 import { memo, useEffect, useRef, useState } from "react";
+import { Sound } from "../utils/SoundManager";
 
 const CARD_DATA = [
     {
@@ -125,6 +126,8 @@ export const SelectRoundScreen = memo(function SelectRoundScreen({
     // Fade out everything, then call onSelectRound
     useEffect(() => {
         if (shouldFadeOut) {
+            Sound.stopIntro();
+            Sound.playStartCheer();
             let start: number | null = null;
             const duration = 1000;
             function animateFadeOut(ts: number) {
@@ -138,8 +141,6 @@ export const SelectRoundScreen = memo(function SelectRoundScreen({
                 }
             }
             requestAnimationFrame(animateFadeOut);
-        } else {
-            setContainerAlpha(1);
         }
     }, [shouldFadeOut, onSelectRound]);
 
@@ -156,7 +157,6 @@ export const SelectRoundScreen = memo(function SelectRoundScreen({
             style={{
                 width: windowSize.width,
                 height: windowSize.height,
-                opacity: containerAlpha,
                 transition: "opacity 0.3s",
                 position: "relative",
                 overflow: "hidden",
@@ -172,6 +172,7 @@ export const SelectRoundScreen = memo(function SelectRoundScreen({
                     position: "absolute",
                     left: "50%",
                     top: "50%",
+                    opacity: containerAlpha,
                     width: 1600 * scaleX,
                     height: 1080 * scaleY,
                     transform: "translate(-50%, -50%)",
@@ -190,6 +191,7 @@ export const SelectRoundScreen = memo(function SelectRoundScreen({
                     top: "50%",
                     transform: `translateY(-50%)`,
                     zIndex: 2,
+                    opacity: containerAlpha,
                 }}
             >
                 {CARD_DATA.map((card, i) => (

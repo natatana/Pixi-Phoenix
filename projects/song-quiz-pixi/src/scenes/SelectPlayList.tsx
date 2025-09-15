@@ -2,6 +2,7 @@ import { useRef, useState, useEffect, useMemo, memo } from "react";
 import styles from "../resources/css/SelectPlayList.module.css";
 import PartyConnectDialog from "../components/PartyConnectDialog";
 import SideView from "../components/SideView";
+import { Sound } from "../utils/SoundManager";
 
 // Dummy Data
 const sections = [
@@ -85,7 +86,7 @@ const SelectPlayList = ({ scale = 1, onHomeHandle, onNextScreen }: SelectPlayLis
     const LOGO_HEIGHT = 66 * scale;
     const BUTTON_HEIGHT = 48 * scale;
     const BUTTON_MIN_WIDTH = 90 * scale;
-    const BORDER_RADIUS = 20 * scale;
+    const BORDER_RADIUS = 16 * scale;
 
     const [selected, setSelected] = useState<string[]>([]);
     const [focusPos, setFocusPos] = useState<[number, number]>([0, 0]);
@@ -94,6 +95,8 @@ const SelectPlayList = ({ scale = 1, onHomeHandle, onNextScreen }: SelectPlayLis
     const [showPartyDialog, setShowPartyDialog] = useState(true);
     const [partyJoined, setPartyJoined] = useState([false, false, false, false]);
     const [showSideView, setShowSideView] = useState(false);
+    // Track if intro sound has played
+    const introPlayedRef = useRef(false);
 
     const memoizedSideView = useMemo(() => (
         <SideView
@@ -119,10 +122,22 @@ const SelectPlayList = ({ scale = 1, onHomeHandle, onNextScreen }: SelectPlayLis
     };
 
     useEffect(() => {
+        if (!introPlayedRef.current && partyJoined.some(j => j)) {
+            Sound.playIntro();
+            introPlayedRef.current = true;
+        }
+    }, [partyJoined]);
+
+    useEffect(() => {
         const timers: NodeJS.Timeout[] = [];
         for (let i = 0; i < 4; i++) {
             timers.push(setTimeout(() => {
                 simulateJoin(i);
+                if (i === 3) {
+                    Sound.playSuccessWebRemoteFinal();
+                } else {
+                    Sound.playSuccessWebRemote();
+                }
             }, 3000 + i * 2000));
         }
         return () => {
@@ -138,8 +153,6 @@ const SelectPlayList = ({ scale = 1, onHomeHandle, onNextScreen }: SelectPlayLis
             }, 1000);
         }
     }, [partyJoined, selected]);
-
-    const SECTION_HEIGHT = (ITEM_HEIGHT + 64);
 
     // Create refs for all items
     const itemRefs = useRef<Array<Array<HTMLDivElement | null>>>(
@@ -179,6 +192,7 @@ const SelectPlayList = ({ scale = 1, onHomeHandle, onNextScreen }: SelectPlayLis
             return prev;
         });
         setFocusPos([sectionIdx, itemIdx]);
+        Sound.playSelect();
     };
 
     // Keyboard navigation logic
@@ -226,6 +240,7 @@ const SelectPlayList = ({ scale = 1, onHomeHandle, onNextScreen }: SelectPlayLis
         }
 
         if (newSection !== sectionIdx || newItem !== itemIdx) {
+            Sound.playNavigate();
             setFocusPos([newSection, newItem]);
         }
     };
@@ -239,7 +254,7 @@ const SelectPlayList = ({ scale = 1, onHomeHandle, onNextScreen }: SelectPlayLis
     if (!imagesLoaded) {
         return (
             <div style={{
-                width: "100vw",
+                width: "100%",
                 height: "100vh",
                 display: "flex",
                 alignItems: "center",
@@ -291,7 +306,6 @@ const SelectPlayList = ({ scale = 1, onHomeHandle, onNextScreen }: SelectPlayLis
                         />
                     </div>
                     <div
-                        className={styles.headerSpacer}
                         style={{ minWidth: BUTTON_MIN_WIDTH, height: BUTTON_HEIGHT }}
                     ></div>
                 </div>
@@ -303,10 +317,10 @@ const SelectPlayList = ({ scale = 1, onHomeHandle, onNextScreen }: SelectPlayLis
                 className={styles.focusFrame}
                 style={{
                     position: "absolute",
-                    top: SECTION_HEIGHT - 28 * scale,
+                    top: 290 * scale + 10,
                     left: 24 * scale,
-                    width: ITEM_WIDTH - 8,
-                    height: ITEM_WIDTH - 8,
+                    width: ITEM_WIDTH - 6 * scale,
+                    height: ITEM_WIDTH - 6 * scale,
                     border: "8px solid #FFD600",
                     borderRadius: `${BORDER_RADIUS}px`,
                     pointerEvents: "none",
@@ -317,7 +331,7 @@ const SelectPlayList = ({ scale = 1, onHomeHandle, onNextScreen }: SelectPlayLis
                 className={styles.sectionsWrapper}
                 style={{
                     transition: "transform 0.4s cubic-bezier(0.4,0,0.2,1)",
-                    transform: `translateY(-${visibleSectionIdx * (SECTION_HEIGHT + 62 * scale)}px)`
+                    transform: `translateY(-${visibleSectionIdx * (356 * scale + 16)}px)`
                 }}
             >
                 {sections.map((section, sectionIdx) => {
@@ -329,10 +343,10 @@ const SelectPlayList = ({ scale = 1, onHomeHandle, onNextScreen }: SelectPlayLis
                                 className={styles.scrollList}
                                 ref={el => { scrollListRefs.current[sectionIdx] = el; }}
                                 style={{
-                                    overflow: "hidden",
+                                    // overflow: "hidden",
                                     width: "100%",
                                     position: "relative",
-                                    padding: `${16 * scale}px ${32 * scale}px`,
+                                    paddingLeft: `${32 * scale}px`,
                                 }}
                             >
                                 <div
@@ -400,23 +414,25 @@ const SelectPlayList = ({ scale = 1, onHomeHandle, onNextScreen }: SelectPlayLis
                                                         </svg>
                                                     </span>
                                                 ) : (
-                                                    <svg
-                                                        width={CHECKBOX_SIZE}
-                                                        height={CHECKBOX_SIZE}
-                                                        viewBox={`0 0 ${CHECKBOX_SIZE} ${CHECKBOX_SIZE}`}
-                                                        style={{ display: "block" }}
+                                                    <span
+                                                        className={styles.checkMark}
+                                                        style={{
+                                                            fontSize: `${2 * scale}rem`,
+                                                            width: CHECKBOX_SIZE,
+                                                            height: CHECKBOX_SIZE
+                                                        }}
                                                     >
-                                                        <rect
-                                                            x={4 * scale}
-                                                            y={4 * scale}
-                                                            width={56 * scale}
-                                                            height={56 * scale}
-                                                            rx={8 * scale}
-                                                            fill="#18103A"
-                                                            stroke="#FFD600"
-                                                            strokeWidth={8 * scale}
-                                                        />
-                                                    </svg>
+                                                        <svg width="64" height="64" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                            <path d="M0 12C0 5.37258 5.37258 0 12 0H64V52C64 58.6274 58.6274 64 52 64H0V12Z" fill="url(#paint0_linear_7926_82215)" />
+                                                            <rect x="8" y="8" width="48" height="48" rx="8" fill="#080427" />
+                                                            <defs>
+                                                                <linearGradient id="paint0_linear_7926_82215" x1="32" y1="0" x2="32" y2="64" gradientUnits="userSpaceOnUse">
+                                                                    <stop stop-color="#FFE789" />
+                                                                    <stop offset="1" stop-color="#F6D301" />
+                                                                </linearGradient>
+                                                            </defs>
+                                                        </svg>
+                                                    </span>
                                                 )}
                                             </div>
                                         </div>

@@ -11,6 +11,7 @@
     opacity: 0;
     transition: transform 1s cubic-bezier(0.4,0,0.2,1), opacity 1s cubic-bezier(0.4,0,0.2,1);
     display: flex;
+    justify-content: space-evenly;
     flex-direction: column;
     overflow: hidden;
     pointer-events: none;

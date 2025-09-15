@@ -10,7 +10,7 @@ type SideViewProps = {
 
 export default function SideView({ roomCode, joined, open, scale }: SideViewProps) {
     return (
-        <div className={`${styles.sideView} ${open ? styles.visible : ""}`} style={{ width: `${448 * scale}px` }}>
+        <div className={`${styles.sideView} ${open ? styles.visible : ""}`} style={{ width: `${448 * scale}px`, height: '100vh' }}>
             {/* Background decorations */}
             <img src="/images/dialog/top_bg.png" className={styles.topBg} alt="" style={{ width: `${288 * scale}px`, height: `${180 * scale}px` }} />
             <img src="/images/dialog/bottom_bg.png" className={styles.bottomBg} alt="" style={{ width: `${288 * scale}px`, height: `${180 * scale}px` }} />
@@ -83,8 +83,6 @@ export default function SideView({ roomCode, joined, open, scale }: SideViewProp
                                     background: "#18103A",
                                     marginBottom: 8 * scale,
                                     boxSizing: "border-box",
-                                    border: isJoined ? `3px solid #7F83A7` : "none",
-                                    boxShadow: isJoined ? "0 4px 16px #0003" : "none",
                                 }}
                             />
                             <div

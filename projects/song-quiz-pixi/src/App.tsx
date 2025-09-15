@@ -178,7 +178,7 @@ function App() {
   }
 
   return (
-    <div style={{ position: "relative", width: "100vw", height: "100vh" }}>
+    <div style={{ position: "relative", width: "100vw" }}>
       {debugTextVisible && <div style={{ position: "absolute", top: 10, left: 10, zIndex: 999999 }}>
         <div style={{
           background: "rgba(0,0,0,0.7)",
