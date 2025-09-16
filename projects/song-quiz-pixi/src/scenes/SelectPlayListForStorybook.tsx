@@ -3,6 +3,7 @@ import styles from "../resources/css/SelectPlayList.module.css";
 import PartyConnectDialog from "../components/PartyConnectDialog";
 import SideView from "../components/SideView";
 import { Sound } from "../utils/SoundManager";
+import { REF_HEIGHT, REF_WIDTH } from "../utils/config";
 
 // Dummy Data
 const sections = [
@@ -49,12 +50,11 @@ const sections = [
 ];
 
 type SelectPlayListProps = {
-    scale?: number;
     onHomeHandle?: () => void;
     onNextScreen?: () => void;
 };
 
-const SelectPlayList = ({ scale = 1, onHomeHandle, onNextScreen }: SelectPlayListProps) => {
+const SelectPlayList = ({ onHomeHandle, onNextScreen }: SelectPlayListProps) => {
     // All hooks must be called before any return!
     const allImages = useMemo(
         () => sections.flatMap(section => section.items.map(item => item.image)),
@@ -77,6 +77,8 @@ const SelectPlayList = ({ scale = 1, onHomeHandle, onNextScreen }: SelectPlayLis
             img.src = src;
         });
     }, [allImages]);
+
+    const scale = Math.min(window.innerWidth / REF_WIDTH, window.innerHeight / REF_HEIGHT);
 
     // All other hooks here (no hooks after any return!)
     const ITEM_WIDTH = 234 * scale;
@@ -320,10 +322,10 @@ const SelectPlayList = ({ scale = 1, onHomeHandle, onNextScreen }: SelectPlayLis
                 className={styles.focusFrame}
                 style={{
                     position: "absolute",
-                    top: 290 * scale + 10,
-                    left: 24 * scale,
-                    width: ITEM_WIDTH - 6 * scale,
-                    height: ITEM_WIDTH - 6 * scale,
+                    top: 278 * scale,
+                    left: 22 * scale,
+                    width: ITEM_WIDTH - 8 * scale,
+                    height: ITEM_WIDTH - 8 * scale,
                     border: "8px solid #FFD600",
                     borderRadius: `${BORDER_RADIUS}px`,
                     pointerEvents: "none",
@@ -334,7 +336,7 @@ const SelectPlayList = ({ scale = 1, onHomeHandle, onNextScreen }: SelectPlayLis
                 className={styles.sectionsWrapper}
                 style={{
                     transition: "transform 0.4s cubic-bezier(0.4,0,0.2,1)",
-                    transform: `translateY(-${visibleSectionIdx * (356 * scale + 16)}px)`
+                    transform: `translateY(-${visibleSectionIdx * (356 * scale + 9)}px)`
                 }}
             >
                 {sections.map((section, sectionIdx) => {
@@ -454,7 +456,6 @@ const SelectPlayList = ({ scale = 1, onHomeHandle, onNextScreen }: SelectPlayLis
 
 export default memo(SelectPlayList, (prevProps, nextProps) => {
     return (
-        prevProps.scale === nextProps.scale &&
         prevProps.onHomeHandle === nextProps.onHomeHandle &&
         prevProps.onNextScreen === nextProps.onNextScreen
     );
