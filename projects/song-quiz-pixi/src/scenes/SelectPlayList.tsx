@@ -95,6 +95,7 @@ const SelectPlayList = ({ scale = 1, onHomeHandle, onNextScreen }: SelectPlayLis
     const [showPartyDialog, setShowPartyDialog] = useState(true);
     const [partyJoined, setPartyJoined] = useState([false, false, false, false]);
     const [showSideView, setShowSideView] = useState(false);
+    const [showMaxDialog, setShowMaxDialog] = useState(false);
     // Track if intro sound has played
     const introPlayedRef = useRef(false);
 
@@ -189,6 +190,7 @@ const SelectPlayList = ({ scale = 1, onHomeHandle, onNextScreen }: SelectPlayLis
         setSelected((prev) => {
             if (prev.includes(id)) return prev.filter((x) => x !== id);
             if (prev.length < 3) return [...prev, id];
+            setShowMaxDialog(true);
             return prev;
         });
         setFocusPos([sectionIdx, itemIdx]);
@@ -253,16 +255,55 @@ const SelectPlayList = ({ scale = 1, onHomeHandle, onNextScreen }: SelectPlayLis
     // Now you can safely return early
     if (!imagesLoaded) {
         return (
-            <div style={{
-                width: "100%",
-                height: "100vh",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                fontSize: "2rem",
-                background: "#18103A"
-            }}>
-                Loading playlists...
+            <div
+                style={{
+                    position: "fixed",
+                    inset: 0,
+                    width: "100vw",
+                    height: "100vh",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    background: `url('images/loading-bg.png') center center / cover no-repeat, #1a0e2d`,
+                    color: "#ecdeff",
+                    fontFamily: "sans-serif",
+                    fontSize: 20,
+                    letterSpacing: 1,
+                    flexDirection: "column",
+                }}
+            >
+                <div
+                    style={{
+                        width: 140,
+                        height: 140,
+                        marginBottom: 18,
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                    }}
+                >
+                    <img
+                        src="images/loading.png"
+                        alt="Loading"
+                        style={{
+                            width: 140,
+                            height: 140,
+                            display: "block",
+                            animation: "spin 1.2s linear infinite"
+                        }}
+                    />
+                </div>
+                <div style={{ fontWeight: 700, fontSize: 42, fontFamily: "Gilroy, serif" }}>
+                    Loading...
+                </div>
+                <style>
+                    {`
+            @keyframes spin {
+              0% { transform: rotate(0deg);}
+              100% { transform: rotate(360deg);}
+            }
+          `}
+                </style>
             </div>
         );
     }
@@ -272,6 +313,71 @@ const SelectPlayList = ({ scale = 1, onHomeHandle, onNextScreen }: SelectPlayLis
             width: window.innerWidth,
             height: window.innerHeight
         }}>
+            {showMaxDialog && (
+                <div
+                    style={{
+                        position: "fixed",
+                        top: 0,
+                        left: 0,
+                        width: "100vw",
+                        height: "100vh",
+                        background: "rgba(0,0,0,0.5)",
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        zIndex: 1000
+                    }}
+                >
+                    <div
+                        style={{
+                            background: "rgba(0, 0, 0, 0.8)",
+                            borderRadius: 24,
+                            padding: "40px 32px",
+                            textAlign: "center",
+                            color: "#fff",
+                            minWidth: 340,
+                            border: "3px solid #ECDEFF",
+                        }}
+                    >
+                        <div style={{ marginBottom: 16 }}>
+                            <svg width="101" height="96" viewBox="0 0 101 96" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path fillRule="evenodd" clipRule="evenodd" d="M32.2302 10.8292C35.8064 4.15113 42.772 -0.0122358 50.3473 0.000588433C58.0565 -0.0572252 65.1669 4.14892 68.8287 10.9333L98.1908 65.2844C101.674 71.7376 101.506 79.5474 97.7491 85.8452C93.9918 92.1429 87.1989 96.0001 79.8655 96H20.829C13.4737 96.0017 6.66301 92.1231 2.91177 85.7962C-0.839458 79.4693 -0.974775 71.6328 2.55579 65.1802L32.2302 10.8292ZM61.8005 14.6296C59.5423 10.4088 55.1341 7.78395 50.3472 7.80965C45.6307 7.84236 41.3042 10.4343 39.0501 14.5775L9.42776 68.8245C7.21525 72.8471 7.29541 77.7399 9.6385 81.6878C11.9816 85.6358 16.2381 88.0499 20.829 88.0348H79.8655C84.44 88.0069 88.6669 85.5888 91.0095 81.6595C93.3522 77.7302 93.4695 72.862 91.3188 68.8245L61.8005 14.6296Z" fill="#ECDEFF" />
+                                <path d="M50.3473 62.4737C48.1908 62.4737 46.4427 64.2218 46.4427 66.3782C46.4427 68.5346 48.1908 70.2827 50.3473 70.2827C51.3871 70.2969 52.3884 69.8901 53.1238 69.1547C53.8591 68.4194 54.2659 67.418 54.2518 66.3782C54.2519 65.3474 53.8389 64.3595 53.1051 63.6355C52.3713 62.9115 51.378 62.5118 50.3473 62.5257V62.4737Z" fill="#ECDEFF" />
+                                <path d="M50.3472 55.3414C48.2026 55.3134 46.4708 53.5816 46.4427 51.4369V35.2981C46.4427 33.1417 48.1908 31.3936 50.3472 31.3936C52.5037 31.3936 54.2518 33.1417 54.2518 35.2981V51.4369C54.2518 53.5933 52.5037 55.3414 50.3472 55.3414Z" fill="#ECDEFF" />
+                            </svg>
+                        </div>
+                        <div style={{ fontWeight: 700, fontSize: 42, marginBottom: 8 }}>
+                            You can only select up to 3 playlists
+                        </div>
+                        <div style={{ fontSize: 32, marginBottom: 24 }}>
+                            Please remove one to add another.
+                        </div>
+                        <button
+                            style={{
+                                background: "linear-gradient(90deg, #fff 0%, #ECDEFF 100%)",
+                                color: "#1a0e2d",
+                                border: "none",
+                                borderRadius: 36,
+                                padding: "12px 54px",
+                                fontSize: 32,
+                                fontWeight: 700,
+                                cursor: "pointer"
+                            }}
+                            onClick={() => {
+                                setShowMaxDialog(false);
+                                setTimeout(() => {
+                                    // Refocus the current item after dialog closes
+                                    const [sectionIdx, itemIdx] = focusPos;
+                                    const item = itemRefs.current[sectionIdx]?.[itemIdx];
+                                    item?.focus();
+                                }, 0);
+                            }}
+                        >
+                            OK
+                        </button>
+                    </div>
+                </div>
+            )}
             <PartyConnectDialog
                 roomCode="X47H"
                 joined={partyJoined}
@@ -430,8 +536,8 @@ const SelectPlayList = ({ scale = 1, onHomeHandle, onNextScreen }: SelectPlayLis
                                                             <rect x="8" y="8" width="48" height="48" rx="8" fill="#080427" />
                                                             <defs>
                                                                 <linearGradient id="paint0_linear_7926_82215" x1="32" y1="0" x2="32" y2="64" gradientUnits="userSpaceOnUse">
-                                                                    <stop stop-color="#FFE789" />
-                                                                    <stop offset="1" stop-color="#F6D301" />
+                                                                    <stop stopColor="#FFE789" />
+                                                                    <stop offset="1" stopColor="#F6D301" />
                                                                 </linearGradient>
                                                             </defs>
                                                         </svg>

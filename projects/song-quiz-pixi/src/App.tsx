@@ -160,19 +160,55 @@ function App() {
 
   if (!assetsReady && !soundsReady) {
     return (
-      <div style={{
-        position: "fixed",
-        inset: 0,
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-        background: "#0b0b18",
-        color: "#ecdeff",
-        fontFamily: "sans-serif",
-        fontSize: 20,
-        letterSpacing: 1,
-      }}>
-        Loading assets & sounds...
+      <div
+        style={{
+          position: "fixed",
+          inset: 0,
+          width: "100vw",
+          height: "100vh",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          background: `url('images/loading-bg.png') center center / cover no-repeat, #1a0e2d`,
+          color: "#ecdeff",
+          fontFamily: "sans-serif",
+          fontSize: 20,
+          letterSpacing: 1,
+          flexDirection: "column",
+        }}
+      >
+        <div
+          style={{
+            width: 140,
+            height: 140,
+            marginBottom: 18,
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+          }}
+        >
+          <img
+            src="images/loading.png"
+            alt="Loading"
+            style={{
+              width: 140,
+              height: 140,
+              display: "block",
+              animation: "spin 1.2s linear infinite"
+            }}
+          />
+        </div>
+        <div style={{ fontWeight: 700, fontSize: 42, fontFamily: "Gilroy, serif" }}>
+          Loading...
+        </div>
+        <style>
+          {`
+            @keyframes spin {
+              0% { transform: rotate(0deg);}
+              100% { transform: rotate(360deg);}
+            }
+          `}
+        </style>
       </div>
     );
   }

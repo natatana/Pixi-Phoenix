@@ -20,6 +20,12 @@ const CARD_DATA = [
         image: "images/selectround/round3.png",
         subtitle: "Kids Movies",
     },
+    {
+        title: "Final Round",
+        points: 20,
+        image: "images/selectround/final-round.png",
+        subtitle: "Music Trivia",
+    },
 ];
 
 export const SelectRoundScreen = memo(function SelectRoundScreen({
@@ -33,9 +39,9 @@ export const SelectRoundScreen = memo(function SelectRoundScreen({
     scaleY: number;
     windowSize: { width: number; height: number };
 }) {
-    const [showCards, setShowCards] = useState([false, false, false]);
+    const [showCards, setShowCards] = useState(Array(CARD_DATA.length).fill(false));
     const [cardAlphas, setCardAlphas] = useState([0, 0, 0]);
-    const fadeStarted = useRef([false, false, false]);
+    const fadeStarted = useRef(Array(CARD_DATA.length).fill(false));
     const [showGradient, setShowGradient] = useState(false);
     const [gradientAlpha, setGradientAlpha] = useState(0);
     const [containerAlpha, setContainerAlpha] = useState(1);
@@ -43,24 +49,23 @@ export const SelectRoundScreen = memo(function SelectRoundScreen({
 
     // Card reveal sequence
     useEffect(() => {
-        setShowCards([false, false, false]);
-        const modalTimer = setTimeout(() => {
-            const card1Timer = setTimeout(() => {
-                setShowCards([true, false, false]);
-                const card2Timer = setTimeout(() => {
-                    setShowCards([true, true, false]);
-                    const card3Timer = setTimeout(() => {
-                        setShowCards([true, true, true]);
-                    }, 1000);
-                    return () => clearTimeout(card3Timer);
-                }, 1000);
-                return () => clearTimeout(card2Timer);
-            }, 1000);
-            return () => clearTimeout(card1Timer);
-        }, 1000);
+        setShowCards(Array(CARD_DATA.length).fill(false));
+        const timers: NodeJS.Timeout[] = [];
+        const initialDelay = 1000;
+        for (let i = 0; i < CARD_DATA.length; i++) {
+            timers.push(
+                setTimeout(() => {
+                    setShowCards((prev) => {
+                        const next = [...prev];
+                        next[i] = true;
+                        return next;
+                    });
+                }, initialDelay + i * 1000)
+            );
+        }
 
         return () => {
-            clearTimeout(modalTimer);
+            timers.forEach(clearTimeout);
         };
     }, [windowSize.width, windowSize.height, scaleX, scaleY]);
 
@@ -82,7 +87,7 @@ export const SelectRoundScreen = memo(function SelectRoundScreen({
                     if (progress < 1) {
                         requestAnimationFrame(animateAlpha);
                     } else {
-                        if (i === 2) setShowGradient(true);
+                        if (i === CARD_DATA.length - 1) setShowGradient(true);
                     }
                 }
                 requestAnimationFrame(animateAlpha);
@@ -148,7 +153,7 @@ export const SelectRoundScreen = memo(function SelectRoundScreen({
     const ITEM_WIDTH = 330 * scaleX;
     const ITEM_HEIGHT = 528 * scaleY;
     const ITEM_SPACING = 48 * scaleX;
-    const LR_SPACING = (windowSize.width - ITEM_WIDTH * 3 - ITEM_SPACING * 2) / 2;
+    const LR_SPACING = (windowSize.width - ITEM_WIDTH * CARD_DATA.length - ITEM_SPACING * (CARD_DATA.length - 1)) / 2;
     const scale = Math.min(scaleX, scaleY);
 
     return (
@@ -173,7 +178,7 @@ export const SelectRoundScreen = memo(function SelectRoundScreen({
                     left: "50%",
                     top: "50%",
                     opacity: containerAlpha,
-                    width: 1600 * scaleX,
+                    width: (378 * CARD_DATA.length + 120 * (CARD_DATA.length + 1)) * scaleX,
                     height: 1080 * scaleY,
                     transform: "translate(-50%, -50%)",
                     zIndex: 1,
@@ -201,7 +206,7 @@ export const SelectRoundScreen = memo(function SelectRoundScreen({
                         style={{
                             width: ITEM_WIDTH,
                             height: ITEM_HEIGHT,
-                            marginRight: i < 2 ? ITEM_SPACING : 0,
+                            marginRight: i < CARD_DATA.length - 1 ? ITEM_SPACING : 0,
                             opacity: cardAlphas[i],
                             transition: "opacity 0.5s",
                             position: "relative",
@@ -214,7 +219,7 @@ export const SelectRoundScreen = memo(function SelectRoundScreen({
                         }}
                     >
                         {/* Gradient overlay for first card */}
-                        {i === 0 && showGradient && (
+                        {i === 1 && showGradient && (
                             <div
                                 style={{
                                     position: "absolute",
@@ -239,7 +244,7 @@ export const SelectRoundScreen = memo(function SelectRoundScreen({
                                 width: "100%",
                                 textAlign: "center",
                                 fontSize: 42 * scale,
-                                color: "#00FFD1",
+                                color: i === CARD_DATA.length - 1 ? "#FFEC37" : "#00FFD1",
                                 fontWeight: "bold",
                                 fontFamily: "Gilroy, serif",
                                 zIndex: 3,
@@ -257,7 +262,7 @@ export const SelectRoundScreen = memo(function SelectRoundScreen({
                                 transform: "translateX(-50%)",
                                 width: 120 * scaleX,
                                 height: 50 * scaleY,
-                                background: "#00ffd0",
+                                background: i === CARD_DATA.length - 1 ? "#FFEC37" : "#00ffd0",
                                 borderRadius: 40,
                                 display: "flex",
                                 alignItems: "center",
@@ -285,11 +290,31 @@ export const SelectRoundScreen = memo(function SelectRoundScreen({
                                 transform: "translateX(-50%)",
                                 borderRadius: 24 * scale,
                                 zIndex: 3,
-                                background: "#fff",
-                                objectFit: "cover",
-                                boxShadow: "0 2px 16px #0004",
+                                objectFit: "contain",
                             }}
                         />
+                        {i === 0 && (
+                            <div
+                                style={{
+                                    position: "absolute",
+                                    left: "50%",
+                                    top: 180 * scaleY + 117 * scaleY, // center of image
+                                    transform: "translate(-50%, -50%)",
+                                    zIndex: 4,
+                                    pointerEvents: "none",
+                                }}
+                            >
+                                <img
+                                    src="images/selectround/round-check.png"
+                                    alt="Round Check"
+                                    style={{
+                                        width: 96 * scale,
+                                        height: 96 * scale,
+                                        display: "block",
+                                    }}
+                                />
+                            </div>
+                        )}
                         {/* Subtitle */}
                         <div
                             style={{
@@ -299,7 +324,7 @@ export const SelectRoundScreen = memo(function SelectRoundScreen({
                                 width: "100%",
                                 textAlign: "center",
                                 fontSize: 32 * scale,
-                                color: "#fff",
+                                color: i === CARD_DATA.length - 1 ? "#FFEC37" : "#fff",
                                 fontFamily: "Gilroy, serif",
                                 zIndex: 3,
                                 textShadow: "0 2px 8px #000",
